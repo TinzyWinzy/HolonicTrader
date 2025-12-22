@@ -144,35 +144,46 @@ class GovernorHolon(Holon):
             return True, quantity, leverage
             
         else:  # PREDATOR
-            # Surplus = Balance - Principal
-            surplus = self.balance - config.INITIAL_CAPITAL
+            # Kelly Criterion: f* = (p(b+1) - 1) / b
+            # p = Win Rate (probability of win)
+            # b = Payoff Ratio (Avg Win / Avg Loss)
             
-            if surplus <= 0:
-                # Edge case: exactly at threshold, use scavenger logic
-                return self.calc_position_size(symbol, asset_price, current_atr)
+            # Estimate parameters from "genetic memory" (or defaults if new)
+            # Defaults: 55% Win Rate, 1.5 R:R
+            p = 0.55 
+            b = 1.5
             
-            # Base Size = Surplus * Leverage
-            base_leverage = config.PREDATOR_LEVERAGE
+            # Calculate Kelly Fraction
+            kelly_fraction = (p * (b + 1) - 1) / b
             
-            # Volatility Targeting (BlackRock Rule)
-            if current_atr and self.reference_atr:
-                vol_adj = self.reference_atr / current_atr
-                vol_adj = max(0.5, min(2.0, vol_adj))  # Clamp between 0.5x and 2x
-            else:
-                vol_adj = 1.0
+            # Verify positive expectancy
+            if kelly_fraction <= 0:
+                print(f"[{self.name}] KELLY: Negative Expectancy (p={p}, b={b}). Reverting to SCAVENGER.")
+                return self.calc_position_size(symbol, asset_price, current_atr) # Fallback
                 
-            # Step-Down Sizing (Pyramiding Optimization)
-            current_stack = self.positions.get(symbol, {}).get('stack_count', 0)
-            stack_decay = 0.85 ** current_stack
+            # Apply "Half-Kelly" for safety (standard practice to avoid ruin)
+            safe_kelly = kelly_fraction * 0.5
             
-            # Combine adjustments
-            adjusted_leverage = base_leverage * vol_adj * stack_decay
-            effective_size = surplus * adjusted_leverage
-            quantity = effective_size / asset_price
+            # Capped at max risk per trade (e.g. 20% of equity) to prevent black swans
+            safe_kelly = min(safe_kelly, 0.20)
             
-            print(f"[{self.name}] PREDATOR: Surplus ${surplus:.2f}, Lev {adjusted_leverage:.1f}x (Vol: {vol_adj:.2f}, Stack[{current_stack}]: {stack_decay:.2f}), Qty {quantity:.4f}")
-            return True, quantity, adjusted_leverage
-    
+            # Calculate dollar amount to risk
+            # For pure Kelly, this is % of TOTAL EQUITY
+            usd_to_risk = self.balance * safe_kelly
+            
+            # Convert to Quantity
+            # Assuming 1:1 leverage for base calculation, then apply leverage scalar
+            # Actually Kelly returns "Percentage of Bankroll to Bet".
+            # In crypto futures, "Bet" is Margin * Leverage.
+            
+            # Let's treat safe_kelly as "Target Exposure %".
+            target_exposure = self.balance * safe_kelly * config.PREDATOR_LEVERAGE 
+            
+            quantity = target_exposure / asset_price
+            
+            print(f"[{self.name}] PREDATOR (Kelly): Balance ${self.balance:.2f}, Kelly {kelly_fraction:.2f} -> Safe {safe_kelly:.2f}. Allocating ${target_exposure:.2f} (Qty: {quantity:.4f})")
+            return True, quantity, config.PREDATOR_LEVERAGE
+            
     def open_position(self, symbol: str, direction: str, entry_price: float, quantity: float):
         """Track that a position has been opened or added to (Weighted Average)."""
         

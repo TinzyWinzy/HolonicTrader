@@ -16,6 +16,7 @@ import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from typing import Any, Literal, List, Optional
+import math
 
 from HolonicTrader.holon_core import Holon, Disposition
 
@@ -313,24 +314,41 @@ class ExecutorHolon(Holon):
         action: Literal['EXECUTE', 'HALT', 'REDUCE']
         adjusted_size: float
 
-        # Apply disposition logic based on regime
-        if current_regime == 'CHAOTIC':
-            # Scenario A: High chaos → Be highly integrated (cautious), low autonomy
-            self.disposition = Disposition(autonomy=0.1, integration=0.9)
-            action = 'HALT'
-            adjusted_size = 0.0  # No trade executed
-
-        elif current_regime == 'ORDERED':
-            # Scenario B: Low chaos → Be highly autonomous, low integration
-            self.disposition = Disposition(autonomy=0.9, integration=0.1)
+        # Apply disposition logic based on continuous Sigmoid function
+        # Autonomy = 1 / (1 + e^(k * (Entropy - Threshold)))
+        # k=5 (steepness), Threshold=2.0 (Chaos inflection point)
+        k = 5.0
+        threshold = 2.0
+        
+        # Calculate continuous autonomy (0.0 to 1.0)
+        autonomy = 1.0 / (1.0 + math.exp(k * (entropy_score - threshold)))
+        
+        # Integration is the inverse
+        integration = 1.0 - autonomy
+        
+        self.disposition = Disposition(autonomy=autonomy, integration=integration)
+        
+        # Map continuous autonomy to discrete actions for Ledger/Protocol compliance
+        # Autonomy > 0.6 -> EXECUTE (High Independence)
+        # Autonomy < 0.4 -> HALT (High Safety)
+        # 0.4 <= Autonomy <= 0.6 -> REDUCE (Balanced)
+        
+        if autonomy > 0.6:
             action = 'EXECUTE'
-            adjusted_size = signal.size  # Full trade size
-
-        else:  # TRANSITION
-            # Scenario C: Medium chaos → Balanced approach
-            self.disposition = Disposition(autonomy=0.5, integration=0.5)
+            adjusted_size = signal.size * autonomy  # Scale size by confidence/autonomy? Or full? 
+            # Let's scale slightly by autonomy to reflect "conviction"
+            # But kept close to 1.0 for high autonomy.
+            # Actually, let's keep it simple: EXECUTE = Full Size
+            adjusted_size = signal.size
+            
+        elif autonomy < 0.4:
+            action = 'HALT'
+            adjusted_size = 0.0
+            
+        else:
             action = 'REDUCE'
-            adjusted_size = signal.size * 0.5  # Reduce by 50%
+            # Proportional reduction
+            adjusted_size = signal.size * 0.5
 
         # Check for sufficient funds/assets
         # Note: adjusted_size here is a multiplier (0.0 to 1.0) of the signal

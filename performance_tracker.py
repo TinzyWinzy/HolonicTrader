@@ -5,6 +5,28 @@ from datetime import datetime
 
 DB_PATH = "holonic_trader.db"
 
+DB_PATH = "holonic_trader.db"
+
+def calculate_omega_ratio(returns: list, threshold: float = 0.0) -> float:
+    """
+    Calculate Omega Ratio.
+    Omega(L) = Sum(Gains - L) / Sum(L - Losses)
+    Where discrete returns are split above and below threshold L.
+    """
+    if not returns:
+        return 0.0
+        
+    gains = [r - threshold for r in returns if r > threshold]
+    losses = [threshold - r for r in returns if r < threshold]
+    
+    sum_gains = sum(gains)
+    sum_losses = sum(losses)
+    
+    if sum_losses == 0:
+        return 100.0 if sum_gains > 0 else 0.0 # Infinite gain ratio
+        
+    return sum_gains / sum_losses
+
 def get_performance_data():
     """
     Fetch performance metrics and return as a dictionary.
@@ -14,6 +36,7 @@ def get_performance_data():
         'win_rate': 0.0,
         'realized_pnl': 0.0,
         'avg_pnl': 0.0,
+        'omega_ratio': 0.0,
         'best_trade': 0.0,
         'worst_trade': 0.0,
         'portfolio_usd': 0.0,
@@ -37,6 +60,11 @@ def get_performance_data():
                 data['avg_pnl'] = sells['pnl'].mean()
                 data['best_trade'] = sells['pnl'].max()
                 data['worst_trade'] = sells['pnl'].min()
+                
+                # Calculate Omega Ratio (Threshold = 0.0)
+                # We need a list of PnL values (absolute dollars or %, here using dollars from 'pnl' column)
+                pnl_list = sells['pnl'].tolist()
+                data['omega_ratio'] = calculate_omega_ratio(pnl_list, threshold=0.0)
             
             # Recent Trades (Last 10)
             recent = df.tail(10)[['timestamp', 'symbol', 'direction', 'price', 'quantity', 'pnl']].to_dict(orient='records')
@@ -68,6 +96,7 @@ def print_performance_report():
     print(f"Win Rate:               {data['win_rate']:.2f}%")
     print(f"Total Realized PnL:     ${data['realized_pnl']:.2f}")
     print(f"Average PnL per Trade:  ${data['avg_pnl']:.2f}")
+    print(f"Omega Ratio (Risk):     {data['omega_ratio']:.4f}")
     
     print("\n--- Recent Activity ---")
     for t in data['recent_trades']:

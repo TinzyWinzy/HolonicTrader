@@ -27,6 +27,7 @@ except ImportError:
 from HolonicTrader.holon_core import Holon, Disposition
 from HolonicTrader.holon_core import Message
 from .agent_executor import TradeSignal
+from .kalman import KalmanFilter1D
 import config
 
 class StrategyHolon(Holon):
@@ -47,6 +48,7 @@ class StrategyHolon(Holon):
         
         # State Memory
         self.last_exit_times = {} # {symbol: timestamp_index}
+        self.kalman_filters = {} # {symbol: KalmanFilter1D}
 
     def load_brain(self):
         """Load the LSTM model and scaler."""
@@ -128,6 +130,25 @@ class StrategyHolon(Holon):
         if pd.isna(last_rsi):
             return 50.0
         return float(last_rsi)
+
+    def get_kalman_estimate(self, symbol: str, prices: pd.Series) -> float:
+        """
+        Get the latest Kalman estimate for a symbol.
+        Initializes filter if new, or updates it with latest price.
+        Ideally should run sequentially on stream, but here we might just re-run on window end
+        or persist properly. For now, we update with the latest price.
+        """
+        if symbol not in self.kalman_filters:
+            # Initialize with decent noise params
+            self.kalman_filters[symbol] = KalmanFilter1D(process_noise=0.01, measurement_noise=0.1)
+            # Warm up with last 10 prices to converge
+            for p in prices.values[-10:]:
+                self.kalman_filters[symbol].update(p)
+        else:
+            # Update with just the latest price
+            self.kalman_filters[symbol].update(prices.iloc[-1])
+            
+        return self.kalman_filters[symbol].x
 
     def check_scavenger_entry(self, price: float, bb: dict, rsi: float) -> bool:
         """
@@ -215,7 +236,19 @@ class StrategyHolon(Holon):
         # LSTM Bullish Confirmation
         # WARP SPEED: Lowered to 0.45 to be very permissive
         lstm_prob = self.predict_trend_lstm(prices)
+        lstm_prob = self.predict_trend_lstm(prices)
         is_bullish = lstm_prob > config.STRATEGY_LSTM_THRESHOLD
+        
+        # KALMAN TREND FILTER
+        kalman_price = self.get_kalman_estimate(symbol, prices)
+        is_kalman_bullish = current_price > kalman_price
+        
+        # Combine filters?
+        # For now, let's say Kalman confirms Scavenger (Mean Rev) if price < Kalman (Undervalued)?
+        # Or Price > Kalman (Trend)?
+        # Scavenger is Buy Low -> Price should be BELOW Kalman (Reverting up to it)
+        # Predator is Buy High -> Price should be ABOVE Kalman (Momentum)
+        
         
         # POST-EXIT COOLDOWN CHECK
         if symbol in self.last_exit_times:
@@ -240,10 +273,18 @@ class StrategyHolon(Holon):
                 print(f"[{self.name}] Cooldown Check Error: {e}")
         
         if metabolism_state == 'SCAVENGER':
+            # Scavenger wants to buy dips. Kalman as Fair Value.
+            # If Price < Kalman, it is "undervalued" relative to state.
             if self.check_scavenger_entry(current_price, bb, rsi):
                 if is_bullish:
-                    print(f"[{self.name}] {symbol} SCAVENGER ENTRY (LSTM CONFIRMED): P={current_price:.4f}")
-                    return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    # Optional Kalman Check: Only buy if "deep" enough below Kalman?
+                    # or just use as logger for now.
+                    # Let's enforce Price < Kalman for Scavenger validity
+                    if current_price < kalman_price:
+                         print(f"[{self.name}] {symbol} SCAVENGER ENTRY (LSTM+KALMAN): P={current_price:.2f} < K={kalman_price:.2f}")
+                         return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    else:
+                         pass # Price > Kalman, not a deep value buy?
                 else:
                     print(f"[{self.name}] {symbol} SCAVENGER BLOCKED BY LSTM: Prob {lstm_prob:.2f} <= 0.45")
                     
@@ -259,13 +300,17 @@ class StrategyHolon(Holon):
             
             if is_sniper or is_scavenger_valid or is_momentum:
                 if is_bullish:
-                    # Determine reason
-                    if is_sniper: reason = "SNIPER"
-                    elif is_scavenger_valid: reason = "DIP_BUY"
-                    else: reason = "MOMENTUM"
-                    
-                    print(f"[{self.name}] {symbol} PREDATOR ENTRY ({reason}): P={current_price:.4f}")
-                    return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    # Predator wants Momentum. Price > Kalman.
+                    if current_price > kalman_price:
+                        # Determine reason
+                        if is_sniper: reason = "SNIPER"
+                        elif is_scavenger_valid: reason = "DIP_BUY"
+                        else: reason = "MOMENTUM"
+                        
+                        print(f"[{self.name}] {symbol} PREDATOR ENTRY ({reason}+KALMAN): P={current_price:.2f} > K={kalman_price:.2f}")
+                        return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    else:
+                         print(f"[{self.name}] {symbol} PREDATOR BLOCKED BY KALMAN: P={current_price:.2f} < K={kalman_price:.2f}")
                 else:
                     print(f"[{self.name}] {symbol} PREDATOR BLOCKED BY LSTM: Prob {lstm_prob:.2f} <= 0.45")
             else:

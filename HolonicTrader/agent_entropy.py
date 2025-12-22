@@ -65,6 +65,49 @@ class EntropyHolon(Holon):
 
         return float(shannon_entropy)
 
+    def calculate_renyi_entropy(self, returns_series: pd.Series, alpha: float = 2.0) -> float:
+        """
+        Calculate Rényi Entropy for a given returns series.
+        
+        Formula: H_alpha(X) = (1 / (1 - alpha)) * ln(sum(p_i ^ alpha))
+        
+        Args:
+            returns_series: A pandas Series of log returns.
+            alpha: The order of Rényi entropy. 
+                   alpha=0 -> Max Entropy (Hartley)
+                   alpha=1 -> Shannon Entropy (limit as alpha->1)
+                   alpha=2 -> Collision Entropy (focus on peaks)
+                   alpha=inf -> Min Entropy
+                   
+        Returns:
+            The Rényi Entropy value (in nats).
+        """
+        # Step A: Discretize (Same as Shannon)
+        counts, _ = np.histogram(returns_series, bins=10)
+        
+        # Step B: Probabilities
+        total_count = counts.sum()
+        if total_count == 0:
+            return 0.0
+            
+        probabilities = counts / total_count
+        
+        # Step C: Rényi Calculation
+        # Avoid log(0) issues not needed here as we sum first, but p^alpha is safe for p=0
+        
+        # alpha = 1.0 is a special case (Shannon), but typically handled by separate func or limit.
+        if np.isclose(alpha, 1.0):
+            return self.calculate_shannon_entropy(returns_series)
+            
+        sum_p_alpha = np.sum(probabilities ** alpha)
+        
+        if sum_p_alpha == 0:
+            return 0.0 # Should not happen if total_count > 0
+            
+        renyi_entropy = (1.0 / (1.0 - alpha)) * np.log(sum_p_alpha)
+        
+        return float(renyi_entropy)
+
     def determine_regime(self, entropy_value: float) -> Literal['ORDERED', 'CHAOTIC', 'TRANSITION']:
         """
         Determine market regime based on entropy value.

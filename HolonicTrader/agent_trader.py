@@ -265,11 +265,19 @@ class TraderHolon(Holon):
                                         entry_state = meta.get('rl_state')
                                         entry_action_idx = meta.get('rl_action_idx')
                                         if entry_state and entry_action_idx is not None:
-                                            reward = pnl_res * 10.0
+                                            # Risk-Adjusted Reward: Sortino/Sharpe Proxy
+                                            # Reward = PnL / (Volatility + epsilon)
+                                            # We use normalized ATR as volatility measure
+                                            atr_pct = (atr / entry_p) if entry_p > 0 else 0.01
+                                            risk_adj_reward = (pnl_res * 10.0) / max(0.001, atr_pct)
+                                            
+                                            # Clip reward to avoid exploding gradients [-10, 10]
+                                            risk_adj_reward = max(-10.0, min(10.0, risk_adj_reward))
+                                            
                                             current_state = [entropy_val, entry_rsi, 0.0, 1.0]
-                                            dqn.remember(entry_state, entry_action_idx, reward, current_state, done=True)
+                                            dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
                                             loss = dqn.replay()
-                                            print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: Reward={reward:.4f}, Loss={loss:.6f}")
+                                            print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
                                 
                                 row_data['Action'] = "SELL (Strat)"
                                 cycle_report.append(row_data)
@@ -297,14 +305,18 @@ class TraderHolon(Holon):
                                     
                                     if entry_state and entry_action_idx is not None:
                                         # Construct Reward (PnL %)
-                                        reward = pnl_res * 10.0 # Scale up small pct
+                                        # Risk-Adjusted
+                                        atr_pct = (atr / entry_p) if entry_p > 0 else 0.01
+                                        risk_adj_reward = (pnl_res * 10.0) / max(0.001, atr_pct)
+                                        # Clip
+                                        risk_adj_reward = max(-10.0, min(10.0, risk_adj_reward))
                                         
                                         # Current State
                                         current_state = [entropy_val, entry_rsi, 0.0, 1.0] # approx
                                         
-                                        dqn.remember(entry_state, entry_action_idx, reward, current_state, done=True)
+                                        dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
                                         loss = dqn.replay()
-                                        print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: Reward={reward:.4f}, Loss={loss:.6f}")
+                                        print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
 
                             row_data['Action'] = f"SELL ({exit_type})"
 
