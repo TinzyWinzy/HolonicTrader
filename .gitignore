@@ -1,0 +1,18 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.log
+*.db
+*.pkl
+# Models can be large and change often, but keeping them if important.
+# Commenting out to Include them, or excluding? 
+# Usually trained models are artifacts, not source. 
+# But for a small project, maybe keep them. 
+# User just said "push to github", likely wants the state.
+# I will include them for now. If they get huge, we can ignore.
+# *.keras 
+
+# OS generated
+Thumbs.db
+Desktop.ini
+.DS_Store

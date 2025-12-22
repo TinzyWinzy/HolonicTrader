@@ -1,0 +1,49 @@
+"""
+NEXUS Configuration (Phase 15)
+
+Central storage for all thresholds, leverage caps, and system parameters.
+"""
+
+# === METABOLIC STATE THRESHOLDS ===
+SCAVENGER_THRESHOLD = 12.0  # Balance <= this = Scavenger Mode
+INITIAL_CAPITAL = 10.0       # Never risk the principal
+
+# === LEVERAGE SETTINGS ===
+SCAVENGER_LEVERAGE = 20      # WARP SPEED: Max Alt Leverage
+PREDATOR_LEVERAGE = 50       # WARP SPEED: Max BTC Leverage
+
+# === POSITION SIZING ===
+SCAVENGER_MAX_MARGIN = 8.0   # WARP SPEED: Risk 80% of Equity
+SCAVENGER_STOP_LOSS = 0.03   # 3% wiggle room
+SCAVENGER_SCALP_TP = 0.01    # 1% Quick Scalp target
+PREDATOR_TAKE_PROFIT = 0.05  # 5% Big move target
+# === TIME GATING (Kill Zones - UTC) ===
+KILL_ZONES = [] # WARP SPEED: Trade 24/7
+
+# === VOLATILITY ===
+ATR_PERIOD = 14
+ATR_STORM_MULTIPLIER = 3.0   # If current ATR > 3x avg, it's a storm
+
+# === BOLLINGER BANDS ===
+BB_PERIOD = 20
+BB_STD = 2
+
+# === PREDATOR TRAILING STOP ===
+PREDATOR_TRAILING_STOP_ATR_MULT = 2.0
+
+# === ASSET CONSTRAINTS ===
+ALLOWED_ASSETS = ['ADA/USDT', 'BTC/USDT', 'DOGE/USDT', 'SUI/USDT', 'XRP/USDT']
+FORBIDDEN_ASSETS = ['ETH/USDT']
+
+# === STRATEGY SETTINGS (Centralized) ===
+STRATEGY_RSI_OVERSOLD = 45
+STRATEGY_RSI_OVERBOUGHT = 70
+STRATEGY_RSI_PANIC_BUY = 35.0
+STRATEGY_RSI_ENTRY_MAX = 60.0
+STRATEGY_LSTM_THRESHOLD = 0.45
+STRATEGY_POST_EXIT_COOLDOWN_CANDLES = 3 # Wait 3 candles before re-entry
+
+# === GOVERNANCE / RISK ===
+GOVERNOR_COOLDOWN_SECONDS = 60
+GOVERNOR_MIN_STACK_DIST = 0.005 # 0.5%
+GOVERNOR_MAX_MARGIN_PCT = 0.10 # 10%
