@@ -1,10 +1,10 @@
 """
 Performance Analysis Script for HolonicTrader V2
-Analyzes all trading activity from the database.
+Analyzes all trading activity from the database with Phase 12 metrics.
 """
 
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def analyze_performance():
     """Comprehensive performance analysis from database."""
@@ -75,10 +75,24 @@ def analyze_performance():
         wins = cursor.fetchone()[0]
         cursor.execute("SELECT COUNT(*) FROM trades WHERE pnl < 0")
         losses = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM trades WHERE pnl = 0")
+        breakeven = cursor.fetchone()[0]
         
         if wins + losses > 0:
             win_rate = (wins / (wins + losses)) * 100
-            print(f"\nWin Rate: {win_rate:.1f}% ({wins} wins / {losses} losses)")
+            print(f"\nWin Rate: {win_rate:.1f}% ({wins} wins / {losses} losses / {breakeven} BE)")
+            
+            # Average win vs average loss
+            cursor.execute("SELECT AVG(pnl) FROM trades WHERE pnl > 0")
+            avg_win = cursor.fetchone()[0] or 0
+            cursor.execute("SELECT AVG(pnl) FROM trades WHERE pnl < 0")
+            avg_loss = cursor.fetchone()[0] or 0
+            
+            if avg_loss != 0:
+                risk_reward = abs(avg_win / avg_loss)
+                print(f"Average Win: ${avg_win:.2f}")
+                print(f"Average Loss: ${avg_loss:.2f}")
+                print(f"Risk/Reward Ratio: {risk_reward:.2f}:1")
     
     # Portfolio snapshot
     cursor.execute("SELECT balance_usd, updated_at FROM portfolio LIMIT 1")
@@ -88,11 +102,62 @@ def analyze_performance():
         balance, updated = portfolio
         print(f"\nCurrent Portfolio Balance: ${balance:,.2f}")
         print(f"Last Updated: {updated}")
+        
+        # Calculate ROI
+        initial_capital = 10.0  # From config
+        roi = ((balance - initial_capital) / initial_capital) * 100
+        print(f"ROI: {roi:+.2f}% (from ${initial_capital})")
     
     print()
     
     # =========================================================================
-    # 3. LEDGER ANALYSIS (Entropy-based decisions)
+    # 3. PHASE 12 RISK MANAGEMENT METRICS
+    # =========================================================================
+    print("=" * 70)
+    print("PHASE 12: INSTITUTIONAL RISK MANAGEMENT")
+    print("=" * 70)
+    
+    # Win rate for Kelly criterion
+    if wins + losses > 0:
+        print(f"Kelly Criterion Input:")
+        print(f"  Win Rate: {win_rate:.2f}%")
+        print(f"  Risk/Reward: {risk_reward:.2f}:1" if 'risk_reward' in locals() else "  Risk/Reward: N/A")
+        
+        # Calculate Kelly fraction
+        if 'risk_reward' in locals() and risk_reward > 0:
+            p = win_rate / 100
+            b = risk_reward
+            kelly_fraction = (p * (b + 1) - 1) / b
+            half_kelly = kelly_fraction * 0.5
+            
+            print(f"  Full Kelly: {kelly_fraction*100:.1f}%")
+            print(f"  Half Kelly: {half_kelly*100:.1f}% (recommended)")
+            
+            if kelly_fraction <= 0:
+                print(f"  ⚠️  Negative expectancy - system should not trade!")
+            elif half_kelly > 0.25:
+                print(f"  ⚠️  Kelly suggests >25% allocation - clamped for safety")
+    
+    # Minimax protection status
+    if portfolio:
+        balance = portfolio[0]
+        principal = 10.0
+        house_money = max(0, balance - principal)
+        max_risk_1pct = balance * 0.01
+        max_risk = min(house_money, max_risk_1pct)
+        
+        print(f"\nMinimax Constraint:")
+        print(f"  Principal: ${principal:.2f} (protected)")
+        print(f"  House Money: ${house_money:.2f}")
+        print(f"  Max Risk (1%): ${max_risk:.2f}")
+        
+        if balance <= principal:
+            print(f"  ⚠️  At principal - no risk allowed!")
+    
+    print()
+    
+    # =========================================================================
+    # 4. LEDGER ANALYSIS (Entropy-based decisions)
     # =========================================================================
     print("=" * 70)
     print("RISK MANAGEMENT (Entropy Ledger)")
@@ -128,11 +193,45 @@ def analyze_performance():
             print(f"\nEntropy Statistics:")
             print(f"  Average: {avg_ent:.4f}")
             print(f"  Range: {min_ent:.4f} - {max_ent:.4f}")
+            print(f"  Thresholds: ORDERED<0.67, TRANSITION<0.80, CHAOTIC>0.80")
     
     print()
     
     # =========================================================================
-    # 4. RECENT ACTIVITY
+    # 5. TIME-BASED ANALYSIS
+    # =========================================================================
+    print("=" * 70)
+    print("TIME-BASED PERFORMANCE")
+    print("=" * 70)
+    
+    # Last 24 hours
+    cursor.execute("""
+        SELECT COUNT(*), SUM(pnl) 
+        FROM trades 
+        WHERE timestamp > datetime('now', '-1 day') AND pnl IS NOT NULL
+    """)
+    trades_24h, pnl_24h = cursor.fetchone()
+    if trades_24h and trades_24h > 0:
+        print(f"Last 24 Hours:")
+        print(f"  Trades: {trades_24h}")
+        print(f"  PnL: ${pnl_24h:.2f}" if pnl_24h else "  PnL: $0.00")
+    
+    # Last 7 days
+    cursor.execute("""
+        SELECT COUNT(*), SUM(pnl) 
+        FROM trades 
+        WHERE timestamp > datetime('now', '-7 days') AND pnl IS NOT NULL
+    """)
+    trades_7d, pnl_7d = cursor.fetchone()
+    if trades_7d and trades_7d > 0:
+        print(f"\nLast 7 Days:")
+        print(f"  Trades: {trades_7d}")
+        print(f"  PnL: ${pnl_7d:.2f}" if pnl_7d else "  PnL: $0.00")
+    
+    print()
+    
+    # =========================================================================
+    # 6. RECENT ACTIVITY
     # =========================================================================
     print("=" * 70)
     print("RECENT ACTIVITY (Last 10 Trades)")
