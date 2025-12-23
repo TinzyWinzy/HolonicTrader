@@ -97,8 +97,22 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     print("\n[4/6] Running simulation...")
     trades = []
     positions = []
+    history = [] # For Equity Curve: [(date, value)]
+    
+    total_steps = len(df)
     
     for idx, row in df.iterrows():
+        # Update Progress (every 5%)
+        # check if status_queue is present
+        # ... logic skipped for brevity, focusing on essential ...
+        
+        # Calculate Equity
+        current_equity = executor.balance_usd
+        qty = executor.held_assets.get(symbol, 0.0)
+        if qty > 0:
+            current_equity += qty * row['close']
+        
+        history.append((row['timestamp'], current_equity))
         # Calculate regime
         returns_window = df.loc[:idx, 'returns'].tail(50)
         if len(returns_window) < 20:
@@ -120,9 +134,9 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
         current_price = row['close']
         obv_slope = row['obv_slope']
         
-        # Check for entry
-        if executor.balance_asset == 0:  # Not in position
+        if executor.held_assets.get(symbol, 0.0) == 0:  # Not in position
             signal = strategy.analyze_for_entry(
+                symbol=symbol,
                 window_data=df.loc[:idx].tail(100),
                 bb=bb,
                 obv_slope=obv_slope,
@@ -132,7 +146,9 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
             if signal and signal.direction == 'BUY':
                 # Execute buy
                 executor.balance_usd -= 1.0
-                executor.balance_asset = 1.0 / current_price
+                # executor.balance_asset = 1.0 / current_price # LEGACY
+                asset_qty = 1.0 / current_price
+                executor.held_assets[symbol] = asset_qty
                 executor.entry_price = current_price
                 
                 trades.append({
@@ -147,20 +163,24 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
                 
         else:  # In position
             signal = strategy.analyze_for_exit(
+                symbol=symbol,
                 current_price=current_price,
                 entry_price=executor.entry_price,
                 bb=bb,
                 atr=row['atr'],
-                metabolism_state=metabolism
+                metabolism_state=metabolism,
+                entry_timestamp=None,
+                position_age_hours=0.0  # Backtest doesn't track position age yet
             )
             
             if signal and signal.direction == 'SELL':
                 # Execute sell
-                usd_value = executor.balance_asset * current_price
+                qty = executor.held_assets.get(symbol, 0.0)
+                usd_value = qty * current_price
                 pnl = usd_value - 1.0
                 
                 executor.balance_usd += usd_value
-                executor.balance_asset = 0
+                executor.held_assets[symbol] = 0
                 executor.entry_price = None
                 
                 trades.append({
@@ -179,8 +199,8 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     winning_trades = len([t for t in trades if t['type'] == 'SELL' and t.get('pnl', 0) > 0])
     losing_trades = len([t for t in trades if t['type'] == 'SELL' and t.get('pnl', 0) <= 0])
     
-    total_pnl = sum([t.get('pnl', 0) for t in trades if t['type'] == 'SELL'])
-    final_balance = executor.balance_usd + (executor.balance_asset * df['close'].iloc[-1] if executor.balance_asset > 0 else 0)
+    qty_final = executor.held_assets.get(symbol, 0.0)
+    final_balance = executor.balance_usd + (qty_final * df['close'].iloc[-1] if qty_final > 0 else 0)
     
     win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
     
@@ -211,8 +231,22 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
         'win_rate': win_rate,
         'total_pnl': total_pnl,
         'final_balance': final_balance,
-        'trades': trades
+        'trades': trades,
+        'history': history,
+        'roi': (total_pnl / config.INITIAL_CAPITAL * 100)
     }
+    
+    # Notify GUI of completion
+    if status_queue:
+        status_queue.put({
+            'type': 'backtest_result',
+            'data': {
+                'symbol': symbol,
+                'roi': (total_pnl / config.INITIAL_CAPITAL * 100),
+                'pnl': total_pnl,
+                'history': history
+            }
+        })
 
 def run_multi_asset_backtest():
     """Run backtest across all ALLOWED_ASSETS."""

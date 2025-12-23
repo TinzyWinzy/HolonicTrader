@@ -66,6 +66,7 @@ class TraderHolon(Holon):
         self.perform_health_check()
         
         cycle_report = [] # List to hold row data for summary table
+        entropies = [] # List to hold entropy values from all assets
         
         # 1. ORCHESTRATION LOOP
         for symbol in config.ALLOWED_ASSETS:
@@ -110,9 +111,12 @@ class TraderHolon(Holon):
                 try:
                     returns = data['returns']
                     entropy_val = entropy_agent.calculate_shannon_entropy(returns)
+                    entropies.append(entropy_val) # Collect for aggregation
+                    row_data['Entropy'] = f"{entropy_val:.3f}"
                     regime = entropy_agent.determine_regime(entropy_val)
                     row_data['Regime'] = regime
                 except Exception:
+                    row_data['Entropy'] = "ERR"
                     pass
 
             # C. STRATEGY (Signal Generation)
@@ -240,13 +244,27 @@ class TraderHolon(Holon):
                                 predtp_dist = ((entry_p * (1+config.PREDATOR_TAKE_PROFIT)) - current_price) / current_price
                                 row_data['Note'] = f"BigTP: {predtp_dist*100:+.1f}%"
 
+                            # Calculate position age
+                            from datetime import datetime, timezone
+                            entry_timestamp = executor.entry_timestamps.get(symbol)
+                            position_age_hours = 0.0
+                            if entry_timestamp:
+                                try:
+                                    entry_dt = datetime.fromisoformat(entry_timestamp)
+                                    age_seconds = (datetime.now(timezone.utc) - entry_dt).total_seconds()
+                                    position_age_hours = age_seconds / 3600
+                                except Exception:
+                                    position_age_hours = 0.0
+
                             strategy_exit = strategy.analyze_for_exit(
                                 symbol=symbol,
                                 current_price=current_price,
                                 entry_price=entry_p,
                                 bb=bb_vals,
                                 atr=atr,
-                                metabolism_state=metabolism
+                                metabolism_state=metabolism,
+                                entry_timestamp=entry_timestamp,
+                                position_age_hours=position_age_hours
                             )
                             if strategy_exit:
                                 print(f"[{self.name}] 🧠 STRATEGY EXIT for {symbol}: {strategy_exit.direction}")
@@ -277,6 +295,32 @@ class TraderHolon(Holon):
                                             current_state = [entropy_val, entry_rsi, 0.0, 1.0]
                                             dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
                                             loss = dqn.replay()
+                                            current_state = [entropy_val, entry_rsi, 0.0, 1.0]
+                                            dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
+                                            loss = dqn.replay()
+                                            
+                                            # IMP_003: Persist Experience
+                                            if executor and executor.db_manager:
+                                                executor.db_manager.save_experience({
+                                                    'symbol': symbol,
+                                                    'state': entry_state,
+                                                    'action_idx': entry_action_idx,
+                                                    'reward': risk_adj_reward,
+                                                    'next_state': current_state,
+                                                    'done': True
+                                                })
+                                                
+                                            # IMP_003: Persist Experience (Strategy Exit)
+                                            if executor and executor.db_manager:
+                                                executor.db_manager.save_experience({
+                                                    'symbol': symbol,
+                                                    'state': entry_state,
+                                                    'action_idx': entry_action_idx,
+                                                    'reward': risk_adj_reward,
+                                                    'next_state': current_state,
+                                                    'done': True
+                                                })
+                                                
                                             print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
                                 
                                 row_data['Action'] = "SELL (Strat)"
@@ -316,6 +360,17 @@ class TraderHolon(Holon):
                                         
                                         dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
                                         loss = dqn.replay()
+                                        # IMP_003: Persist Experience (Hard Exit)
+                                        if executor and executor.db_manager:
+                                            executor.db_manager.save_experience({
+                                                'symbol': symbol,
+                                                'state': entry_state,
+                                                'action_idx': entry_action_idx,
+                                                'reward': risk_adj_reward,
+                                                'next_state': current_state,
+                                                'done': True
+                                            })
+                                        
                                         print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
 
                             row_data['Action'] = f"SELL ({exit_type})"
@@ -327,14 +382,23 @@ class TraderHolon(Holon):
             
             cycle_report.append(row_data)
 
+        # AGGREGATE MARKET STATE
+        avg_entropy = 0.0
+        if entropies and self.sub_holons.get('entropy'):
+            avg_entropy = sum(entropies) / len(entropies)
+            self.market_state['entropy'] = avg_entropy
+            # Determine global regime based on average (or max?) - using Average for now
+            self.market_state['regime'] = self.sub_holons['entropy'].determine_regime(avg_entropy)
+
         # PRINT SUMMARY TABLE
         # -------------------
-        print("-" * 85)
-        print(f"{'SYMBOL':<10} {'PRICE':<12} {'REGIME':<10} {'ACTION':<15} {'PNL':<10} {'NOTE':<20}")
-        print("-" * 85)
+        print("-" * 95)
+        print(f"{'SYMBOL':<10} {'PRICE':<12} {'REGIME':<10} {'ENTROPY':<8} {'ACTION':<15} {'PNL':<10} {'NOTE':<20}")
+        print("-" * 95)
         for row in cycle_report:
-            print(f"{row['Symbol']:<10} {row['Price']:<12} {row['Regime']:<10} {row['Action']:<15} {row['PnL']:<10} {row['Note']}")
-        print("-" * 85)
+            entropy_str = row.get('Entropy', 'N/A')
+            print(f"{row['Symbol']:<10} {row['Price']:<12} {row['Regime']:<10} {entropy_str:<8} {row['Action']:<15} {row['PnL']:<10} {row['Note']}")
+        print("-" * 95)
         
         # PUBLISH AGENT STATUS
         self.publish_agent_status()
@@ -386,18 +450,36 @@ class TraderHolon(Holon):
                 'gov_state': gov_data.get('state', 'OFFLINE'),
                 'gov_alloc': gov_data.get('alloc', '-'),
                 'gov_lev': gov_data.get('lev', '-'),
+                'gov_trends': f"{len(gov.positions) if gov else 0}",
                 'regime': regime,
                 'entropy': f"{entropy:.4f}",
                 'last_order': last_action,
                 'win_rate': f"{perf_data.get('win_rate', 0.0):.1f}%",
-                'pnl': f"${perf_data.get('realized_pnl', 0.0):.2f}",
+                'omega': f"{perf_data.get('omega_ratio', 0.0):.2f}",
                 # Brain Health
                 'strat_model': strat_health.get('model', 'N/A'),
+                'kalman_active': f"{strat_health.get('kalman_count', 0)}",
                 'dqn_epsilon': dqn_health.get('epsilon', '-'),
-                'dqn_mem': f"{dqn_health.get('memory', 0)}"
+                'dqn_mem': f"{dqn_health.get('memory', 0)}",
+                # Holdings for Pie Chart
+                'holdings': self._get_holdings_breakdown()
             }
         }
         self.gui_queue.put(msg)
+
+    def _get_holdings_breakdown(self):
+        """Helper to get {Symbol: USD_Value} for GUI."""
+        gov = self.sub_holons.get('governor')
+        if not gov: return {}
+        
+        breakdown = {'CASH': gov.balance}
+        for sym, pos in gov.positions.items():
+            # Estimate value using entry price if current price not avail inside Governor directly easily
+            # But Governor tracks `last_specific_entry` or `positions` entry price.
+            # To be accurate we need current price, but entry price * qty is decent approx for allocation view.
+            val = pos['quantity'] * pos['entry_price']
+            breakdown[sym] = val
+        return breakdown
 
     def _adapt_to_regime(self, regime: str):
         """Alter disposition based on market regime."""
@@ -417,6 +499,18 @@ class TraderHolon(Holon):
         """
         Start the infinite live execution loop.
         """
+        # LOAD EXPERIENCE MEMORY
+        if self.sub_holons.get('dqn') and self.sub_holons.get('executor'):
+            try:
+                db = self.sub_holons['executor'].db_manager
+                exps = db.get_experiences(limit=2000)
+                if exps:
+                    print(f"[{self.name}] 🧠 Loading {len(exps)} partial experiences from DB to Brain...")
+                    for e in exps:
+                        self.sub_holons['dqn'].remember(e['state'], e['action_idx'], e['reward'], e['next_state'], e['done'])
+            except Exception as e:
+                print(f"[{self.name}] Failed to load RL experiences: {e}")
+
         print(f"[{self.name}] 🚀 Starting LIVE Loop (Interval: {interval_seconds}s)")
         print(f"[{self.name}] Press Ctrl+C to stop.")
         

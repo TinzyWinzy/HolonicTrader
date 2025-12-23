@@ -200,8 +200,9 @@ class ExecutorHolon(Holon):
         # Multi-Asset Tracking
         self.held_assets = {}   # symbol -> quantity
         self.entry_prices = {}  # symbol -> entry_price (for SL/TP)
+        self.entry_timestamps = {}  # symbol -> entry_timestamp (for position age)
         self.latest_prices = {} # symbol -> last_seen_price (for valuation)
-        self.position_metadata = {} # symbol -> {'leverage': float}
+        self.position_metadata = {} # symbol -> {'leverage': float, 'entry_price': float, 'entry_timestamp': str}
         
         # Stop-Loss / Take-Profit Parameters (Widened for more breathing room)
         self.stop_loss_pct = 0.03    # 3% below entry (was 2%)
@@ -316,9 +317,14 @@ class ExecutorHolon(Holon):
 
         # Apply disposition logic based on continuous Sigmoid function
         # Autonomy = 1 / (1 + e^(k * (Entropy - Threshold)))
-        # k=5 (steepness), Threshold=2.0 (Chaos inflection point)
+        # k=5 (steepness), Threshold=0.75 (calibrated for live data)
+        # 
+        # CALIBRATION NOTE (Phase 11):
+        # - Original threshold: 2.0 (for backtest data with max entropy ~2.25)
+        # - Live data max entropy: ~1.85
+        # - Adjusted to 0.75 to enable HALT/REDUCE triggers in live trading
         k = 5.0
-        threshold = 2.0
+        threshold = 0.75  # Adjusted from 2.0 to match live entropy distribution
         
         # Calculate continuous autonomy (0.0 to 1.0)
         autonomy = 1.0 / (1.0 + math.exp(k * (entropy_score - threshold)))
@@ -532,10 +538,17 @@ class ExecutorHolon(Holon):
                         self.held_assets[symbol] = new_qty
                         
                         # WARP SPEED: Store metadata for accurate valuation and leverage tracking
+                        entry_timestamp = datetime.now(timezone.utc).isoformat()
+                        self.entry_timestamps[symbol] = entry_timestamp
                         self.position_metadata[symbol] = {
                             'leverage': leverage,
-                            'entry_price': self.entry_prices[symbol]
+                            'entry_price': self.entry_prices[symbol],
+                            'entry_timestamp': entry_timestamp
                         }
+                        
+                        # Calculate unrealized PnL (if we sold now at current price)
+                        unrealized_pnl = 0.0  # For BUY, unrealized is 0 at entry
+                        unrealized_pnl_pct = 0.0
                         
                         # Notify Governor
                         if self.governor:
@@ -547,7 +560,7 @@ class ExecutorHolon(Holon):
                                 'quantity': res['filled_qty']
                             })
                         
-                        # Log Trade
+                        # Log Trade with unrealized PnL
                         if self.db_manager:
                             self.db_manager.save_trade({
                                 'symbol': symbol,
@@ -558,8 +571,10 @@ class ExecutorHolon(Holon):
                                 'leverage': leverage,
                                 'notional_value': res['cost_usd'],
                                 'timestamp': datetime.now(timezone.utc).isoformat(),
-                                'pnl': 0.0,
-                                'pnl_percent': 0.0
+                                'pnl': 0.0,  # Realized PnL is 0 on entry
+                                'pnl_percent': 0.0,
+                                'unrealized_pnl': unrealized_pnl,
+                                'unrealized_pnl_percent': unrealized_pnl_pct
                             })
                             self._persist_portfolio()
                 else:
@@ -583,10 +598,17 @@ class ExecutorHolon(Holon):
                     self.held_assets[symbol] = new_qty
                     
                     # WARP SPEED: Store metadata for accurate valuation and leverage tracking
+                    entry_timestamp = datetime.now(timezone.utc).isoformat()
+                    self.entry_timestamps[symbol] = entry_timestamp
                     self.position_metadata[symbol] = {
                         'leverage': leverage,
-                        'entry_price': self.entry_prices[symbol]
+                        'entry_price': self.entry_prices[symbol],
+                        'entry_timestamp': entry_timestamp
                     }
+                    
+                    # Calculate unrealized PnL (if we sold now at current price)
+                    unrealized_pnl = 0.0  # For BUY, unrealized is 0 at entry
+                    unrealized_pnl_pct = 0.0
                     
                     # Notify Governor (Direct Mode)
                     if self.governor:
@@ -598,7 +620,7 @@ class ExecutorHolon(Holon):
                             'quantity': asset_amount
                         })
                     
-                    # Log Trade
+                    # Log Trade with unrealized PnL
                     if self.db_manager:
                         self.db_manager.save_trade({
                             'symbol': symbol,
@@ -609,8 +631,10 @@ class ExecutorHolon(Holon):
                             'leverage': leverage,
                             'notional_value': usd_to_spend_notional,
                             'timestamp': datetime.now(timezone.utc).isoformat(),
-                            'pnl': 0.0,
-                            'pnl_percent': 0.0
+                            'pnl': 0.0,  # Realized PnL is 0 on entry
+                            'pnl_percent': 0.0,
+                            'unrealized_pnl': unrealized_pnl,
+                            'unrealized_pnl_percent': unrealized_pnl_pct
                         })
 
         elif direction == 'SELL':

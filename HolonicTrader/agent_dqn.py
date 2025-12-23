@@ -83,9 +83,9 @@ class DeepQLearningHolon(Holon):
         if os.path.exists(self.storage_path):
             try:
                 self.model = models.load_model(self.storage_path)
-                # If loaded, maybe lower epsilon considerably but keep some exploration
-                self.epsilon = max(self.epsilon, 0.2) 
-                print(f"[{self.name}] Loaded DQN model from {self.storage_path}")
+                # If loaded, reduce epsilon to exploit implementation unless min is higher
+                self.epsilon = max(self.epsilon_min, 0.2) 
+                print(f"[{self.name}] Loaded DQN model from {self.storage_path} (Epsilon adjusted to {self.epsilon:.2f})")
             except Exception as e:
                 print(f"[{self.name}] Failed to load model: {e}. Starting fresh.")
         else:

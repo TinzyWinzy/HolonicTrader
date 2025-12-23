@@ -132,10 +132,21 @@ class HolonicDashboard:
         
         lbl = ttk.Label(right_col, text="Live Activity Log", style="SubHeader.TLabel")
         lbl.pack(anchor="w")
-        self.log_text = scrolledtext.ScrolledText(right_col, height=20, font=("Consolas", 9))
+        self.log_text = scrolledtext.ScrolledText(right_col, height=12, font=("Consolas", 9))
         self.log_text.pack(fill=tk.BOTH, expand=True)
-        # Autoscroll
         self.log_text.see(tk.END)
+        
+        # Asset Allocation Pie Chart (Small)
+        pie_frame = ttk.LabelFrame(right_col, text="Asset Allocation", padding=5)
+        pie_frame.pack(fill=tk.X, pady=5)
+        
+        self.fig_pie = Figure(figsize=(3, 2), dpi=80)
+        self.ax_pie = self.fig_pie.add_subplot(111)
+        self.canvas_pie = FigureCanvasTkAgg(self.fig_pie, master=pie_frame)
+        self.canvas_pie.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        # Init empty
+        self.ax_pie.text(0.5, 0.5, "Waiting for Data...", ha='center')
+        self.canvas_pie.draw()
 
     # ========================== TAB 2: AGENTS ==========================
     def _setup_agents_tab(self):
@@ -150,6 +161,7 @@ class HolonicDashboard:
         self.gov_status = self._metric(gov_frame, "State:", "ACTIVE", 0)
         self.gov_alloc = self._metric(gov_frame, "Max Allocation:", "10.0%", 1)
         self.gov_lev = self._metric(gov_frame, "Leverage Cap:", "5.0x", 2)
+        self.gov_trends = self._metric(gov_frame, "Active Trends:", "0", 3)
         
         # Actuator (Execution)
         act_frame = ttk.LabelFrame(container, text="⚙️ Actuator Holon (Execution)", padding=15)
@@ -164,8 +176,9 @@ class HolonicDashboard:
         self.ag_regime = self._metric(brain_frame, "Market Regime:", "UNKNOWN", 0)
         self.ag_entropy = self._metric(brain_frame, "Entropy Score:", "0.0000", 1)
         self.ag_model = self._metric(brain_frame, "Strategy Model:", "-", 2)
-        self.ag_dqn_eps = self._metric(brain_frame, "DQN Epsilon:", "-", 3)
-        self.ag_dqn_mem = self._metric(brain_frame, "DQN Memory:", "-", 4)
+        self.ag_kalman = self._metric(brain_frame, "Kalman Active:", "-", 3)
+        self.ag_dqn_eps = self._metric(brain_frame, "DQN Epsilon:", "-", 4)
+        self.ag_dqn_mem = self._metric(brain_frame, "DQN Memory:", "-", 5)
         
         # Performance
         perf_frame = ttk.LabelFrame(container, text="📈 Session Performance", padding=15)
@@ -173,6 +186,7 @@ class HolonicDashboard:
         
         self.perf_winrate = self._metric(perf_frame, "Win Rate:", "-", 0)
         self.perf_pnl = self._metric(perf_frame, "Realized PnL:", "-", 1)
+        self.perf_omega = self._metric(perf_frame, "Omega Ratio:", "-", 2)
         
         container.columnconfigure(0, weight=1)
         container.columnconfigure(1, weight=1)
@@ -250,22 +264,70 @@ class HolonicDashboard:
         return l
 
     def _setup_chart(self):
-        self.fig = Figure(figsize=(5, 4), dpi=100)
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_title("Portfolio Value Over Time")
+        self.fig = Figure(figsize=(5, 6), dpi=100) # Taller for 2 plots
+        self.ax = self.fig.add_subplot(211)
+        self.ax2 = self.fig.add_subplot(212, sharex=self.ax)
+        
+        self.ax.set_title("Equity Curve")
         self.ax.grid(True)
+        self.ax2.set_title("Drawdown %")
+        self.ax2.grid(True)
+        
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.chart_frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        
+    def update_pie_chart(self, assets):
+        """Update Live Asset Allocation Pie."""
+        self.ax_pie.clear()
+        
+        if not assets:
+            self.ax_pie.text(0.5, 0.5, "No Data", ha='center')
+            self.canvas_pie.draw()
+            return
+            
+        labels = list(assets.keys())
+        values = list(assets.values())
+        
+        # Filter small values
+        clean_labels = []
+        clean_values = []
+        for l, v in zip(labels, values):
+            if v > 0.01:
+                clean_labels.append(l)
+                clean_values.append(v)
+        
+        if not clean_values:
+             self.ax_pie.text(0.5, 0.5, "Empty", ha='center')
+        else:
+            self.ax_pie.pie(clean_values, labels=clean_labels, autopct='%1.0f%%', startangle=90, textprops={'fontsize': 8})
+            self.ax_pie.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            
+        self.canvas_pie.draw()
 
     def update_chart(self, history):
         if not history: return
         dates = [h[0] for h in history]
         values = [h[1] for h in history]
+        
+        # 1. Equity
         self.ax.clear()
-        self.ax.plot(dates, values, color='blue')
+        self.ax.plot(dates, values, color='blue', label='Equity')
         self.ax.set_title("Equity Curve")
         self.ax.grid(True)
+        self.ax.legend()
+        
+        # 2. Drawdown
+        import pandas as pd
+        s = pd.Series(values)
+        cummax = s.cummax()
+        drawdown = (s - cummax) / cummax
+        
+        self.ax2.clear()
+        self.ax2.fill_between(dates, drawdown, color='red', alpha=0.3, label='Drawdown')
+        self.ax2.set_title("Drawdown %")
+        self.ax2.grid(True)
+        
         self.fig.autofmt_xdate()
         self.canvas.draw()
 
@@ -355,10 +417,12 @@ class HolonicDashboard:
                     self.gov_status.config(text=data.get('gov_state', 'ERR'))
                     self.gov_alloc.config(text=data.get('gov_alloc', '-'))
                     self.gov_lev.config(text=data.get('gov_lev', '-'))
+                    self.gov_trends.config(text=data.get('gov_trends', '0'))
                     
                     self.ag_regime.config(text=data.get('regime', '?'))
                     self.ag_entropy.config(text=data.get('entropy', '0.0'))
                     self.ag_model.config(text=data.get('strat_model', '-'))
+                    self.ag_kalman.config(text=data.get('kalman_active', '-'))
                     self.ag_dqn_eps.config(text=data.get('dqn_epsilon', '-'))
                     self.ag_dqn_mem.config(text=data.get('dqn_mem', '-'))
                     
@@ -368,6 +432,12 @@ class HolonicDashboard:
                     # Update Performance
                     self.perf_winrate.config(text=data.get('win_rate', '-'))
                     self.perf_pnl.config(text=data.get('pnl', '-'))
+                    self.perf_omega.config(text=data.get('omega', '-'))
+                    
+                    # Update Pie
+                    holdings = data.get('holdings')
+                    if holdings:
+                         self.update_pie_chart(holdings)
         except queue.Empty:
             pass
         finally:

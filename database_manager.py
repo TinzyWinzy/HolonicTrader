@@ -64,6 +64,31 @@ class DatabaseManager:
         )
         ''')
         
+        # Migration: Add unrealized PnL columns if they don't exist
+        try:
+            c.execute("ALTER TABLE trades ADD COLUMN unrealized_pnl REAL")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+            
+        try:
+            c.execute("ALTER TABLE trades ADD COLUMN unrealized_pnl_percent REAL")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+        
+        # RL Experience Table (DQN Memory)
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS rl_experiences (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT,
+            symbol TEXT,
+            state TEXT,          -- JSON list
+            action_idx INTEGER,
+            reward REAL,
+            next_state TEXT,     -- JSON list
+            done BOOLEAN
+        )
+        ''')
+        
         conn.commit()
         conn.close()
 
@@ -73,8 +98,8 @@ class DatabaseManager:
         c = conn.cursor()
         
         c.execute('''
-        INSERT INTO trades (symbol, direction, quantity, price, cost_usd, timestamp, pnl, pnl_percent)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO trades (symbol, direction, quantity, price, cost_usd, timestamp, pnl, pnl_percent, unrealized_pnl, unrealized_pnl_percent)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             trade_data['symbol'],
             trade_data['direction'],
@@ -83,7 +108,9 @@ class DatabaseManager:
             trade_data['cost_usd'],
             trade_data['timestamp'],
             trade_data.get('pnl', 0.0),
-            trade_data.get('pnl_percent', 0.0)
+            trade_data.get('pnl_percent', 0.0),
+            trade_data.get('unrealized_pnl', 0.0),
+            trade_data.get('unrealized_pnl_percent', 0.0)
         ))
         conn.commit()
         conn.close()
@@ -179,3 +206,53 @@ class DatabaseManager:
                 'action': row[5]
             }
         return None
+    def save_experience(self, experience: Dict[str, Any]):
+        """Save an RL transition tuple to the DB."""
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        
+        c.execute('''
+        INSERT INTO rl_experiences (timestamp, symbol, state, action_idx, reward, next_state, done)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            experience.get('timestamp', datetime.now().isoformat()),
+            experience.get('symbol', 'UNKNOWN'),
+            json.dumps(experience['state']),
+            experience['action_idx'],
+            experience['reward'],
+            json.dumps(experience['next_state']),
+            experience['done']
+        ))
+        
+        conn.commit()
+        conn.close()
+
+    def get_experiences(self, limit: int = 2000) -> List[Dict[str, Any]]:
+        """Retrieve recent RL experiences for memory replay."""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        
+        # We want the MOST RECENT experiences, but we might want to return them in chronological order
+        # for sequential validity if using LSTM, but for DQN random sample it handles it.
+        # However, memory.append adds to right. So we should fetch DESC (newest) but append them...
+        # If we fetch 2000 newest, we should probably append them. 
+        # Actually random sampling doesn't care about order.
+        c.execute('SELECT * FROM rl_experiences ORDER BY id DESC LIMIT ?', (limit,))
+        rows = c.fetchall()
+        conn.close()
+        
+        results = []
+        for row in rows:
+            try:
+                results.append({
+                    'state': json.loads(row['state']),
+                    'action_idx': int(row['action_idx']),
+                    'reward': float(row['reward']),
+                    'next_state': json.loads(row['next_state']),
+                    'done': bool(row['done'])
+                })
+            except Exception:
+                continue
+                
+        return results

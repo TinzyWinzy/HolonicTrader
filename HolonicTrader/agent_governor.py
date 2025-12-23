@@ -44,7 +44,9 @@ class GovernorHolon(Holon):
                     'direction': 'LONG', # Assuming LONG for now
                     'entry_price': entry_price,
                     'quantity': qty,
-                    'stack_count': 1 # Assume initial entry for synced positions
+                    'quantity': qty,
+                    'stack_count': 1, # Assume initial entry for synced positions
+                    'first_entry_time': time.time() # Sync time as approx start
                 }
                 # Sync stacking tracker
                 self.last_specific_entry[symbol] = entry_price
@@ -164,6 +166,24 @@ class GovernorHolon(Holon):
             # Apply "Half-Kelly" for safety (standard practice to avoid ruin)
             safe_kelly = kelly_fraction * 0.5
             
+            # IMP_004: Trend Age Decay
+            current_pos = self.positions.get(symbol)
+            if current_pos:
+                age_hours = (time.time() - current_pos.get('first_entry_time', time.time())) / 3600.0
+                
+                if age_hours > config.GOVERNOR_TREND_DECAY_START:
+                    # Linear Decay from 1.0 (at 12h) to 0.0 (at 24h)
+                    overtime = age_hours - config.GOVERNOR_TREND_DECAY_START
+                    window = config.GOVERNOR_MAX_TREND_AGE_HOURS - config.GOVERNOR_TREND_DECAY_START
+                    decay = max(0.0, 1.0 - (overtime / window))
+                    
+                    print(f"[{self.name}] ⏳ Trend Age {age_hours:.1f}h. Decaying Kelly by {decay:.2f}x")
+                    safe_kelly *= decay
+                    
+                    if age_hours > config.GOVERNOR_MAX_TREND_AGE_HOURS:
+                        print(f"[{self.name}] 🛑 Trend Exhausted (>24h). Rejecting Stack.")
+                        return False, 0.0, 0.0
+
             # Capped at max risk per trade (e.g. 20% of equity) to prevent black swans
             safe_kelly = min(safe_kelly, 0.20)
             
@@ -205,7 +225,9 @@ class GovernorHolon(Holon):
                 'direction': direction,
                 'entry_price': avg_price,
                 'quantity': new_qty,
-                'stack_count': existing.get('stack_count', 1) + 1
+                'quantity': new_qty,
+                'stack_count': existing.get('stack_count', 1) + 1,
+                'first_entry_time': existing.get('first_entry_time', time.time())
             }
             print(f"[{self.name}] Position STACKED: {symbol} (New Avg: {avg_price:.4f}, Total Qty: {new_qty:.4f}, Stacks: {existing.get('stack_count', 1) + 1})")
         else:
@@ -213,7 +235,11 @@ class GovernorHolon(Holon):
                 'direction': direction,
                 'entry_price': entry_price,
                 'quantity': quantity,
-                'stack_count': 1
+                'direction': direction,
+                'entry_price': entry_price,
+                'quantity': quantity,
+                'stack_count': 1,
+                'first_entry_time': time.time()
             }
             print(f"[{self.name}] Position OPENED: {symbol} {direction} @ {entry_price}")
         

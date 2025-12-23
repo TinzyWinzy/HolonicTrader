@@ -324,7 +324,8 @@ class StrategyHolon(Holon):
         """Report agent health status."""
         return {
             'status': 'OK',
-            'model': 'LSTM' if self.model else 'HEURISTIC'
+            'model': 'LSTM' if self.model else 'HEURISTIC',
+            'kalman_count': len(self.kalman_filters)
         }
 
     def analyze_for_exit(
@@ -334,11 +335,13 @@ class StrategyHolon(Holon):
         entry_price: float,
         bb: dict,
         atr: float,
-        metabolism_state: Literal['SCAVENGER', 'PREDATOR']
+        metabolism_state: Literal['SCAVENGER', 'PREDATOR'],
+        entry_timestamp: str = None,
+        position_age_hours: float = 0.0
     ) -> Optional[TradeSignal]:
         """
         Generate exit signal based on metabolic state.
-        Now includes Proximity Reporting and Scalp TP.
+        Enhanced with time-based exits and improved profit targets.
         """
         if entry_price <= 0:
             return None
@@ -346,33 +349,63 @@ class StrategyHolon(Holon):
         pnl_pct = (current_price - entry_price) / entry_price
         
         if metabolism_state == 'SCAVENGER':
-            # 1. BB Middle (Mean Reversion)
+            # 1. Time-based Exit (4 hours max)
+            if position_age_hours >= 4.0:
+                print(f"[{self.name}] {symbol} TIME EXIT (SCAVENGER): Position age {position_age_hours:.1f}h >= 4h")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 2. Quick Profit Target (+2% scalp)
+            if pnl_pct >= 0.02:  # 2% profit
+                print(f"[{self.name}] {symbol} QUICK PROFIT EXIT: PnL {pnl_pct*100:.2f}% >= 2%")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 3. BB Middle (Mean Reversion)
             if self.check_scavenger_exit(current_price, bb):
                 print(f"[{self.name}] {symbol} MEAN REVERSION EXIT: Price {current_price:.4f} >= BB_Middle {bb['middle']:.4f}")
                 return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
             
-            # 2. Scalp TP (Warp Speed Velocity)
+            # 4. Scalp TP (Config-based)
             if pnl_pct >= config.SCAVENGER_SCALP_TP:
                 print(f"[{self.name}] {symbol} SCALP TP REACHED: PnL {pnl_pct*100:.2f}% (Target: {config.SCAVENGER_SCALP_TP*100}%)")
                 return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
             
-            # 3. Stop Loss
-            if pnl_pct <= -self.stop_loss:
-                print(f"[{self.name}] {symbol} SCAVENGER STOP-LOSS: PnL {pnl_pct*100:.2f}%")
+            # 5. Tighter Stop Loss (-1.5% instead of -3%)
+            if pnl_pct <= -0.015:  # -1.5%
+                print(f"[{self.name}] {symbol} SCAVENGER STOP-LOSS: PnL {pnl_pct*100:.2f}% <= -1.5%")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 6. Exit if no profit after 2 hours
+            if position_age_hours >= 2.0 and pnl_pct <= 0:
+                print(f"[{self.name}] {symbol} NO PROFIT EXIT: Age {position_age_hours:.1f}h, PnL {pnl_pct*100:.2f}%")
                 return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
                     
         else:  # PREDATOR
-            # 1. Take Profit (Big Move)
+            # 1. Time-based Exit (8 hours max)
+            if position_age_hours >= 8.0:
+                print(f"[{self.name}] {symbol} TIME EXIT (PREDATOR): Position age {position_age_hours:.1f}h >= 8h")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 2. Take Profit (+3% target)
+            if pnl_pct >= 0.03:  # 3% profit
+                print(f"[{self.name}] {symbol} PREDATOR PROFIT TARGET: PnL {pnl_pct*100:.2f}% >= 3%")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 3. Config-based Take Profit
             if pnl_pct >= config.PREDATOR_TAKE_PROFIT:
                 print(f"[{self.name}] {symbol} PREDATOR profit target reached: {pnl_pct*100:.2f}%")
                 return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
 
-            # 2. Trailing Stop (ATR * 2)
+            # 4. Trailing Stop (ATR * 2)
             if atr > 0:
                 trailing_stop = entry_price - (atr * config.PREDATOR_TRAILING_STOP_ATR_MULT)
                 if current_price <= trailing_stop:
                     print(f"[{self.name}] {symbol} PREDATOR TRAILING STOP: Price {current_price:.4f} <= Stop {trailing_stop:.4f}")
                     return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+            
+            # 5. Exit if no profit after 4 hours
+            if position_age_hours >= 4.0 and pnl_pct <= 0:
+                print(f"[{self.name}] {symbol} NO PROFIT EXIT: Age {position_age_hours:.1f}h, PnL {pnl_pct*100:.2f}%")
+                return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
         
         return None
 
