@@ -182,11 +182,20 @@ class HolonicDashboard:
         
         # Performance
         perf_frame = ttk.LabelFrame(container, text="📈 Session Performance", padding=15)
-        perf_frame.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+        perf_frame.grid(row=2, column=0, sticky="nsew", padx=10, pady=10)
         
         self.perf_winrate = self._metric(perf_frame, "Win Rate:", "-", 0)
         self.perf_pnl = self._metric(perf_frame, "Realized PnL:", "-", 1)
         self.perf_omega = self._metric(perf_frame, "Omega Ratio:", "-", 2)
+        
+        # Phase 12: Risk Management
+        phase12_frame = ttk.LabelFrame(container, text="🛡️ Phase 12: Risk Management", padding=15)
+        phase12_frame.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
+        
+        self.p12_kelly = self._metric(phase12_frame, "Kelly Fraction:", "-", 0)
+        self.p12_minimax = self._metric(phase12_frame, "Max Risk:", "-", 1)
+        self.p12_vol_scalar = self._metric(phase12_frame, "Vol Scalar:", "-", 2)
+        self.p12_principal = self._metric(phase12_frame, "Principal:", "$10.00", 3)
         
         container.columnconfigure(0, weight=1)
         container.columnconfigure(1, weight=1)
