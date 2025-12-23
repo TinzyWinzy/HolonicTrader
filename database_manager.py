@@ -118,14 +118,35 @@ class DatabaseManager:
     def get_trades(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Retrieve recent trades."""
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        
-        c.execute('SELECT * FROM trades ORDER BY id DESC LIMIT ?', (limit,))
+        c.execute('SELECT * FROM trades ORDER BY timestamp DESC LIMIT ?', (limit,))
         rows = c.fetchall()
         conn.close()
         
-        return [dict(row) for row in rows]
+        return [{'symbol': r[1], 'direction': r[2], 'quantity': r[3], 'price': r[4], 
+                 'cost_usd': r[5], 'timestamp': r[6], 'pnl': r[7], 'pnl_percent': r[8]} 
+                for r in rows]
+    
+    def get_recent_trades(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Retrieve recent trades for win rate calculation.
+        Returns only completed trades with PnL data.
+        """
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        c.execute('''
+            SELECT symbol, direction, pnl, pnl_percent, timestamp 
+            FROM trades 
+            WHERE pnl IS NOT NULL 
+            ORDER BY timestamp DESC 
+            LIMIT ?
+        ''', (limit,))
+        rows = c.fetchall()
+        conn.close()
+        
+        return [{'symbol': r[0], 'direction': r[1], 'pnl': r[2], 
+                 'pnl_percent': r[3], 'timestamp': r[4]} 
+                for r in rows]
 
     def save_portfolio(self, usd: float, held_assets: Dict[str, float], position_metadata: Dict[str, Any]):
         """Save or update the portfolio state with explicit column mapping."""
