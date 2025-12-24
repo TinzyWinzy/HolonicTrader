@@ -112,26 +112,22 @@ class EntropyHolon(Holon):
         """
         Determine market regime based on entropy value.
         
-        THRESHOLDS (Calibrated Phase 10 - LIVE DATA):
-            Based on 9,956 live trading samples
-            ORDERED:    < 0.67 (calibrated for ~58% actual)
-            CHAOTIC:    > 0.80 (calibrated for ~10% actual)
-            TRANSITION: 0.67 - 0.80
-            
-        Previous (Phase 6 - Backtest): 1.96/2.10
-        Note: Live market entropy is significantly lower than backtest
+        THRESHOLDS (Calibrated Phase 34 - TUNED RELAXATION):
+            ORDERED:    < 1.00 (Allowed for complex structure)
+            CHAOTIC:    > 1.35 (Just below Gaussian Noise ~1.4)
+            TRANSITION: 1.00 - 1.35
             
         Args:
             entropy_value: The calculated Shannon Entropy.
 
         Returns:
-            'ORDERED' if entropy < 0.67
-            'CHAOTIC' if entropy > 0.80
+            'ORDERED' if entropy < 1.00
+            'CHAOTIC' if entropy > 1.35
             'TRANSITION' otherwise
         """
-        if entropy_value < 0.67:
+        if entropy_value < 1.00:
             return 'ORDERED'
-        elif entropy_value > 0.80:
+        elif entropy_value > 1.35:
             return 'CHAOTIC'
         else:
             return 'TRANSITION'

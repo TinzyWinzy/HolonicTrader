@@ -16,7 +16,7 @@ import config
 import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from typing import Any, Literal, List, Optional
+from typing import Any, Literal, List, Optional, Dict
 import math
 
 from HolonicTrader.holon_core import Holon, Disposition
@@ -346,11 +346,16 @@ class ExecutorHolon(Holon):
         # CALIBRATION NOTE (Phase 11):
         # - Original threshold: 2.0 (for backtest data with max entropy ~2.25)
         # - Live data max entropy: ~1.85
-        # - Adjusted to 0.75 to enable HALT/REDUCE triggers in live trading
+        # - Adjusted to 0.75 to enable HALT/REDUCE triggers        # - Live data max entropy: ~1.85
+        # - Gaussian Noise: ~1.40
+        # - Phase 34 Tuned Threshold: 1.1 (Midpoint of new Transition zone)
         k = 5.0
-        threshold = 0.75  # Adjusted from 2.0 to match live entropy distribution
+        threshold = 1.1  # Adjusted from 0.75 to match relaxed calibration
         
-        # Calculate continuous autonomy (0.0 to 1.0)
+        # Ranges:
+        # Entropy < 1.0 (Ordered) -> Autonomy > 0.7
+        # Entropy > 1.35 (Chaotic) -> Autonomy < 0.3
+        
         autonomy = 1.0 / (1.0 + math.exp(k * (entropy_score - threshold)))
         
         # Integration is the inverse
@@ -667,6 +672,27 @@ class ExecutorHolon(Holon):
                 equity += (margin_used + unrealized_pnl)
                 
         return equity
+
+    def get_execution_summary(self) -> Dict[str, float]:
+        """
+        Return a summary of current execution state metrics.
+        Used by Dashboard for Phase 12 Risk Management display.
+        """
+        total_margin_used = 0.0
+        
+        for sym, qty in self.held_assets.items():
+            if abs(qty) < 0.00000001: continue
+            entry_price = self.entry_prices.get(sym, 0.0)
+            meta = self.position_metadata.get(sym, {})
+            leverage = meta.get('leverage', 1.0)
+            
+            if entry_price > 0:
+                total_margin_used += (abs(qty) * entry_price) / leverage
+                
+        return {
+            'margin_used': total_margin_used,
+            'balance': self.balance_usd
+        }
 
     def receive_message(self, sender: Any, content: Any) -> None:
         """

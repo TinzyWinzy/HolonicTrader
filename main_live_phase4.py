@@ -40,22 +40,31 @@ class QueueLogger:
                 final_msg = f"{timestamp}{message}"
         
         # 1. Print to Real Terminal (Hidden in GUI mode usually, but good for debug)
-        # self.terminal.write(final_msg) # Optional: disable if spammy in console
+        # self.terminal.write(final_msg)
         
         # 2. Write to File
-        self.log.write(final_msg)
-        self.log.flush()
+        try:
+            self.log.write(final_msg)
+            self.log.flush()
+        except Exception:
+            pass # Prevent logging errors from crashing the bot
         
         # 3. Push to Queue (if exists)
         if self.log_queue:
-            self.log_queue.put({
-                'type': 'log',
-                'message': final_msg
-            })
+            try:
+                self.log_queue.put({
+                    'type': 'log',
+                    'message': final_msg
+                }, block=False)
+            except Exception:
+                pass # Queue full or closed
 
     def flush(self):
-        self.terminal.flush()
-        self.log.flush()
+        try:
+            self.terminal.flush()
+            self.log.flush()
+        except Exception:
+            pass
 
 def main_live(status_queue: Queue = None, stop_event: threading.Event = None, interval_seconds: int = 60):
     print("==========================================")
@@ -108,17 +117,23 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
     # 4. Start Loop
     print(">> Initializing System Components...")
     
-    # Pass GUI controls to the Trader if supported (we need to mod Trader to support stop_event)
-    # For now, we rely on Trader checking a flag or just killing the thread (messy).
-    # Better: Update Trader to support external stop signal.
-    
-    # Inject Queue into Trader for Summary Reporting?
-    # We can monkey-patch or subclass. 
-    # Let's attach the queue to the Trader instance so it can push reports.
-    trader.gui_queue = status_queue
-    trader.gui_stop_event = stop_event
-    
-    trader.start_live_loop(interval_seconds=interval_seconds) 
+    try:
+        # 4. Integrate Stop Signals & Queue
+        trader.gui_queue = status_queue
+        trader.gui_stop_event = stop_event
+        
+        # 5. Start Loop
+        print(">> Initializing System Components...")
+        trader.start_live_loop(interval_seconds=interval_seconds)
+        
+    except KeyboardInterrupt:
+        print("\n>> STOP REQUEST RECEIVED. SHUTTING DOWN...")
+    except Exception as e:
+        print(f"\n>> FATAL MAIN LOOP ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        print(">> SYSTEM SHUTDOWN COMPLETE.")
 
 def run_bot(stop_event, status_queue, config_dict=None):
     """Wrapper for GUI Thread"""
@@ -138,10 +153,13 @@ def run_bot(stop_event, status_queue, config_dict=None):
                 config.ALLOWED_ASSETS.append(gui_symbol)
                 print(f"[{datetime.now().strftime('%H:%M:%S')}] Added {gui_symbol} to Asset Universe.")
                 
+            # Ensure uniqueness
+            config.ALLOWED_ASSETS = list(set(config.ALLOWED_ASSETS))
+            
             # Dynamic leverage and allocation
-            config.GOVERNOR_MAX_MARGIN_PCT = config_dict.get('max_allocation', config.GOVERNOR_MAX_MARGIN_PCT)
+            config.GOVERNOR_MAX_MARGIN_PCT = float(config_dict.get('max_allocation', config.GOVERNOR_MAX_MARGIN_PCT))
             # We map leverage based on metabolism, but for simplicity we set PREDATOR leverage cap
-            config.PREDATOR_LEVERAGE = config_dict.get('leverage_cap', config.PREDATOR_LEVERAGE)
+            config.PREDATOR_LEVERAGE = float(config_dict.get('leverage_cap', config.PREDATOR_LEVERAGE))
             
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Config Applied: Allocation {config.GOVERNOR_MAX_MARGIN_PCT*100:.1f}%, Leverage {config.PREDATOR_LEVERAGE}x")
             

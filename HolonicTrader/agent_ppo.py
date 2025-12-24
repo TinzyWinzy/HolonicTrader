@@ -12,9 +12,15 @@ Action (1): Conviction Scale [0, 1]
 import numpy as np
 from typing import Any
 import os
+import tensorflow
 import tensorflow as tf
 from tensorflow.keras import layers, models, optimizers
 from HolonicTrader.holon_core import Holon, Disposition
+import config
+try:
+    import openvino as ov
+except ImportError:
+    ov = None
 
 class PPOHolon(Holon):
     def __init__(
@@ -40,6 +46,8 @@ class PPOHolon(Holon):
         # Networks
         self.actor = self._build_actor()
         self.critic = self._build_critic()
+        self.ov_actor = None
+        self.ov_critic = None
         
         # Buffer for PPO updates
         self.states = []
@@ -80,10 +88,14 @@ class PPOHolon(Holon):
         """
         state_tensor = np.expand_dims(state, axis=0)
         
-        # High-Performance Functional Call
-        s_tensor = tf.convert_to_tensor(state_tensor, dtype=tf.float32)
-        mu_tensor = self.actor(s_tensor, training=False)
-        mu = float(mu_tensor.numpy()[0][0])
+        # High-Performance OpenVINO Inference
+        if self.ov_actor:
+             # state_tensor is already (1, 6)
+             mu = float(self.ov_actor(state_tensor)[0][0][0])
+        else:
+            s_tensor = tf.convert_to_tensor(state_tensor, dtype=tf.float32)
+            mu_tensor = self.actor(s_tensor, training=False)
+            mu = float(mu_tensor.numpy()[0][0])
         
         if training:
             # Add Gaussian noise for exploration during training
@@ -181,36 +193,77 @@ class PPOHolon(Holon):
 
     def get_value(self, state: np.ndarray) -> float:
         state_tensor = np.expand_dims(state, axis=0)
-        val = self.critic.predict(state_tensor, verbose=0)[0][0]
+        if self.ov_critic:
+            val = float(self.ov_critic(state_tensor)[0][0][0])
+        else:
+            val = self.critic.predict(state_tensor, verbose=0)[0][0]
         return float(val)
     
     def get_log_prob(self, state: np.ndarray, action: float) -> float:
         state_tensor = np.expand_dims(state, axis=0)
-        mu = self.actor.predict(state_tensor, verbose=0)[0][0]
+        if self.ov_actor:
+            mu = float(self.ov_actor(state_tensor)[0][0][0])
+        else:
+            mu = self.actor.predict(state_tensor, verbose=0)[0][0]
         sigma = 0.1
         log_prob = -0.5 * (((action - mu) / sigma)**2) - np.log(sigma * np.sqrt(2 * np.pi))
         return float(log_prob)
 
     def load_knowledge(self):
-        actor_path = os.path.join(self.storage_path, "actor.h5")
-        critic_path = os.path.join(self.storage_path, "critic.h5")
+        # Prioritize native .keras format, fallback to legacy .h5
+        actor_keras = os.path.join(self.storage_path, "actor.keras")
+        critic_keras = os.path.join(self.storage_path, "critic.keras")
+        actor_h5 = os.path.join(self.storage_path, "actor.h5")
+        critic_h5 = os.path.join(self.storage_path, "critic.h5")
         
-        if os.path.exists(actor_path) and os.path.exists(critic_path):
+        path_actor = actor_keras if os.path.exists(actor_keras) else actor_h5
+        path_critic = critic_keras if os.path.exists(critic_keras) else critic_h5
+
+        if os.path.exists(path_actor) and os.path.exists(path_critic):
             try:
-                self.actor = models.load_model(actor_path)
-                self.critic = models.load_model(critic_path)
-                print(f"[{self.name}] Monolith-V5 PPO Brain loaded successfully from {self.storage_path}.")
+                self.actor = models.load_model(path_actor, compile=False)
+                self.critic = models.load_model(path_critic, compile=False)
+                
+                # Re-compile manually to fix serialization issues (e.g. mse)
+                self.actor.compile(optimizer=optimizers.Adam(learning_rate=self.lr))
+                self.critic.compile(optimizer=optimizers.Adam(learning_rate=self.lr), loss='mse')
+                
+                print(f"[{self.name}] Monolith-V5 PPO Brain loaded successfully from {path_actor}/{path_critic}.")
             except Exception as e:
                 print(f"[{self.name}] Load failed: {e}. Starting fresh.")
         else:
             print(f"[{self.name}] Dynamic PPO Brain initialized.")
 
+        # OpenVINO Optimization
+        if ov is not None and config.USE_OPENVINO:
+             try:
+                 core = ov.Core()
+                 device = "GPU" if config.USE_INTEL_GPU else "CPU"
+                 # Compile Actor
+                 self.ov_actor = core.compile_model(ov.convert_model(self.actor), device)
+                 # Compile Critic
+                 self.ov_critic = core.compile_model(ov.convert_model(self.critic), device)
+                 print(f"[{self.name}] OpenVINO PPO Backend initialized on {device}.")
+             except Exception as e:
+                 print(f"[{self.name}] OpenVINO PPO Setup failed: {e}. Falling back to native.")
+
     def save_knowledge(self):
         if not os.path.exists(self.storage_path):
             os.makedirs(self.storage_path)
         
-        self.actor.save(os.path.join(self.storage_path, "actor.h5"))
-        self.critic.save(os.path.join(self.storage_path, "critic.h5"))
+        # Save in native Keras format to resolve legacy warnings
+        self.actor.save(os.path.join(self.storage_path, "actor.keras"))
+        self.critic.save(os.path.join(self.storage_path, "critic.keras"))
+
+        # Re-initialize OpenVINO inference with updated weights
+        if ov is not None and config.USE_OPENVINO:
+            try:
+                core = ov.Core()
+                device = "GPU" if config.USE_INTEL_GPU else "CPU"
+                self.ov_actor = core.compile_model(ov.convert_model(self.actor), device)
+                self.ov_critic = core.compile_model(ov.convert_model(self.critic), device)
+                print(f"[{self.name}] OpenVINO PPO Backend REFRESHED on {device}.")
+            except: pass
 
     def get_health(self) -> dict:
         return {

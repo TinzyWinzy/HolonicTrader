@@ -112,6 +112,15 @@ class ObserverHolon(Holon):
                 # If we have local data, we fetch since last timestamp
                 if not df_local.empty:
                     last_ts = int(df_local['timestamp'].iloc[-1].timestamp() * 1000)
+                    
+                    # FUTURE PROTECTION:
+                    # If local history is in the future (e.g. simulation/backtest), don't sync with live exchange.
+                    import time
+                    current_ts = int(time.time() * 1000)
+                    if last_ts > current_ts + 60000: # 1 minute buffer
+                         # print(f"[{self.name}] Local history is in future ({last_ts} > {current_ts}). Skipping live sync.")
+                         return df_local
+
                     # We fetch with a larger limit to bridge gaps, or multiple fetches
                     # For simple robustness: fetch up to 1000 candles since last_ts
                     ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, timeframe, since=last_ts, limit=1000)

@@ -97,3 +97,7 @@ CCXT_RATE_LIMIT = True
 CCXT_POOL_SIZE = 20         # Matches/exceeds TRADER_MAX_WORKERS
 TRADER_MAX_WORKERS = 16    # Parallel analysis threads
 
+# === PHASE 33: INTEL GPU ACCELERATION ===
+USE_INTEL_GPU = True
+USE_OPENVINO = True
+

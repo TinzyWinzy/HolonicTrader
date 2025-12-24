@@ -142,16 +142,23 @@ class TraderHolon(Holon):
                     reason = "Strat"
 
                 if final_exit and executor:
+                    # Capture metadata BEFORE execution deletes it!
+                    meta = executor.position_metadata.get(symbol, {}).copy()
+                    
                     decision = executor.decide_trade(final_exit, regime, entropy_val)
                     pnl_res = executor.execute_transaction(decision, current_price)
+                    
                     if pnl_res is not None:
                         if guardian: guardian.record_exit(symbol, time.time())
-                        if ppo:
-                            meta = executor.position_metadata.get(symbol, {})
-                            if meta.get('ppo_state') and meta.get('ppo_conviction') is not None:
+                        if ppo and meta:
+                            if meta.get('ppo_state') is not None and meta.get('ppo_conviction') is not None:
+                                # Reward = Realized PnL - (Drawdown Penalty * 2)
                                 reward = pnl_res - (governor.get_portfolio_health()['drawdown_pct'] * 2.0)
                                 self.last_ppo_reward = reward
-                                ppo.remember(meta['ppo_state'], meta['ppo_conviction'], reward, 0.0, 0.0, True)
+                                
+                                # Convert list back to numpy if needed
+                                state = np.array(meta['ppo_state']) 
+                                ppo.remember(state, meta['ppo_conviction'], reward, 0.0, 0.0, True)
                         row_data['Action'] = f"SELL ({reason})"
 
             except Exception as e:

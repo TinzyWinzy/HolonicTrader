@@ -16,14 +16,21 @@ except ImportError:
     joblib = None
 
 try:
+    import tensorflow
     import tensorflow as tf
 except ImportError:
+    tensorflow = None
     tf = None
 
 try:
     import xgboost as xgb
 except ImportError:
     xgb = None
+
+try:
+    import openvino as ov
+except ImportError:
+    ov = None
 
 from typing import Any, Optional, Literal
 from HolonicTrader.holon_core import Holon, Disposition
@@ -41,6 +48,7 @@ class EntryOracleHolon(Holon):
         self.model = None       # LSTM
         self.scaler = None      # Scaler for LSTM
         self.xgb_model = None   # XGBoost
+        self.ov_compiled_model = None # OpenVINO
         self.load_brains()
         
         # State Memory
@@ -78,6 +86,18 @@ class EntryOracleHolon(Holon):
         if self.model is None and self.xgb_model is None:
             print(f"[{self.name}] All brains missing or deps failed. Running heuristic mode.")
 
+        # 3. OpenVINO Integration (Speed Optimization)
+        if self.model is not None and ov is not None and config.USE_OPENVINO:
+            try:
+                core = ov.Core()
+                # Convert Keras model to OpenVINO IR
+                ov_model = ov.convert_model(self.model)
+                device = "GPU" if config.USE_INTEL_GPU else "CPU"
+                self.ov_compiled_model = core.compile_model(ov_model, device)
+                print(f"[{self.name}] OpenVINO LSTM Backend initialized on {device}.")
+            except Exception as e:
+                print(f"[{self.name}] OpenVINO Setup failed: {e}. Falling back to native TensorFlow.")
+
     def predict_trend_lstm(self, prices: pd.Series) -> float:
         if self.model is None or self.scaler is None or len(prices) < 60 or tf is None:
             return 0.53
@@ -86,6 +106,11 @@ class EntryOracleHolon(Holon):
             scaled_data = self.scaler.transform(data)
             x_input = scaled_data.reshape(1, 60, 1)
             
+            # High-Performance OpenVINO Inference if available
+            if self.ov_compiled_model:
+                res = self.ov_compiled_model(x_input)[0]
+                return float(res[0][0])
+
             # High-Performance Functional Call (Avoids Retracing)
             x_tensor = tf.convert_to_tensor(x_input, dtype=tf.float32)
             prob_tensor = self.model(x_tensor, training=False)
