@@ -1,0 +1,22 @@
+﻿Testing 16 symbols on kucoin...
+Fetching ADA/USDT... [Observer_kucoin_BTC/USDT] Loading local history for ADA/USDT from C:\Users\USER\Documents\AEHML\DEV_SPACE\market_data\ADAUSDT_1h.csv (DISK READ)
+OK (8760 candles) - Last Price: 0.3648
+Fetching BNB/USDT... OK (4 candles) - Last Price: 847.697
+Fetching BTC/USDT... [Observer_kucoin_BTC/USDT] Loading local history for BTC/USDT from C:\Users\USER\Documents\AEHML\DEV_SPACE\market_data\BTCUSD_1h.csv (DISK READ)
+OK (8760 candles) - Last Price: 88321.5
+Fetching DOGE/USDT... [Observer_kucoin_BTC/USDT] Loading local history for DOGE/USDT from C:\Users\USER\Documents\AEHML\DEV_SPACE\market_data\DOGEUSDT_1h.csv (DISK READ)
+OK (8760 candles) - Last Price: 0.13056
+Fetching ETH/USDT... OK (4 candles) - Last Price: 2962.0
+Fetching SOL/USDT... OK (4 candles) - Last Price: 124.17
+Fetching SUI/USDT... [Observer_kucoin_BTC/USDT] Loading local history for SUI/USDT from C:\Users\USER\Documents\AEHML\DEV_SPACE\market_data\SUIUSDT_1h.csv (DISK READ)
+OK (8760 candles) - Last Price: 1.446
+Fetching XRP/USDT... [Observer_kucoin_BTC/USDT] Loading local history for XRP/USDT from C:\Users\USER\Documents\AEHML\DEV_SPACE\market_data\XRPUSDT_1h.csv (DISK READ)
+OK (8760 candles) - Last Price: 1.91757
+Fetching SHIB/USDT... OK (4 candles) - Last Price: 7.168e-06
+Fetching PAXG/USDT... OK (4 candles) - Last Price: 4480.16
+Fetching LTC/USDT... OK (4 candles) - Last Price: 77.39
+Fetching LINK/USDT... OK (4 candles) - Last Price: 12.3884
+Fetching XMR/USDT... OK (4 candles) - Last Price: 450.37
+Fetching ALGO/USDT... OK (4 candles) - Last Price: 0.1112
+Fetching UNI/USDT... OK (4 candles) - Last Price: 5.7964
+Fetching AAVE/USDT... OK (4 candles) - Last Price: 151.554

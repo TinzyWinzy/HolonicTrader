@@ -12,6 +12,7 @@ Key Features:
 
 import hashlib
 import json
+import config
 import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
@@ -204,13 +205,16 @@ class ExecutorHolon(Holon):
         self.latest_prices = {} # symbol -> last_seen_price (for valuation)
         self.position_metadata = {} # symbol -> {'leverage': float, 'entry_price': float, 'entry_timestamp': str}
         
-        # Stop-Loss / Take-Profit Parameters (Widened for more breathing room)
-        self.stop_loss_pct = 0.03    # 3% below entry (was 2%)
-        self.take_profit_pct = 0.05  # 5% above entry (was 3%)
+        # Stop-Loss / Take-Profit Parameters (Synced with config)
+        self.stop_loss_pct = config.SCAVENGER_STOP_LOSS
+        self.take_profit_pct = config.PREDATOR_TAKE_PROFIT
         
         # Sizing Strategy
         self.use_compounding = use_compounding
         self.fixed_stake = fixed_stake
+        
+        # Dashboard Details
+        self.last_order_details = "NONE"
         
         # Load state from DB if available
         if self.db_manager:
@@ -222,29 +226,25 @@ class ExecutorHolon(Holon):
             self.db_manager.save_portfolio(self.balance_usd, self.held_assets, self.position_metadata)
 
     def _load_state(self):
-        """Load portfolio and ledger state from database."""
+        """Premium State Restoration: Reconstructs portfolio and records from DB."""
         # Load Portfolio
         portfolio = self.db_manager.get_portfolio()
         if portfolio:
-            self.balance_usd = portfolio['balance_usd']
+            self.balance_usd = portfolio.get('balance_usd', self.initial_capital)
             self.held_assets = portfolio.get('held_assets', {})
             self.position_metadata = portfolio.get('position_metadata', {})
             
-            # Restore entry_prices from metadata
+            # Reconstruct Entry Prices and sync metadata
             for sym, meta in self.position_metadata.items():
                 if 'entry_price' in meta:
                     self.entry_prices[sym] = meta['entry_price']
+                if 'entry_timestamp' in meta:
+                    self.entry_timestamps[sym] = meta['entry_timestamp']
             
-            # Reconstruct entry prices from metadata if possible, or leave empty
-            # Note: A real system would persist entry prices perfectly. 
-            # For now, we accept risk of losing SL/TP reference on hard restart if not in metadata.
-            # Improvement: Store entry_prices in metadata?
-            # Doing a quick fix: If we have position but no entry price, assume current market price on next tick to avoid crash,
-            # but ideally we should persist entry_prices too.
-            # Let's add entry_prices to save_portfolio next time, but for now held_assets is key.
-            
-            print(f"[{self.name}] Loaded portfolio: ${self.balance_usd:.2f} USD")
-            print(f"[{self.name}] Assets: {json.dumps(self.held_assets)}")
+            print(f"[{self.name}] 🏦 Portfolio Restored: ${self.balance_usd:.2f} USD")
+            active_list = [f"{s}({q:.4f})" for s, q in self.held_assets.items() if abs(q) > 0.00000001]
+            if active_list:
+                print(f"[{self.name}] 📦 Active Positions: {', '.join(active_list)}")
         
         # Load Last Block
         last_block = self.db_manager.get_last_block()
@@ -258,31 +258,55 @@ class ExecutorHolon(Holon):
                 hash=last_block['hash']
             )
             self.ledger._chain.append(restored_block)
-            print(f"[{self.name}] Restored ledger tip: {restored_block.hash[:8]}...")
+            print(f"[{self.name}] ⛓️ Ledger Tip Restored: {restored_block.hash[:8]}...")
+
+    def get_execution_summary(self) -> dict:
+        """Returns a high-level summary of execution status and portfolio health."""
+        equity = self.get_portfolio_value()
+        margin_used = sum(
+            (abs(qty) * self.entry_prices.get(sym, 0.0)) / self.position_metadata.get(sym, {}).get('leverage', 1.0)
+            for sym, qty in self.held_assets.items() if abs(qty) > 1e-8
+        )
+        return {
+            'balance': self.balance_usd,
+            'equity': equity,
+            'margin_used': margin_used,
+            'margin_available': self.balance_usd, # Simplification: balance is essentially avail if we only subtract margin
+            'active_positions': len([q for q in self.held_assets.values() if abs(q) > 1e-8]),
+            'ledger_size': len(self.ledger)
+        }
 
 
 
     def check_stop_loss_take_profit(self, symbol: str, current_price: float) -> Optional[str]:
         """
         Check if current price triggers Stop-Loss or Take-Profit for a specific symbol.
+        Direction-aware (Long/Short).
         """
         entry_price = self.entry_prices.get(symbol)
         qty = self.held_assets.get(symbol, 0.0)
         
-        if entry_price is None or qty <= 0:
+        if entry_price is None or abs(qty) < 0.00000001:
             return None
         
-        # Calculate price change from entry
-        price_change_pct = (current_price - entry_price) / entry_price
+        # Determine Direction
+        meta = self.position_metadata.get(symbol, {})
+        direction = meta.get('direction', 'BUY')
+
+        # Calculate PnL % 
+        if direction == 'BUY':
+            price_change_pct = (current_price - entry_price) / entry_price
+        else: # SHORT (SELL)
+            price_change_pct = (entry_price - current_price) / entry_price
         
-        # Stop-Loss triggered (price dropped below threshold)
+        # Stop-Loss triggered
         if price_change_pct <= -self.stop_loss_pct:
-            print(f"[{self.name}] {symbol} STOP-LOSS triggered at {price_change_pct*100:.2f}%")
+            print(f"[{self.name}] {symbol} ({direction}) STOP-LOSS triggered at {price_change_pct*100:.2f}%")
             return 'STOP_LOSS'
         
-        # Take-Profit triggered (price rose above threshold)
+        # Take-Profit triggered
         if price_change_pct >= self.take_profit_pct:
-            print(f"[{self.name}] {symbol} TAKE-PROFIT triggered at {price_change_pct*100:.2f}%")
+            print(f"[{self.name}] {symbol} ({direction}) TAKE-PROFIT triggered at {price_change_pct*100:.2f}%")
             return 'TAKE_PROFIT'
         
         return None
@@ -341,20 +365,17 @@ class ExecutorHolon(Holon):
         
         if autonomy > 0.6:
             action = 'EXECUTE'
-            adjusted_size = signal.size * autonomy  # Scale size by confidence/autonomy? Or full? 
-            # Let's scale slightly by autonomy to reflect "conviction"
-            # But kept close to 1.0 for high autonomy.
-            # Actually, let's keep it simple: EXECUTE = Full Size
             adjusted_size = signal.size
             
-        elif autonomy < 0.4:
+        elif autonomy < 0.2: # Harder floor for total rejection
             action = 'HALT'
             adjusted_size = 0.0
             
         else:
+            # SOFT-HALT / REDUCE Range (0.2 - 0.6 autonomy)
             action = 'REDUCE'
-            # Proportional reduction
-            adjusted_size = signal.size * 0.5
+            # Scale participation: 25% minimum, up to 100% near 0.6
+            adjusted_size = signal.size * max(0.25, autonomy)
 
         # Check for sufficient funds/assets
         # Note: adjusted_size here is a multiplier (0.0 to 1.0) of the signal
@@ -428,340 +449,220 @@ class ExecutorHolon(Holon):
 
     def execute_transaction(self, decision: TradeDecision, current_price: float) -> Optional[float]:
         """
-        Execute the trade decision against the portfolio.
-        Returns pnl_pct if it was a SELL, else None.
+        Premium Unified Execution Engine.
+        Executes trade decisions against the portfolio and/or linked Actuator.
+        Handles Long Entries, Long Exits, Short Entries, and Short Covers.
+        
+        Returns:
+            Optional[float]: Realized PnL percentage if an exit occurred, else None.
         """
         symbol = decision.original_signal.symbol
         direction = decision.original_signal.direction
+        action_type = decision.action
         pnl_to_return = None
         
-        if decision.action == 'HALT' or decision.adjusted_size <= 0:
-            return
+        if action_type == 'HALT' or decision.adjusted_size <= 0:
+            return None
 
-        # Determine transaction value based on directive
-        direction = decision.original_signal.direction
+        current_holding = self.held_assets.get(symbol, 0.0)
         
-        # Direction Logic
-        if direction == 'BUY':
-            # 1. Calculate raw intent
+        # 1. CLASSIFY TRANSACTION
+        # ---------------------------------------------------------
+        is_long_entry = (direction == 'BUY' and current_holding >= -0.00000001)
+        is_short_cover = (direction == 'BUY' and current_holding < -0.00000001)
+        is_long_exit = (direction == 'SELL' and current_holding > 0.00000001)
+        is_short_entry = (direction == 'SELL' and current_holding <= 0.00000001)
+
+        # 2. GOVERNOR VALIDATION & SIZING (For Entries)
+        # ---------------------------------------------------------
+        leverage = 1.0
+        exec_qty = 0.0
+        
+        if is_long_entry or is_short_entry:
             if self.use_compounding:
-                # Compounding: adjusted_size is % of TOTAL AVAILABLE USD
                 usd_to_spend = self.balance_usd * decision.adjusted_size
             else:
-                # Fixed: adjusted_size is % of FIXED STAKE
                 usd_to_spend = self.fixed_stake * decision.adjusted_size
-                if usd_to_spend > self.balance_usd:
-                    usd_to_spend = self.balance_usd
-            
-            # --- GOVERNOR INTERVENTION (Risk Check via Messaging) ---
+                if usd_to_spend > self.balance_usd: usd_to_spend = self.balance_usd
+                
             if self.governor:
-                # Sync balance first (Direct state sync for performance, or could be a message too)
-                total_equity = self.get_portfolio_value()
-                self.governor.update_balance(total_equity)
-                
-                # Check 1: Is trade allowed?
-                msg = {
-                    'type': 'VALIDATE_TRADE', 
-                    'price': current_price,
-                    'symbol': symbol
-                }
-                
-                # In a strict Holon system, this might be async. 
-                # Here we use the direct receive_message return value for synchronous control.
-                is_approved, safe_qty, leverage = self.governor.receive_message(sender=self, content=msg)
-                
+                self.governor.update_balance(self.get_portfolio_value())
+                is_approved, safe_qty, leverage = self.governor.receive_message(self, {'type': 'VALIDATE_TRADE', 'price': current_price, 'symbol': symbol})
                 if not is_approved:
-                    print(f"  [RISK] Governor BLOCKED Buy Trade.")
-                    return # Stop execution
-
-                # Check 2: Position Sizing (Constraint)
-                intended_qty = usd_to_spend / current_price
-                
-                if intended_qty > safe_qty:
-                    # If Governor limits us (e.g. Risk Mgmt), respect safe_qty
-                    # Note: safe_qty is the total asset size allowed.
-                    print(f"  [RISK] Governor RESIZED Buy: {intended_qty:.4f} -> {safe_qty:.4f}")
-                    # Recalculate spending based on safe_qty (Total Notional)
-                    # We will pay this / leverage.
-                    usd_to_spend_notional = safe_qty * current_price
-                else:
-                    usd_to_spend_notional = usd_to_spend
-                
-                # If no Governor, leverage defaults to 1
-                if not self.governor:
-                    leverage = 1.0
-
+                    print(f"  [RISK] Governor REJECTED {direction} for {symbol}.")
+                    return None
+                notional_to_spend = min(usd_to_spend / current_price, safe_qty) * current_price
             else:
-                # No Governor attached
-                usd_to_spend_notional = usd_to_spend
+                notional_to_spend = usd_to_spend
                 leverage = 1.0
-
-            # Execute Buy
-            # We check notional >= 0.01 (min trade value)
-            if usd_to_spend_notional > 0.01: 
-                # Calculate quantity
-                asset_amount = usd_to_spend_notional / current_price
-                
-                if self.actuator:
-                    # Delegate
-                    order = self.actuator.place_limit_order(
-                        symbol=symbol, 
-                        direction='BUY', 
-                        quantity=asset_amount, 
-                        limit_price=current_price
-                    )
-                    
-                    # SIMULATION: Immediate check against current price (Fill at Touch)
-                    fills = self.actuator.check_fills(candle_low=current_price, candle_high=current_price)
-                    
-                    if fills:
-                        res = fills[0]
-                        
-                        # Apply Leverage to Cost Deduction
-                        # We only pay the Initial Margin (Cost / Leverage)
-                        margin_cost = res['cost_usd'] / leverage
-                        self.balance_usd -= margin_cost
-                        
-                        # Update Asset Holdings (Position Stacking / Pyramiding)
-                        current_holding = self.held_assets.get(symbol, 0.0)
-                        new_qty = current_holding + res['filled_qty']
-                        
-                        if current_holding > 0:
-                            # Weighted Average Price calculation
-                            old_avg = self.entry_prices.get(symbol, current_price)
-                            consolidated_avg = ((current_holding * old_avg) + (res['filled_qty'] * current_price)) / new_qty
-                            self.entry_prices[symbol] = consolidated_avg
-                            print(f"[{self.name}] STACKED {symbol}: New Avg Price ${consolidated_avg:.4f}")
-                        else:
-                            self.entry_prices[symbol] = current_price  # Fresh entry
-                        
-                        self.held_assets[symbol] = new_qty
-                        
-                        # WARP SPEED: Store metadata for accurate valuation and leverage tracking
-                        entry_timestamp = datetime.now(timezone.utc).isoformat()
-                        self.entry_timestamps[symbol] = entry_timestamp
-                        self.position_metadata[symbol] = {
-                            'leverage': leverage,
-                            'entry_price': self.entry_prices[symbol],
-                            'entry_timestamp': entry_timestamp
-                        }
-                        
-                        # Calculate unrealized PnL (if we sold now at current price)
-                        unrealized_pnl = 0.0  # For BUY, unrealized is 0 at entry
-                        unrealized_pnl_pct = 0.0
-                        
-                        # Notify Governor
-                        if self.governor:
-                            self.governor.receive_message(self, {
-                                'type': 'POSITION_FILLED',
-                                'symbol': symbol,
-                                'direction': 'LONG',
-                                'price': current_price,
-                                'quantity': res['filled_qty']
-                            })
-                        
-                        # Log Trade with unrealized PnL
-                        if self.db_manager:
-                            self.db_manager.save_trade({
-                                'symbol': symbol,
-                                'direction': 'BUY',
-                                'quantity': res['filled_qty'],
-                                'price': current_price,
-                                'cost_usd': margin_cost,  # Log actual spend (margin)
-                                'leverage': leverage,
-                                'notional_value': res['cost_usd'],
-                                'timestamp': datetime.now(timezone.utc).isoformat(),
-                                'pnl': 0.0,  # Realized PnL is 0 on entry
-                                'pnl_percent': 0.0,
-                                'unrealized_pnl': unrealized_pnl,
-                                'unrealized_pnl_percent': unrealized_pnl_pct
-                            })
-                            self._persist_portfolio()
-                else:
-                    # Direct
-                    # margin_cost = notional / leverage
-                    margin_cost = usd_to_spend_notional / leverage
-                    
-                    self.balance_usd -= margin_cost
-                    current_holding = self.held_assets.get(symbol, 0.0)
-                    new_qty = current_holding + asset_amount
-                    
-                    if current_holding > 0:
-                        # Weighted Average Price calculation
-                        old_avg = self.entry_prices.get(symbol, current_price)
-                        consolidated_avg = ((current_holding * old_avg) + (asset_amount * current_price)) / new_qty
-                        self.entry_prices[symbol] = consolidated_avg
-                        print(f"[{self.name}] STACKED {symbol}: New Avg Price ${consolidated_avg:.4f}")
-                    else:
-                        self.entry_prices[symbol] = current_price  # Fresh entry
-                        
-                    self.held_assets[symbol] = new_qty
-                    
-                    # WARP SPEED: Store metadata for accurate valuation and leverage tracking
-                    entry_timestamp = datetime.now(timezone.utc).isoformat()
-                    self.entry_timestamps[symbol] = entry_timestamp
-                    self.position_metadata[symbol] = {
-                        'leverage': leverage,
-                        'entry_price': self.entry_prices[symbol],
-                        'entry_timestamp': entry_timestamp
-                    }
-                    
-                    # Calculate unrealized PnL (if we sold now at current price)
-                    unrealized_pnl = 0.0  # For BUY, unrealized is 0 at entry
-                    unrealized_pnl_pct = 0.0
-                    
-                    # Notify Governor (Direct Mode)
-                    if self.governor:
-                        self.governor.receive_message(self, {
-                            'type': 'POSITION_FILLED',
-                            'symbol': symbol,
-                            'direction': 'LONG',
-                            'price': current_price,
-                            'quantity': asset_amount
-                        })
-                    
-                    # Log Trade with unrealized PnL
-                    if self.db_manager:
-                        self.db_manager.save_trade({
-                            'symbol': symbol,
-                            'direction': 'BUY',
-                            'quantity': asset_amount,
-                            'price': current_price,
-                            'cost_usd': margin_cost,
-                            'leverage': leverage,
-                            'notional_value': usd_to_spend_notional,
-                            'timestamp': datetime.now(timezone.utc).isoformat(),
-                            'pnl': 0.0,  # Realized PnL is 0 on entry
-                            'pnl_percent': 0.0,
-                            'unrealized_pnl': unrealized_pnl,
-                            'unrealized_pnl_percent': unrealized_pnl_pct
-                        })
-
-        elif direction == 'SELL':
-            # Logic for selling: Sell entire position of this symbol
-            asset_to_sell = self.held_assets.get(symbol, 0.0) * decision.adjusted_size
             
-            entry_p = self.entry_prices.get(symbol)
+            exec_qty = notional_to_spend / current_price
+            if exec_qty < 0.00000001: return None
             
-            # Retrieve leverage for this position to calculate returned margin
+        elif is_long_exit or is_short_cover:
+            # For exits, we use the specified size from the decision
+            exec_qty = abs(current_holding) * decision.adjusted_size
+            if action_type == 'EXIT': exec_qty = abs(current_holding)
+            # Leverage is pulled from existing position metadata
             meta = self.position_metadata.get(symbol, {})
             leverage = meta.get('leverage', 1.0)
+
+        # 3. INTERACT WITH ACTUATOR (REAL MARKET) OR SIMULATE
+        # ---------------------------------------------------------
+        fills = []
+        if self.actuator:
+            # Map logical signal to actuator direction
+            # Long Entry: BUY
+            # Short Cover: BUY
+            # Long Exit: SELL
+            # Short Entry: SELL
+            self.actuator.place_limit_order(symbol=symbol, direction=direction, quantity=exec_qty, limit_price=current_price)
+            fills = self.actuator.check_fills(candle_low=current_price, candle_high=current_price)
+        else:
+            # High-Fidelity Simulation
+            fills = [{
+                'symbol': symbol,
+                'direction': direction,
+                'filled_qty': exec_qty,
+                'price': current_price,
+                'cost_usd': exec_qty * current_price,
+                'timestamp': datetime.now(timezone.utc).isoformat()
+            }]
+
+        # 4. PROCESS RESULTS & UPDATE STATE
+        # ---------------------------------------------------------
+        if not fills: return None
+        
+        fill = fills[0]
+        actual_qty = fill['filled_qty']
+        actual_price = fill['price']
+        notional_value = fill['cost_usd']
+        margin_impact = notional_value / leverage
+        
+        if is_long_entry:
+            self.balance_usd -= margin_impact
+            old_qty = self.held_assets.get(symbol, 0.0)
+            new_qty = old_qty + actual_qty
+            # Weighted average entry price
+            old_entry = self.entry_prices.get(symbol, actual_price)
+            self.entry_prices[symbol] = ((old_qty * old_entry) + (actual_qty * actual_price)) / new_qty
+            self.held_assets[symbol] = new_qty
+            self.position_metadata[symbol] = {
+                'leverage': leverage,
+                'entry_price': self.entry_prices[symbol],
+                'entry_timestamp': datetime.now(timezone.utc).isoformat(),
+                'direction': 'BUY'
+            }
+            print(f"[{self.name}] LONG ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, Margin: ${margin_impact:.2f})")
             
-            pnl = 0.0
-            pnl_pct = 0.0
-            if entry_p and entry_p > 0:
-                pnl = (current_price - entry_p) * asset_to_sell
-                pnl_pct = (current_price - entry_p) / entry_p
+        elif is_short_entry:
+            self.balance_usd -= margin_impact
+            old_qty_abs = abs(self.held_assets.get(symbol, 0.0))
+            new_qty_abs = old_qty_abs + actual_qty
+            # Weighted average entry price
+            old_entry = self.entry_prices.get(symbol, actual_price)
+            self.entry_prices[symbol] = ((old_qty_abs * old_entry) + (actual_qty * actual_price)) / new_qty_abs
+            self.held_assets[symbol] = -new_qty_abs
+            self.position_metadata[symbol] = {
+                'leverage': leverage,
+                'entry_price': self.entry_prices[symbol],
+                'entry_timestamp': datetime.now(timezone.utc).isoformat(),
+                'direction': 'SELL'
+            }
+            print(f"[{self.name}] SHORT ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, Margin: ${margin_impact:.2f})")
 
-            if asset_to_sell > 0.00000001: 
-                if self.actuator:
-                    # Delegate
-                    order = self.actuator.place_limit_order(
-                        symbol=symbol, 
-                        direction='SELL', 
-                        quantity=asset_to_sell, 
-                        limit_price=current_price
-                    )
-                    
-                    # SIMULATION: Immediate check against current price
-                    fills = self.actuator.check_fills(candle_low=current_price, candle_high=current_price)
-                    
-                    if fills:
-                        res = fills[0]
-                        # Update Holdings
-                        current_holding = self.held_assets.get(symbol, 0.0)
-                        self.held_assets[symbol] = max(0.0, current_holding - res['filled_qty'])
-                        
-                        # Credit Balance:
-                        # 1. Return Margin: (Quantity * EntryPrice) / Leverage
-                        # 2. Add PnL: (CurrentPrice - EntryPrice) * Quantity
-                        
-                        market_val_sold = res['filled_qty'] * current_price
-                        entry_val_sold = res['filled_qty'] * entry_p if entry_p else 0
-                        margin_released = entry_val_sold / leverage
-                        realized_pnl = market_val_sold - entry_val_sold
-                        
-                        self.balance_usd += (margin_released + realized_pnl)
-                        
-                        # Notify Governor
-                        if self.governor:
-                            self.governor.receive_message(self, {
-                                'type': 'POSITION_CLOSED',
-                                'symbol': symbol
-                            })
-                            
-                        # Log Trade
-                        if self.db_manager:
-                            self.db_manager.save_trade({
-                                'symbol': symbol,
-                                'direction': 'SELL',
-                                'quantity': res['filled_qty'],
-                                'price': current_price,
-                                'cost_usd': res['cost_usd'], # Notional sold
-                                'timestamp': datetime.now(timezone.utc).isoformat(),
-                                'pnl': realized_pnl,
-                                'pnl_percent': pnl_pct
-                            })
-                            
-                        if self.held_assets[symbol] <= 0:
-                            if symbol in self.entry_prices: del self.entry_prices[symbol]
-                            if symbol in self.position_metadata: del self.position_metadata[symbol]
-                        
-                        pnl_to_return = pnl_pct
-                else:
-                    # Direct
-                    market_val_sold = asset_to_sell * current_price
-                    entry_val_sold = asset_to_sell * entry_p if entry_p else 0
-                    margin_released = entry_val_sold / leverage
-                    realized_pnl = market_val_sold - entry_val_sold
-                    
-                    current_holding = self.held_assets.get(symbol, 0.0)
-                    self.held_assets[symbol] = max(0.0, current_holding - asset_to_sell)
-                    
-                    self.balance_usd += (margin_released + realized_pnl)
-                    
-                    # Log Trade
-                    if self.db_manager:
-                        self.db_manager.save_trade({
-                            'symbol': symbol,
-                            'direction': 'SELL',
-                            'quantity': asset_to_sell,
-                            'price': current_price,
-                            'cost_usd': market_val_sold,
-                            'timestamp': datetime.now(timezone.utc).isoformat(),
-                            'pnl': realized_pnl,
-                            'pnl_percent': pnl_pct
-                        })
-                        
-                    if self.held_assets[symbol] <= 0:
-                        if symbol in self.entry_prices: del self.entry_prices[symbol]
-                        if symbol in self.position_metadata: del self.position_metadata[symbol]
-                    
-                    pnl_to_return = pnl_pct
+        elif is_long_exit:
+            entry_p = self.entry_prices.get(symbol, actual_price)
+            pnl_usd = (actual_price - entry_p) * actual_qty
+            pnl_pct = (actual_price - entry_p) / entry_p if entry_p > 0 else 0
+            margin_released = (actual_qty * entry_p) / leverage
+            
+            self.balance_usd += (margin_released + pnl_usd)
+            self.held_assets[symbol] -= actual_qty
+            pnl_to_return = pnl_pct
+            print(f"[{self.name}] LONG EXIT: {symbol} @ {actual_price} (PnL: {pnl_pct*100:+.2f}%, ${pnl_usd:+.2f})")
 
-        # Persist Portfolio State
+        elif is_short_cover:
+            entry_p = self.entry_prices.get(symbol, actual_price)
+            pnl_usd = (entry_p - actual_price) * actual_qty
+            pnl_pct = (entry_p - actual_price) / entry_p if entry_p > 0 else 0
+            margin_released = (actual_qty * entry_p) / leverage
+            
+            self.balance_usd += (margin_released + pnl_usd)
+            self.held_assets[symbol] += actual_qty
+            pnl_to_return = pnl_pct
+            print(f"[{self.name}] SHORT COVER: {symbol} @ {actual_price} (PnL: {pnl_pct*100:+.2f}%, ${pnl_usd:+.2f})")
+
+        # Cleanup positions that are fully closed
+        if abs(self.held_assets.get(symbol, 0.0)) < 0.00000001:
+            self.held_assets[symbol] = 0.0
+            if symbol in self.entry_prices: del self.entry_prices[symbol]
+            if symbol in self.position_metadata: del self.position_metadata[symbol]
+
+        # 5. POST-EXECUTION: LOGGING & SYNC
+        # ---------------------------------------------------------
         self._persist_portfolio()
+        
+        # Save Trade to Ledger DB
+        if self.db_manager:
+            # We record entries with cost and 0 pnl, exits with pnl and 0 cost (relative to close)
+            is_exit = is_long_exit or is_short_cover
+            self.db_manager.save_trade({
+                'symbol': symbol,
+                'direction': direction,
+                'quantity': actual_qty,
+                'price': actual_price,
+                'cost_usd': margin_impact if not is_exit else 0,
+                'leverage': leverage,
+                'notional_value': notional_value,
+                'timestamp': datetime.now(timezone.utc).isoformat(),
+                'pnl': pnl_usd if is_exit else 0.0,
+                'pnl_percent': pnl_pct if is_exit else 0.0,
+                'unrealized_pnl': 0.0,
+                'unrealized_pnl_percent': 0.0
+            })
+
+        # Notify Governor
+        if self.governor:
+            gov_dir = 'LONG' if is_long_entry else ('SHORT' if is_short_entry else ('EXIT' if is_long_exit else 'COVER'))
+            self.governor.receive_message(self, {
+                'type': 'POSITION_FILLED',
+                'symbol': symbol,
+                'direction': gov_dir,
+                'price': actual_price,
+                'quantity': actual_qty if (is_long_entry or is_short_cover) else -actual_qty
+            })
+
+        self.last_order_details = f"{direction} {actual_qty:.4f} {symbol} @ {actual_price:.2f}"
         return pnl_to_return
 
     def get_portfolio_value(self, current_price_ref: float = 0.0) -> float:
         """
         Calculate total portfolio value in USD based on all held assets (Leveraged Equity).
-        Equity = Free Balance + Margin Used + Unrealized PnL
+        Equity = Free Balance + Sum(Margin Used + Unrealized PnL)
+        Direction-aware (Long/Short).
         """
         equity = self.balance_usd
         
         for sym, qty in self.held_assets.items():
+            if abs(qty) < 0.00000001: continue
+            
             current_price = self.latest_prices.get(sym, 0.0)
             entry_price = self.entry_prices.get(sym, 0.0)
             meta = self.position_metadata.get(sym, {})
             leverage = meta.get('leverage', 1.0)
+            direction = meta.get('direction', 'BUY')
             
-            if qty > 0 and current_price > 0 and entry_price > 0:
+            if current_price > 0 and entry_price > 0:
+                qty_abs = abs(qty)
                 # Margin currently locked in this position
-                margin_used = (qty * entry_price) / leverage
+                margin_used = (qty_abs * entry_price) / leverage
                 
                 # Unrealized PnL
-                unrealized_pnl = (current_price - entry_price) * qty
+                if direction == 'BUY':
+                    unrealized_pnl = (current_price - entry_price) * qty_abs
+                else: # SELL (SHORT)
+                    unrealized_pnl = (entry_price - current_price) * qty_abs
                 
                 equity += (margin_used + unrealized_pnl)
                 

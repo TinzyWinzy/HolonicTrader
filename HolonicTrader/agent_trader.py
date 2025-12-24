@@ -1,614 +1,316 @@
 import time
 import pandas as pd
-from typing import Dict, Any, Optional
+import numpy as np
+from typing import Dict, Any, Optional, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from scipy.stats import linregress
+
 from HolonicTrader.holon_core import Holon, Disposition, Message
+from HolonicTrader.agent_executor import TradeSignal
 from performance_tracker import get_performance_data
 import config
 
 class TraderHolon(Holon):
     """
     TraderHolon (Supra-Holon)
-    
-    The central coordinator that orchestrates the trading lifecycle.
-    It manages a set of sub-holons (Observer, Entropy, Strategy, Governor, Executor)
-    and routes messages between them to execute the trading loop.
+    The central coordinator that orchestrates the trading lifecycle using a 
+    concurrency-first architecture (Phase 28: Warp Velocity).
     """
     
     def __init__(self, name: str = "TraderNexus", sub_holons: Dict[str, Holon] = None):
-        # High integration (orchestrator), High autonomy (decision maker)
         super().__init__(name=name, disposition=Disposition(autonomy=0.9, integration=0.9))
-        
         self.sub_holons = sub_holons if sub_holons else {}
-        self.market_state = {
-            'price': 0.0,
-            'regime': 'UNKNOWN',
-            'entropy': 0.0,
-            'signal': None
-        }
-        
-        # GUI integration
+        self.market_state = {'price': 0.0, 'regime': 'UNKNOWN', 'entropy': 0.0, 'signal': None}
         self.gui_queue = None
         self.gui_stop_event = None
+        self.last_ppo_conviction = 0.5
+        self.last_ppo_reward = 0.0
 
     def register_agent(self, role: str, agent: Holon):
-        """Register a sub-holon with a specific role."""
         self.sub_holons[role] = agent
         print(f"[{self.name}] Registered {role}: {agent.name}")
 
     def perform_health_check(self):
-        """
-        IMMUNE SYSTEM: Ping sub-holons to ensure system health.
-        """
-        # 1. Check Observer
         observer = self.sub_holons.get('observer')
         if observer:
             try:
                 status = observer.receive_message(self, {'type': 'GET_STATUS'})
-                if isinstance(status, dict) and status.get('status') == 'OK':
-                     pass # All good
-                else: 
-                     if status:
-                         print(f"[{self.name}] ⚠️ OBSERVER HEALTH WARN: {status}")
-                     # Self-Healing: Force Fetch
-                     observer.receive_message(self, {'type': 'FORCE_FETCH'})
+                if not (isinstance(status, dict) and status.get('status') == 'OK'):
+                    observer.receive_message(self, {'type': 'FORCE_FETCH'})
             except Exception as e:
                 print(f"[{self.name}] ❌ OBSERVER HEALTH FAIL: {e}")
 
     def run_cycle(self):
-        """
-        Execute one full trading cycle (Heartbeat).
-        Iterates through all ALLOWED_ASSETS defined in config.
-        """
-        import config # Lazy import to avoid circular dep if any
-        # print(f"\n[{self.name}] --- Starting Multi-Asset Cycle ---") # Silence excessive log
-        
-        # IMMUNE SYSTEM CHECK
         self.perform_health_check()
+        interval = getattr(self, '_active_interval', 60)
+        print(f"\n[{self.name}] --- Starting Warp Cycle (Interval: {interval}s) ---") 
         
-        cycle_report = [] # List to hold row data for summary table
-        entropies = [] # List to hold entropy values from all assets
-        
-        # 1. ORCHESTRATION LOOP
-        for symbol in config.ALLOWED_ASSETS:
-            # Initialize Report Row
-            row_data = {
-                'Symbol': symbol,
-                'Price': 'ERR',
-                'Regime': '?',
-                'Action': 'HOLD',
-                'PnL': '-',
-                'Note': ''
-            }
+        cycle_report = []
+        entropies = []
+        cycle_data_cache = {}
 
-            # A. FETCH DATA
-            observer = self.sub_holons.get('observer')
-            if not observer:
-                print(f"[{self.name}] CRITICAL: No Observer attached.")
-                continue
+        oracle = self.sub_holons.get('oracle')
+        observer = self.sub_holons.get('observer')
+        executor = self.sub_holons.get('executor')
+        governor = self.sub_holons.get('governor')
+        ppo = self.sub_holons.get('ppo')
+        guardian = self.sub_holons.get('guardian')
+        monitor = self.sub_holons.get('monitor')
+
+        # --- PHASE 0: PARALLEL PRE-FLIGHT (GMB Sync) ---
+        if oracle and observer:
+            def fetch_and_warmup(sym):
+                try:
+                    data = observer.fetch_market_data(limit=100, symbol=sym)
+                    oracle.get_kalman_estimate(sym, data)
+                    return sym, data
+                except: return sym, None
+
+            with ThreadPoolExecutor(max_workers=config.TRADER_MAX_WORKERS) as t_pool:
+                futures = [t_pool.submit(fetch_and_warmup, s) for s in config.ALLOWED_ASSETS]
+                for f in as_completed(futures):
+                    sym, d = f.result()
+                    if d is not None: cycle_data_cache[sym] = d
+            
+            print(f"[{self.name}] 📊 GLOBAL BIAS: {oracle.get_market_bias():.2f}")
+
+        # --- PHASE 1: PARALLEL ANALYSIS PASS ---
+        analysis_results = []
+        with ThreadPoolExecutor(max_workers=config.TRADER_MAX_WORKERS) as t_pool:
+            futures = [t_pool.submit(self._analyze_asset, s, cycle_data_cache.get(s)) for s in config.ALLOWED_ASSETS]
+            for f in as_completed(futures):
+                res = f.result()
+                if res: analysis_results.append(res)
+
+        analysis_results.sort(key=lambda x: x['symbol'])
+
+        # --- PHASE 2: SEQUENTIAL EXECUTION PASS ---
+        for res in analysis_results:
+            symbol, data, current_price = res['symbol'], res['data'], res['price']
+            row_data, indicators = res['row_data'], res['indicators']
+            entropy_val, regime = res['entropy_val'], res['regime']
+            
+            if entropy_val > 0: entropies.append(entropy_val)
 
             try:
-                # Fetch Data Specific to Asset
-                data = observer.fetch_market_data(limit=100, symbol=symbol)
-                current_price = data['close'].iloc[-1]
-                row_data['Price'] = f"{current_price:.4f}"
+                if executor: executor.latest_prices[symbol] = current_price
+                if executor and governor: 
+                    governor.update_balance(executor.get_portfolio_value(current_price))
+
+                # A. Handle Entry
+                entry_sig = res.get('entry_signal')
+                if entry_sig and executor and governor and oracle:
+                    pnl_tracker = get_performance_data()
+                    atr_ref = indicators['tr'].rolling(14).mean().rolling(14).mean().iloc[-1]
+                    atr_ratio = min(2.0, indicators['atr'] / atr_ref) if atr_ref > 0 else 1.0
+                    gov_health = governor.get_portfolio_health()
+                    
+                    ppo_state = np.array([
+                        {'ORDERED': 0.0, 'TRANSITION': 0.5, 'CHAOTIC': 1.0}.get(regime, 0.5),
+                        entropy_val, pnl_tracker.get('win_rate', 0.5), atr_ratio, 
+                        gov_health['drawdown_pct'], gov_health['margin_utilization']
+                    ], dtype=np.float32)
+
+                    conviction = ppo.get_conviction(ppo_state) if ppo else 0.5
+                    self.last_ppo_conviction = conviction
+                    entry_sig.metadata = {'ppo_state': ppo_state.tolist(), 'ppo_conviction': conviction}
+
+                    approved, safe_qty, leverage = governor.calc_position_size(
+                        symbol, current_price, indicators['atr'], atr_ref, conviction
+                    )
+
+                    if approved and safe_qty > 0:
+                        entry_sig.size = safe_qty
+                        decision = executor.decide_trade(entry_sig, regime, entropy_val)
+                        if decision.action != 'HALT':
+                            executor.execute_transaction(decision, current_price)
+                            row_data['Action'] = f"BUY ({res['metabolism']})"
+                    else:
+                        row_data['Action'] = "BUY (GOV REJECT)"
+
+                # B. Handle Exit
+                guardian_exit = res.get('guardian_exit')
+                hard_exit_type = executor.check_stop_loss_take_profit(symbol, current_price) if executor else None
                 
-                # Update Executor's price view immediately
-                executor = self.sub_holons.get('executor')
-                if executor:
-                    executor.latest_prices[symbol] = current_price
+                final_exit = None
+                reason = "IDLE"
+                if hard_exit_type:
+                    final_exit = TradeSignal(symbol, 'SELL', 1.0, current_price)
+                    reason = hard_exit_type
+                elif guardian_exit:
+                    final_exit = guardian_exit
+                    reason = "Strat"
+
+                if final_exit and executor:
+                    decision = executor.decide_trade(final_exit, regime, entropy_val)
+                    pnl_res = executor.execute_transaction(decision, current_price)
+                    if pnl_res is not None:
+                        if guardian: guardian.record_exit(symbol, time.time())
+                        if ppo:
+                            meta = executor.position_metadata.get(symbol, {})
+                            if meta.get('ppo_state') and meta.get('ppo_conviction') is not None:
+                                reward = pnl_res - (governor.get_portfolio_health()['drawdown_pct'] * 2.0)
+                                self.last_ppo_reward = reward
+                                ppo.remember(meta['ppo_state'], meta['ppo_conviction'], reward, 0.0, 0.0, True)
+                        row_data['Action'] = f"SELL ({reason})"
+
             except Exception as e:
-                # print(f"[{self.name}] Error fetching {symbol}: {e}") # Silence error slightly or log shorter
-                row_data['Note'] = "Data Fetch Err"
-                cycle_report.append(row_data)
-                continue
+                print(f"[{self.name}] ❌ Error processing {symbol}: {e}")
 
-            # B. ENTROPY & REGIME
-            entropy_agent = self.sub_holons.get('entropy')
-            regime = 'UNKNOWN'
-            entropy_val = 0.0
-            
-            if entropy_agent:
-                try:
-                    returns = data['returns']
-                    entropy_val = entropy_agent.calculate_shannon_entropy(returns)
-                    entropies.append(entropy_val) # Collect for aggregation
-                    row_data['Entropy'] = f"{entropy_val:.3f}"
-                    regime = entropy_agent.determine_regime(entropy_val)
-                    row_data['Regime'] = regime
-                except Exception:
-                    row_data['Entropy'] = "ERR"
-                    pass
-
-            # C. STRATEGY (Signal Generation)
-            strategy = self.sub_holons.get('strategy')
-            signal = None
-            
-            if strategy:
-                try:
-                    # Calculate OBV & Technicals
-                    obv_series = strategy.calculate_obv(data)
-                    obv_slope = strategy.calculate_obv_slope(obv_series)
-                    
-                    # Store OBV Trend in Note if significant? 
-                    # row_data['Note'] = f"OBV:{obv_slope:.1f}"
-
-                    # Calculate BB (20, 2)
-                    rolling_mean = data['close'].rolling(window=20).mean()
-                    rolling_std = data['close'].rolling(window=20).std()
-                    bb = {
-                        'upper': rolling_mean + (2 * rolling_std),
-                        'middle': rolling_mean.iloc[-1],
-                        'lower': rolling_mean - (2 * rolling_std)
-                    }
-                    bb_vals = {k: (v.iloc[-1] if hasattr(v, 'iloc') else v) for k,v in bb.items()}
-                    
-                    # Calculate ATR (14)
-                    high_low = data['high'] - data['low']
-                    high_close = (data['high'] - data['close'].shift()).abs()
-                    low_close = (data['low'] - data['close'].shift()).abs()
-                    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-                    atr = tr.rolling(window=14).mean().iloc[-1]
-                    
-                    # Calculate RSI
-                    entry_rsi = strategy.calculate_rsi(data['close'])
-                    row_data['RSI'] = f"{entry_rsi:.1f}"
-
-                    # Fetch Stack Count from Governor
-                    stack_count = 0
-                    governor = self.sub_holons.get('governor')
-                    if governor:
-                         stack_count = governor.positions.get(symbol, {}).get('stack_count', 0)
-                    row_data['Stack'] = str(stack_count)
-
-                    # E. METABOLISM & SIGNAL
-                    metabolism = 'SCAVENGER' # Default
-                    current_capital = config.INITIAL_CAPITAL
-                    
-                    if executor:
-                        current_capital = executor.get_portfolio_value(current_price)
-                        if current_capital > config.SCAVENGER_THRESHOLD:
-                            metabolism = 'PREDATOR'
-                    
-                    # === PHASE 12 FIX: Update Governor Balance ===
-                    # CRITICAL: Governor needs current balance for minimax constraint
-                    if governor:
-                        governor.update_balance(current_capital)
-                    
-                    # Generate Entry Signal
-                    # PRE-CHECK: Skip if Governor will reject
-                    is_allowed = True
-                    if governor:
-                         is_allowed = governor.is_trade_allowed(symbol, current_price)
-                    
-                    entry_signal = None
-                    if is_allowed:
-                        entry_signal = strategy.analyze_for_entry(
-                            symbol=symbol,
-                            window_data=data,
-                            bb=bb_vals,
-                            obv_slope=obv_slope,
-                            metabolism_state=metabolism
-                        )
-                    # else:
-                    #     if row_data.get('Stack') not in ['0', 'ERR']: 
-                    #        row_data['Note'] = "Gov Block" # Optional UI feedback
-                    
-                    if entry_signal:
-                        # Log immediately
-                        print(f"[{self.name}] ⚡ SIGNAL: {entry_signal.direction} {symbol} @ {entry_signal.price:.2f}")
-                        
-                        if executor and governor:
-                            # === PHASE 12: INSTITUTIONAL RISK MANAGEMENT ===
-                            # Calculate ATR reference for volatility scalar
-                            atr_series = tr.rolling(window=14).mean()
-                            atr_ref = atr_series.rolling(14).mean().iloc[-1]  # 14-period average of ATR
-                            atr_current = atr
-                            
-                            # Call governor for position sizing with Phase 12 risk management
-                            approved, safe_qty, leverage = governor.calc_position_size(
-                                symbol=symbol,
-                                asset_price=current_price,
-                                current_atr=atr_current,
-                                atr_ref=atr_ref
-                            )
-                            
-                            if not approved or safe_qty <= 0:
-                                print(f"[{self.name}] ❌ Governor REJECTED trade for {symbol}")
-                                row_data['Action'] = "BUY (GOV REJECT)"
-                                cycle_report.append(row_data)
-                                continue
-                            
-                            # Update signal with governor-approved size
-                            entry_signal.size = safe_qty
-                            
-                            # 1. DQN CONTEXT
-                            dqn = self.sub_holons.get('dqn')
-                            rl_state = []
-                            dqn_action = "HOLD"
-                            dqn_idx = 1 # Halt default
-                            
-                            if dqn:
-                                # State: [Entropy, RSI, Volatility(ATR), Bias]
-                                # We need ATR. Strategy has calculate_atr usually, or we approx
-                                # For now: [Entropy, RSI, 0.0, 1.0]
-                                rl_state = [entropy_val, entry_rsi, 0.0, 1.0] 
-                                dqn_action = dqn.get_action(rl_state)
-                                dqn_idx = dqn.get_action_index(dqn_action)
-                                print(f"[{self.name}] 🧠 DQN Suggests: {dqn_action} (Epsilon: {dqn.epsilon:.2f})")
-                            
-                            # 2. DECISION & EXECUTION
-                            decision = executor.decide_trade(entry_signal, regime, entropy_val)
-                            
-                            if decision.action != 'HALT':
-                                strategy.update_reputation(0.01)
-                                executor.execute_transaction(decision, current_price)
-                                
-                                # 3. METADATA INJECTION (For RL Training later)
-                                if dqn and symbol in executor.position_metadata:
-                                    executor.position_metadata[symbol]['rl_state'] = rl_state
-                                    executor.position_metadata[symbol]['rl_action_idx'] = 0 # Assume we EXECUTED (idx 0) since we are here
-                                    # Note: If we followed DQN 'HALT', we wouldn't be here. 
-                                    # Ideally we train on 'refusal' too, but for now we train on 'did we make money?'
-                                
-                                row_data['Action'] = f"BUY ({metabolism})"
-                            else:
-                                row_data['Action'] = "BUY (HALT)"
-
-                    
-                    # F. EXIT MANAGEMENT & REPORTING
-                    if executor:
-                        # 1. Strategy Analysis (Exit v2)
-                        entry_p = executor.entry_prices.get(symbol, 0.0)
-                        
-                        if entry_p > 0:
-                            # Add PnL to table
-                            pnl_pct = (current_price - entry_p) / entry_p
-                            row_data['PnL'] = f"{pnl_pct*100:+.2f}%"
-                            
-                            # Add Proximity Note
-                            if metabolism == 'SCAVENGER':
-                                scalptp_dist = ((entry_p * (1+config.SCAVENGER_SCALP_TP)) - current_price) / current_price
-                                row_data['Note'] = f"TP: {scalptp_dist*100:+.1f}%"
-                            else:
-                                predtp_dist = ((entry_p * (1+config.PREDATOR_TAKE_PROFIT)) - current_price) / current_price
-                                row_data['Note'] = f"BigTP: {predtp_dist*100:+.1f}%"
-
-                            # Calculate position age
-                            from datetime import datetime, timezone
-                            entry_timestamp = executor.entry_timestamps.get(symbol)
-                            position_age_hours = 0.0
-                            if entry_timestamp:
-                                try:
-                                    entry_dt = datetime.fromisoformat(entry_timestamp)
-                                    age_seconds = (datetime.now(timezone.utc) - entry_dt).total_seconds()
-                                    position_age_hours = age_seconds / 3600
-                                except Exception:
-                                    position_age_hours = 0.0
-
-                            strategy_exit = strategy.analyze_for_exit(
-                                symbol=symbol,
-                                current_price=current_price,
-                                entry_price=entry_p,
-                                bb=bb_vals,
-                                atr=atr,
-                                metabolism_state=metabolism,
-                                entry_timestamp=entry_timestamp,
-                                position_age_hours=position_age_hours
-                            )
-                            if strategy_exit:
-                                print(f"[{self.name}] 🧠 STRATEGY EXIT for {symbol}: {strategy_exit.direction}")
-                                decision = executor.decide_trade(strategy_exit, regime, entropy_val)
-                                pnl_res = executor.execute_transaction(decision, current_price)
-                                
-                                if pnl_res is not None:
-                                    strategy.update_reputation(pnl_res * 10.0)
-                                    print(f"[{self.name}] Reputation Updated: {strategy.reputation:.3f}")
-                                    strategy.record_exit(symbol, data.index[-1])
-                                    
-                                    # DQN TRAIN
-                                    dqn = self.sub_holons.get('dqn')
-                                    if dqn:
-                                        meta = executor.position_metadata.get(symbol, {})
-                                        entry_state = meta.get('rl_state')
-                                        entry_action_idx = meta.get('rl_action_idx')
-                                        if entry_state and entry_action_idx is not None:
-                                            # Risk-Adjusted Reward: Sortino/Sharpe Proxy
-                                            # Reward = PnL / (Volatility + epsilon)
-                                            # We use normalized ATR as volatility measure
-                                            atr_pct = (atr / entry_p) if entry_p > 0 else 0.01
-                                            risk_adj_reward = (pnl_res * 10.0) / max(0.001, atr_pct)
-                                            
-                                            # Clip reward to avoid exploding gradients [-10, 10]
-                                            risk_adj_reward = max(-10.0, min(10.0, risk_adj_reward))
-                                            
-                                            current_state = [entropy_val, entry_rsi, 0.0, 1.0]
-                                            dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
-                                            loss = dqn.replay()
-                                            current_state = [entropy_val, entry_rsi, 0.0, 1.0]
-                                            dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
-                                            loss = dqn.replay()
-                                            
-                                            # IMP_003: Persist Experience
-                                            if executor and executor.db_manager:
-                                                executor.db_manager.save_experience({
-                                                    'symbol': symbol,
-                                                    'state': entry_state,
-                                                    'action_idx': entry_action_idx,
-                                                    'reward': risk_adj_reward,
-                                                    'next_state': current_state,
-                                                    'done': True
-                                                })
-                                                
-                                            # IMP_003: Persist Experience (Strategy Exit)
-                                            if executor and executor.db_manager:
-                                                executor.db_manager.save_experience({
-                                                    'symbol': symbol,
-                                                    'state': entry_state,
-                                                    'action_idx': entry_action_idx,
-                                                    'reward': risk_adj_reward,
-                                                    'next_state': current_state,
-                                                    'done': True
-                                                })
-                                                
-                                            print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
-                                
-                                row_data['Action'] = "SELL (Strat)"
-                                cycle_report.append(row_data)
-                                continue # Position closed
-                        
-                        # 2. Hard Guardrails (SL/TP in Executor)
-                        exit_type = executor.check_stop_loss_take_profit(symbol, current_price)
-                        if exit_type:
-                            print(f"[{self.name}] 🚨 HARD EXIT: {symbol} - {exit_type}")
-                            from .agent_executor import TradeSignal as TS
-                            exit_signal = TS(symbol=symbol, direction='SELL', size=1.0, price=current_price)
-                            
-                            decision = executor.decide_trade(exit_signal, regime, entropy_val)
-                            pnl_res = executor.execute_transaction(decision, current_price)
-                            
-                            # DQN TRAIN (HARD EXIT)
-                            if pnl_res is not None:
-                                strategy.update_reputation(pnl_res * 10.0)
-                                dqn = self.sub_holons.get('dqn')
-                                if dqn:
-                                    # Retrieve Entry State
-                                    meta = executor.position_metadata.get(symbol, {})
-                                    entry_state = meta.get('rl_state')
-                                    entry_action_idx = meta.get('rl_action_idx')
-                                    
-                                    if entry_state and entry_action_idx is not None:
-                                        # Construct Reward (PnL %)
-                                        # Risk-Adjusted
-                                        atr_pct = (atr / entry_p) if entry_p > 0 else 0.01
-                                        risk_adj_reward = (pnl_res * 10.0) / max(0.001, atr_pct)
-                                        # Clip
-                                        risk_adj_reward = max(-10.0, min(10.0, risk_adj_reward))
-                                        
-                                        # Current State
-                                        current_state = [entropy_val, entry_rsi, 0.0, 1.0] # approx
-                                        
-                                        dqn.remember(entry_state, entry_action_idx, risk_adj_reward, current_state, done=True)
-                                        loss = dqn.replay()
-                                        # IMP_003: Persist Experience (Hard Exit)
-                                        if executor and executor.db_manager:
-                                            executor.db_manager.save_experience({
-                                                'symbol': symbol,
-                                                'state': entry_state,
-                                                'action_idx': entry_action_idx,
-                                                'reward': risk_adj_reward,
-                                                'next_state': current_state,
-                                                'done': True
-                                            })
-                                        
-                                        print(f"[{self.name}] 🧠 DQN TRAINED on {symbol}: PnL={pnl_res*100:.2f}%, Vol={atr_pct*100:.2f}%, Reward={risk_adj_reward:.4f}, Loss={loss:.6f}")
-
-                            row_data['Action'] = f"SELL ({exit_type})"
-
-                except Exception as e:
-                     print(f"[{self.name}] Error in Strategy analysis for {symbol}: {e}")
-                     # import traceback
-                     # traceback.print_exc() 
-            
             cycle_report.append(row_data)
 
-        # AGGREGATE MARKET STATE
-        avg_entropy = 0.0
+        # --- PHASE 3: AGGREGATE & UI ---
         if entropies and self.sub_holons.get('entropy'):
-            avg_entropy = sum(entropies) / len(entropies)
-            self.market_state['entropy'] = avg_entropy
-            # Determine global regime based on average (or max?) - using Average for now
-            self.market_state['regime'] = self.sub_holons['entropy'].determine_regime(avg_entropy)
+            avg_e = sum(entropies) / len(entropies)
+            self.market_state['entropy'] = avg_e
+            self.market_state['regime'] = self.sub_holons['entropy'].determine_regime(avg_e)
 
-        # PRINT SUMMARY TABLE
-        # -------------------
-        print("-" * 95)
-        print(f"{'SYMBOL':<10} {'PRICE':<12} {'REGIME':<10} {'ENTROPY':<8} {'ACTION':<15} {'PNL':<10} {'NOTE':<20}")
-        print("-" * 95)
-        for row in cycle_report:
-            entropy_str = row.get('Entropy', 'N/A')
-            print(f"{row['Symbol']:<10} {row['Price']:<12} {row['Regime']:<10} {entropy_str:<8} {row['Action']:<15} {row['PnL']:<10} {row['Note']}")
-        print("-" * 95)
-        
-        # PUBLISH AGENT STATUS
+        self._print_summary(cycle_report)
+        if monitor and executor: monitor.update_health(executor.get_portfolio_value(0.0), get_performance_data())
         self.publish_agent_status()
+        return cycle_report
+
+    def _analyze_asset(self, symbol: str, data: Optional[pd.DataFrame]) -> Optional[Dict[str, Any]]:
+        observer = self.sub_holons.get('observer')
+        if data is None and observer:
+            try: data = observer.fetch_market_data(limit=100, symbol=symbol)
+            except: return None
+        if data is None: return None
+
+        row_data = {'Symbol': symbol, 'Price': f"{data['close'].iloc[-1]:.4f}", 'Regime': '?', 'Action': 'HOLD', 'PnL': '-', 'Note': ''}
+        current_price = data['close'].iloc[-1]
         
-        return cycle_report 
+        entropy_agent, oracle = self.sub_holons.get('entropy'), self.sub_holons.get('oracle')
+        guardian, governor = self.sub_holons.get('guardian'), self.sub_holons.get('governor')
+        executor = self.sub_holons.get('executor')
+        
+        if entropy_agent:
+            entropy_val = entropy_agent.calculate_shannon_entropy(data['returns'])
+            regime = entropy_agent.determine_regime(entropy_val)
+            row_data['Entropy'], row_data['Regime'] = f"{entropy_val:.3f}", regime
+
+        # Indicators
+        delta = data['close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+        row_data['RSI'] = f"{(100 - (100 / (1 + (gain / loss))).iloc[-1]):.1f}"
+
+        rolling_mean, rolling_std = data['close'].rolling(20).mean(), data['close'].rolling(20).std()
+        bb_vals = {'upper': (rolling_mean + 2*rolling_std).iloc[-1], 'middle': rolling_mean.iloc[-1], 'lower': (rolling_mean - 2*rolling_std).iloc[-1]}
+        
+        tr = pd.concat([(data['high']-data['low']), (data['high']-data['close'].shift()).abs(), (data['low']-data['close'].shift()).abs()], axis=1).max(axis=1)
+        atr = tr.rolling(14).mean().iloc[-1]
+        
+        obv = (np.sign(data['close'].diff()).fillna(0) * data['volume']).cumsum()
+        obv_slope, _, _, _, _ = linregress(np.arange(14), obv.iloc[-14:].values)
+
+        metabolism = 'PREDATOR' if executor and executor.get_portfolio_value(current_price) > config.SCAVENGER_THRESHOLD else 'SCAVENGER'
+        
+        entry_sig = None
+        if (not governor or governor.is_trade_allowed(symbol, current_price)) and oracle:
+            last_exit = guardian.last_exit_times.get(symbol) if guardian else None
+            if not (last_exit and (time.time() - last_exit) < (config.STRATEGY_POST_EXIT_COOLDOWN_CANDLES * 3600)):
+                entry_sig = oracle.analyze_for_entry(symbol, data, bb_vals, obv_slope, metabolism)
+
+        guardian_exit = None
+        entry_p = executor.entry_prices.get(symbol, 0.0) if executor else 0.0
+        if entry_p > 0 and guardian:
+            direction = executor.position_metadata.get(symbol, {}).get('direction', 'BUY')
+            age_h = 0.0
+            if executor.entry_timestamps.get(symbol):
+                from datetime import datetime, timezone
+                try: age_h = (datetime.now(timezone.utc) - datetime.fromisoformat(executor.entry_timestamps[symbol])).total_seconds() / 3600
+                except: pass
+            guardian_exit = guardian.analyze_for_exit(symbol, current_price, entry_p, bb_vals, atr, metabolism, age_h, direction)
+            pnl_pct = (current_price - entry_p) / entry_p if direction == 'BUY' else (entry_p - current_price) / entry_p
+            row_data['PnL'] = f"{pnl_pct*100:+.2f}%"
+
+        # Enrichment for Dashboard
+        probes = oracle.last_probes.get(symbol, {'lstm': 0.5, 'xgb': 0.5}) if oracle else {'lstm': 0.5, 'xgb': 0.5}
+        row_data['LSTM'] = f"{probes['lstm']:.2f}"
+        row_data['XGB'] = f"{probes['xgb']:.2f}"
+
+        return {
+            'symbol': symbol, 'data': data, 'price': current_price, 'row_data': row_data,
+            'entropy_val': entropy_val, 'regime': regime, 'metabolism': metabolism,
+            'entry_signal': entry_sig, 'guardian_exit': guardian_exit,
+            'indicators': {'bb_vals': bb_vals, 'obv_slope': obv_slope, 'atr': atr, 'tr': tr}
+        }
+
+    def _print_summary(self, cycle_report: List[Dict]):
+        oracle = self.sub_holons.get('oracle')
+        bias = oracle.get_market_bias() if oracle else 0.5
+        print("-" * 110)
+        print(f"[{self.name}] GLOBAL MARKET BIAS: {bias:.2f} | Status: {'BULLISH' if bias >= config.GMB_THRESHOLD else 'CAUTIOUS'}")
+        print("-" * 110)
+        print(f"{'SYMBOL':<10} {'PRICE':<12} {'REGIME':<10} {'ENTROPY':<8} {'BRAINS':<15} {'ACTION':<15} {'PNL':<10}")
+        print("-" * 110)
+        for row in cycle_report:
+            probes = oracle.last_probes.get(row['Symbol'], {'lstm': 0.5, 'xgb': 0.5}) if oracle else {'lstm': 0.5, 'xgb': 0.5}
+            print(f"{row['Symbol']:<10} {row['Price']:<12} {row['Regime']:<10} {row.get('Entropy','N/A'):<8} {probes['lstm']:.2f}/{probes['xgb']:.2f} {row['Action']:<15} {row['PnL']:<10}")
+        print("-" * 110)
 
     def publish_agent_status(self):
-        """Send specific agent metrics to the GUI."""
         if not self.gui_queue: return
+        gov, executor = self.sub_holons.get('governor'), self.sub_holons.get('executor')
+        oracle = self.sub_holons.get('oracle')
+        perf = get_performance_data()
+        # Real-time Valuation for Asset Allocation
+        latest_prices = executor.latest_prices if executor else {}
+        holdings = {'CASH': gov.balance if gov else 0.0}
+        total_exp = 0.0
         
-        # 1. Governor Data
-        gov = self.sub_holons.get('governor')
-        gov_data = {}
         if gov:
-            # Calculate total allocation usage? For now just static config or dynamic limits
-            # Showing Config values for now as 'State'
-            gov_data = {
-                'state': 'PRE-CHECK ACTIVE',
-                'alloc': f"{config.GOVERNOR_MAX_MARGIN_PCT*100:.1f}%",
-                'lev': f"{config.PREDATOR_LEVERAGE}x"
-            }
-            
-        # 2. Brain Data
-        regime = self.market_state.get('regime', 'UNKNOWN')
-        entropy = self.market_state.get('entropy', 0.0)
+            for s, p in gov.positions.items():
+                curr_p = latest_prices.get(s, p['entry_price'])
+                val = p['quantity'] * curr_p
+                holdings[s] = val
+                total_exp += val
+
+        portfolio_val = executor.get_portfolio_value(0.0) if executor else 1.0
         
-        # 3. Actuator Data (Last Order from Ledger)
-        last_action = "IDLE"
-        executor = self.sub_holons.get('executor')
-        if executor:
-            ledger_sum = executor.get_ledger_summary()
-            last_blk = ledger_sum.get('last_block')
-            if last_blk:
-                # Format: "EXECUTE (15:30)" or "HALT"
-                ts = last_blk.get('timestamp', '')[11:16] # Extract time HH:MM
-                act = last_blk.get('action', 'NONE')
-                last_action = f"{act} @ {ts}"
-        
-        # 4. Global Performance Data
-        perf_data = get_performance_data()
-        
-        # 5. Brain Health Checks
-        strat_health = self.sub_holons['strategy'].get_health() if self.sub_holons.get('strategy') else {}
-        dqn_health = self.sub_holons['dqn'].get_health() if self.sub_holons.get('dqn') else {}
-        
-        msg = {
+        self.gui_queue.put({
             'type': 'agent_status',
             'data': {
-                'gov_state': gov_data.get('state', 'OFFLINE'),
-                'gov_alloc': gov_data.get('alloc', '-'),
-                'gov_lev': gov_data.get('lev', '-'),
-                'gov_trends': f"{len(gov.positions) if gov else 0}",
-                'regime': regime,
-                'entropy': f"{entropy:.4f}",
-                'last_order': last_action,
-                'win_rate': f"{perf_data.get('win_rate', 0.0):.1f}%",
-                'omega': f"{perf_data.get('omega_ratio', 0.0):.2f}",
-                # Brain Health
-                'strat_model': strat_health.get('model', 'N/A'),
-                'kalman_active': f"{strat_health.get('kalman_count', 0)}",
-                'dqn_epsilon': dqn_health.get('epsilon', '-'),
-                'dqn_mem': f"{dqn_health.get('memory', 0)}",
-                # Holdings for Pie Chart
-                'holdings': self._get_holdings_breakdown()
+                'gov_state': f"{gov.get_metabolism_state() if gov else 'OFFLINE'}",
+                'gov_alloc': f"{config.GOVERNOR_MAX_MARGIN_PCT*100:.1f}%",
+                'gov_lev': f"{config.PREDATOR_LEVERAGE}x",
+                'gov_trends': str(len(gov.positions)) if gov else "0",
+                'regime': self.market_state['regime'],
+                'entropy': f"{self.market_state['entropy']:.4f}",
+                'strat_model': 'Warp-V4 (Hybrid)',
+                'kalman_active': 'True' if oracle and oracle.kalman_filters else 'False',
+                'ppo_conv': f"{self.last_ppo_conviction:.2f}",
+                'ppo_reward': f"{self.last_ppo_reward:.2f}",
+                'lstm_prob': f"{oracle.get_health().get('last_lstm', 0.5):.2f}",
+                'xgb_prob': f"{oracle.get_health().get('last_xgb', 0.5):.2f}",
+                'last_order': executor.last_order_details if executor else 'NONE',
+                'win_rate': f"{perf.get('win_rate', 0.0):.1f}%",
+                'pnl': f"${perf.get('total_pnl', 0.0):.2f}",
+                'omega': f"{perf.get('omega_ratio', 0.0):.2f}",
+                'exposure': f"${total_exp:.2f}",
+                'margin': f"${executor.get_execution_summary()['margin_used']:.2f}" if executor else "$0.00",
+                'actual_lev': f"{total_exp/portfolio_val:.2f}x",
+                'holdings': holdings
             }
-        }
-        self.gui_queue.put(msg)
-
-    def _get_holdings_breakdown(self):
-        """Helper to get {Symbol: USD_Value} for GUI."""
-        gov = self.sub_holons.get('governor')
-        if not gov: return {}
-        
-        breakdown = {'CASH': gov.balance}
-        for sym, pos in gov.positions.items():
-            # Estimate value using entry price if current price not avail inside Governor directly easily
-            # But Governor tracks `last_specific_entry` or `positions` entry price.
-            # To be accurate we need current price, but entry price * qty is decent approx for allocation view.
-            val = pos['quantity'] * pos['entry_price']
-            breakdown[sym] = val
-        return breakdown
-
-    def _adapt_to_regime(self, regime: str):
-        """Alter disposition based on market regime."""
-        if regime == 'CHAOTIC':
-            # High Integration (Safety in numbers), Low Autonomy (Don't go rogue)
-            self.disposition.integration = 0.9
-            self.disposition.autonomy = 0.1
-        elif regime == 'ORDERED':
-            # Low Integration, High Autonomy (Aggressive)
-            self.disposition.integration = 0.2
-            self.disposition.autonomy = 0.9
-        else: # TRANSITION
-            self.disposition.integration = 0.5
-            self.disposition.autonomy = 0.5
+        })
 
     def start_live_loop(self, interval_seconds: int = 60):
-        """
-        Start the infinite live execution loop.
-        """
-        # LOAD EXPERIENCE MEMORY
-        if self.sub_holons.get('dqn') and self.sub_holons.get('executor'):
-            try:
-                db = self.sub_holons['executor'].db_manager
-                exps = db.get_experiences(limit=2000)
-                if exps:
-                    print(f"[{self.name}] 🧠 Loading {len(exps)} partial experiences from DB to Brain...")
-                    for e in exps:
-                        self.sub_holons['dqn'].remember(e['state'], e['action_idx'], e['reward'], e['next_state'], e['done'])
+        self._active_interval = interval_seconds
+        while True:
+            if self.gui_stop_event and self.gui_stop_event.is_set(): break
+            start = time.time()
+            try: 
+                report = self.run_cycle()
+                if self.gui_queue: self.gui_queue.put({'type': 'summary', 'data': report})
             except Exception as e:
-                print(f"[{self.name}] Failed to load RL experiences: {e}")
+                print(f"[{self.name}] ☠️ Cycle Error: {e}")
+                time.sleep(30)
+            
+            wait = max(0, interval_seconds - (time.time() - start))
+            for _ in range(int(wait * 2)):
+                if self.gui_stop_event and self.gui_stop_event.is_set(): break
+                time.sleep(0.5)
 
-        print(f"[{self.name}] 🚀 Starting LIVE Loop (Interval: {interval_seconds}s)")
-        print(f"[{self.name}] Press Ctrl+C to stop.")
-        
-        try:
-            while True:
-                start_time = time.time()
-                
-                cycle_report = self.run_cycle()
-                
-                elapsed = time.time() - start_time
-                sleep_time = max(0, interval_seconds - elapsed)
-                
-                if self.gui_queue:
-                    try:
-                        self.gui_queue.put({
-                            'type': 'summary',
-                            'data': cycle_report
-                        })
-                    except Exception:
-                        pass
-                        
-                elapsed = time.time() - start_time
-                sleep_time = max(0, interval_seconds - elapsed)
-                
-                # HEADLESS OR THREADED SLEEP
-                # We need to sleep in chunks to responsive to stop_event
-                chunks = int(sleep_time / 0.5)
-                for _ in range(chunks):
-                    if self.gui_stop_event and self.gui_stop_event.is_set():
-                        print(f"[{self.name}] ⏹ Stop Signal Received.")
-                        return # Exit Loop
-                    time.sleep(0.5)
-                
-                # Sleep remainder
-                rem = sleep_time % 0.5
-                if rem > 0:
-                    time.sleep(rem)
-                
-                if sleep_time <= 0:
-                    print(f"[{self.name}] ⚠️ Cycle took {elapsed:.1f}s (> {interval_seconds}s interval). Skipping sleep.")
-                
-                # Check stop event at end of loop too
-                if self.gui_stop_event and self.gui_stop_event.is_set():
-                    print(f"[{self.name}] ⏹ Stop Signal Received.")
-                    return
-                    
-        except KeyboardInterrupt:
-            print(f"\n[{self.name}] 🛑 Stopped by User.")
-        except Exception as e:
-            print(f"[{self.name}] ☠️ CRITICAL LOOP ERROR: {e}")
-            print(f"[{self.name}] Self-Healing: Sleeping for 30s before restarting cycle...")
-            time.sleep(30)
-            # The loop continues because we are inside the 'while True' but wait...
-            # The try-except is OUTSIDE the while loop in the original code? 
-            # Let's check lines 266-267.
-            # line 266: try:
-            # line 267:     while True:
-            # So if exception happens inside, it breaks the loop and goes to line 283.
-            # To make it persistent, I must restart the loop.
-            # Recursive call? Or just wrap the try block properly?
-            # Better checking the structure.
-            self.start_live_loop(interval_seconds)
-
-    def receive_message(self, sender: Any, content: Any) -> None:
-        """Handle incoming messages (reports from agents)."""
-        if isinstance(content, Message):
-            print(f"[{self.name}] Received {content.type} from {content.sender}")
-            if content.type == 'ALERT':
-                print(f"[{self.name}] ⚠️ ALERT: {content.payload}")
-        else:
-            # Legacy support
-            pass
+    def receive_message(self, sender, content): pass
+    def _adapt_to_regime(self, regime): pass

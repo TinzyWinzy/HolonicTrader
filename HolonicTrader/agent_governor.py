@@ -22,6 +22,11 @@ class GovernorHolon(Holon):
         self.DEBUG = False # Silence rejection spam
         self.db_manager = db_manager  # For win rate tracking
         
+        # Phase 22: Portfolio Health Tracking
+        self.max_balance = initial_balance
+        self.drawdown_pct = 0.0
+        self.margin_utilization = 0.0
+        
         # Reference ATR for volatility targeting (set during first cycle)
         self.reference_atr = None
         
@@ -40,9 +45,11 @@ class GovernorHolon(Holon):
             if qty > 0:
                 meta = metadata.get(symbol, {})
                 entry_price = meta.get('entry_price', 0.0)
+                direction = meta.get('direction', 'BUY') # Proper sync from metadata
+                
                 # Reconstruct position entry
                 self.positions[symbol] = {
-                    'direction': 'LONG', # Assuming LONG for now
+                    'direction': direction,
                     'entry_price': entry_price,
                     'quantity': qty,
                     'stack_count': 1, # Assume initial entry for synced positions
@@ -52,14 +59,33 @@ class GovernorHolon(Holon):
                 self.last_specific_entry[symbol] = entry_price
                 
                 count += 1
-                print(f"[{self.name}] Restricted: {symbol} (Qty: {qty:.4f})")
+                print(f"[{self.name}] Synchronized: {symbol} ({direction}, Qty: {qty:.4f})")
                 
         if count == 0:
             print(f"[{self.name}] No active positions found to sync.")
         
     def update_balance(self, new_balance: float):
-        """Update the internal balance knowledge."""
+        """Update the internal balance knowledge and health metrics."""
         self.balance = new_balance
+        
+        # Track Drawdown
+        if self.balance > self.max_balance:
+            self.max_balance = self.balance
+            
+        if self.max_balance > 0:
+            self.drawdown_pct = (self.max_balance - self.balance) / self.max_balance
+        
+        # Calculate Margin Utilization
+        total_exposure = 0.0
+        for sym, pos in self.positions.items():
+            total_exposure += abs(pos['quantity']) * pos['entry_price']
+            
+        if self.balance > 0:
+            # We normalize margin utilization based on the config limit
+            # If we use all allowed margin, util = 1.0
+            allowed_exposure = self.balance * config.GOVERNOR_MAX_MARGIN_PCT * config.PREDATOR_LEVERAGE
+            self.margin_utilization = total_exposure / allowed_exposure if allowed_exposure > 0 else 0.0
+
         self._check_homeostasis()
 
     def _check_homeostasis(self):
@@ -80,6 +106,15 @@ class GovernorHolon(Holon):
         else:
             return 'PREDATOR'
 
+    def get_portfolio_health(self) -> dict:
+        """Expose health metrics for PPO Brain."""
+        return {
+            'drawdown_pct': self.drawdown_pct,
+            'margin_utilization': self.margin_utilization,
+            'balance': self.balance,
+            'max_balance': self.max_balance
+        }
+
     def is_trade_allowed(self, symbol: str, asset_price: float) -> bool:
         """
         Lightweight check to see if a trade would be allowed.
@@ -99,7 +134,7 @@ class GovernorHolon(Holon):
                 
         return True
 
-    def calc_position_size(self, symbol: str, asset_price: float, current_atr: float = None, atr_ref: float = None) -> Tuple[bool, float, float]:
+    def calc_position_size(self, symbol: str, asset_price: float, current_atr: float = None, atr_ref: float = None, conviction: float = 0.5) -> Tuple[bool, float, float]:
         """
         Calculate position size with Phase 12 institutional risk management.
         
@@ -107,6 +142,7 @@ class GovernorHolon(Holon):
         1. Minimax Constraint (protect principal)
         2. Volatility Scalar (ATR-based sizing)
         3. Modified Kelly Criterion (PREDATOR mode)
+        4. Conviction Scalar (LSTM-based scaling)
         
         Returns:
             (is_approved: bool, quantity: float, leverage: float)
@@ -141,12 +177,20 @@ class GovernorHolon(Holon):
         
         # === PHASE 12: INSTITUTIONAL RISK MANAGEMENT ===
         
+        # Conviction Scalar (0.5 to 1.5)
+        # conviction here is LSTM prob (0-1). We transform it.
+        # For BUYS: prob > 0.5 is good. For SELLS: prob < 0.5 is good.
+        # Wait, the EntryOracle already chooses direction. 
+        # Let's assume passed conviction is 'strength' (0.5 to 1.0).
+        conv_scalar = 0.5 + (max(0.0, conviction - 0.5) * 2.0)
+        conv_scalar = max(0.5, min(1.5, conv_scalar))
+
         # Base position sizing
         if state == 'SCAVENGER':
             # 10-Bullet Rule: Max margin %
             margin = min(config.SCAVENGER_MAX_MARGIN, self.balance * config.GOVERNOR_MAX_MARGIN_PCT)
             leverage = config.SCAVENGER_LEVERAGE
-            base_notional = margin * leverage
+            base_notional = margin * leverage * conv_scalar
             
         else:  # PREDATOR
             leverage = config.PREDATOR_LEVERAGE
@@ -156,29 +200,36 @@ class GovernorHolon(Holon):
             
             # Trend Age Decay
             current_pos = self.positions.get(symbol)
+            decay_mult = 1.0
             if current_pos:
+                # 1. Age-based Decay
                 age_hours = (time.time() - current_pos.get('first_entry_time', time.time())) / 3600.0
-                
                 if age_hours > config.GOVERNOR_TREND_DECAY_START:
-                    # Linear Decay from 1.0 (at 12h) to 0.0 (at 24h)
                     overtime = age_hours - config.GOVERNOR_TREND_DECAY_START
                     window = config.GOVERNOR_MAX_TREND_AGE_HOURS - config.GOVERNOR_TREND_DECAY_START
-                    decay = max(0.0, 1.0 - (overtime / window))
+                    decay_mult *= max(0.0, 1.0 - (overtime / window))
+                    print(f"[{self.name}] ⏳ Trend Age {age_hours:.1f}h. Decaying by {decay_mult:.2f}x")
+                
+                # 2. Stack-based Decay (Phase 18)
+                stacks = current_pos.get('stack_count', 0)
+                stack_decay = (config.GOVERNOR_STACK_DECAY ** stacks)
+                decay_mult *= stack_decay
+                
+                if decay_mult < 1.0:
+                    print(f"[{self.name}] 🥞 Stack {stacks} Decay: {stack_decay:.2f}x (Total Decay: {decay_mult:.2f}x)")
+                    kelly_size_usd *= decay_mult
                     
-                    print(f"[{self.name}] ⏳ Trend Age {age_hours:.1f}h. Decaying Kelly by {decay:.2f}x")
-                    kelly_size_usd *= decay
-                    
-                    if age_hours > config.GOVERNOR_MAX_TREND_AGE_HOURS:
-                        print(f"[{self.name}] 🛑 Trend Exhausted (>24h). Rejecting Stack.")
-                        return False, 0.0, 0.0
+                if age_hours > config.GOVERNOR_MAX_TREND_AGE_HOURS:
+                    print(f"[{self.name}] 🛑 Trend Exhausted (>24h). Rejecting Stack.")
+                    return False, 0.0, 0.0
             
-            base_notional = kelly_size_usd * leverage
+            base_notional = kelly_size_usd * leverage * conv_scalar
         
         # Apply Volatility Scalar (if ATR provided)
         if current_atr and atr_ref:
             vol_scalar = self.calculate_volatility_scalar(current_atr, atr_ref)
             vol_adjusted_notional = base_notional * vol_scalar
-            print(f"[{self.name}] 📊 Volatility Scalar: {vol_scalar:.2f}x (ATR: {current_atr:.6f} vs Ref: {atr_ref:.6f})")
+            print(f"[{self.name}] 📊 Volatility Scalar: {vol_scalar:.2f}x, Conviction: {conv_scalar:.2f}x")
         else:
             vol_adjusted_notional = base_notional
             vol_scalar = 1.0
@@ -186,9 +237,9 @@ class GovernorHolon(Holon):
         # Apply Minimax Constraint (CRITICAL)
         max_risk_usd = self.calculate_max_risk(self.balance)
         
-        # Assume 3% stop loss distance for risk calculation
-        stop_distance = 0.03
-        max_notional_from_risk = max_risk_usd / stop_distance
+        # Assume mode-specific stop loss distance for risk calculation
+        sl_dist = config.SCAVENGER_STOP_LOSS if state == 'SCAVENGER' else config.PREDATOR_STOP_LOSS
+        max_notional_from_risk = max_risk_usd / sl_dist
         
         # Take minimum of volatility-adjusted and risk-constrained
         final_notional = min(vol_adjusted_notional, max_notional_from_risk)
@@ -198,9 +249,9 @@ class GovernorHolon(Holon):
         
         # Log decision
         if state == 'SCAVENGER':
-            print(f"[{self.name}] SCAVENGER: Margin ${margin:.2f}, Lev {leverage}x, Vol Scalar {vol_scalar:.2f}x, Max Risk ${max_risk_usd:.2f}, Qty {quantity:.4f}")
+            print(f"[{self.name}] SCAVENGER: Margin ${margin:.2f}, Lev {leverage}x, Vol Scalar {vol_scalar:.2f}x, Conv Scalar {conv_scalar:.2f}x, Qty {quantity:.4f}")
         else:
-            print(f"[{self.name}] PREDATOR (Kelly): Kelly ${kelly_size_usd:.2f}, Lev {leverage}x, Vol Scalar {vol_scalar:.2f}x, Max Risk ${max_risk_usd:.2f}, Qty {quantity:.4f}")
+            print(f"[{self.name}] PREDATOR (Kelly): Kelly ${kelly_size_usd:.2f}, Lev {leverage}x, Vol Scalar {vol_scalar:.2f}x, Conv Scalar {conv_scalar:.2f}x, Qty {quantity:.4f}")
         
         return True, quantity, leverage
 
@@ -315,10 +366,22 @@ class GovernorHolon(Holon):
                 # Get recent trades from database
                 trades = self.db_manager.get_recent_trades(lookback)
                 if trades and len(trades) > 0:
-                    # Calculate win rate
+                    # Calculate actual win rate
                     wins = sum(1 for t in trades if t.get('pnl', 0) > 0)
-                    win_rate = wins / len(trades)
-                    print(f"[{self.name}] 📊 Win Rate: {win_rate*100:.1f}% (from {len(trades)} trades)")
+                    actual_wr = wins / len(trades)
+                    
+                    # BLENDING: If we have few trades, blend with a neutral baseline (0.40)
+                    # to prevent "Cold Start" rejection (e.g. 0% WR after 1 loss).
+                    sample_size = len(trades)
+                    min_sample = 10
+                    if sample_size < min_sample:
+                        baseline = 0.40
+                        weight = sample_size / min_sample
+                        win_rate = (actual_wr * weight) + (baseline * (1 - weight))
+                    else:
+                        win_rate = actual_wr
+                        
+                    print(f"[{self.name}] 📊 Win Rate: {win_rate*100:.1f}% (Actual: {actual_wr*100:.1f}%, n={sample_size})")
                     return win_rate
             except Exception as e:
                 print(f"[{self.name}] ⚠️ Win rate calculation failed: {e}")
@@ -345,16 +408,17 @@ class GovernorHolon(Holon):
         surplus = max(0, balance - config.PRINCIPAL)
         
         if surplus <= 0:
+            # Emergency Unit: If we are at the edge, allow a $1.00 margin unit 
+            # to prevent total paralysis if conviction is high.
+            if balance > (config.PRINCIPAL * 0.9):
+                return 1.0 / config.PREDATOR_LEVERAGE 
             return 0.0
         
-        # Use defaults if not provided
+        # Use smoothed win rate if not provided
         if win_rate is None:
             win_rate = self.calculate_recent_win_rate()
         if risk_reward is None:
             risk_reward = config.KELLY_RISK_REWARD
-        
-        if win_rate <= 0:
-            return 0.0
         
         # Kelly formula: f* = [p(b+1) - 1] / b
         b = risk_reward
@@ -363,7 +427,7 @@ class GovernorHolon(Holon):
         # Half-Kelly for safety
         half_kelly = kelly_fraction * 0.5
         
-        # Clamp to reasonable range
+        # Clamp to reasonable range (Floor prevents 0% WR from killing all trades)
         safe_fraction = max(config.KELLY_MIN_FRACTION, min(config.KELLY_MAX_FRACTION, half_kelly))
         
         return surplus * safe_fraction

@@ -8,7 +8,8 @@ import numpy as np
 from datetime import datetime
 from HolonicTrader.agent_observer import ObserverHolon
 from HolonicTrader.agent_entropy import EntropyHolon
-from HolonicTrader.agent_strategy import StrategyHolon
+from HolonicTrader.agent_oracle import EntryOracleHolon
+from HolonicTrader.agent_guardian import ExitGuardianHolon
 from HolonicTrader.agent_governor import GovernorHolon
 from HolonicTrader.agent_executor import ExecutorHolon
 from HolonicTrader.holon_core import Disposition
@@ -38,6 +39,18 @@ def calculate_atr(df, period=14):
     atr = true_range.rolling(period).mean()
     
     return atr
+
+def calculate_obv(df):
+    """Standalone OBV calculation for backtest."""
+    obv = [0]
+    for i in range(1, len(df)):
+        if df['close'].iloc[i] > df['close'].iloc[i-1]:
+            obv.append(obv[-1] + df['volume'].iloc[i])
+        elif df['close'].iloc[i] < df['close'].iloc[i-1]:
+            obv.append(obv[-1] - df['volume'].iloc[i])
+        else:
+            obv.append(obv[-1])
+    return pd.Series(obv, index=df.index)
 
 def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date=None):
     """
@@ -69,7 +82,8 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     # 2. Initialize Agents
     print("\n[2/6] Initializing Holonic Agents...")
     entropy = EntropyHolon()
-    strategy = StrategyHolon()
+    oracle = EntryOracleHolon()
+    guardian = ExitGuardianHolon()
     governor = GovernorHolon(initial_balance=config.INITIAL_CAPITAL)
     executor = ExecutorHolon(
         initial_capital=config.INITIAL_CAPITAL,
@@ -84,7 +98,7 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     df['atr'] = calculate_atr(df, config.ATR_PERIOD)
     
     # Calculate OBV
-    obv_series = strategy.calculate_obv(df)
+    obv_series = calculate_obv(df)
     df['obv'] = obv_series
     df['obv_slope'] = obv_series.rolling(14).apply(
         lambda x: np.polyfit(np.arange(len(x)), x, 1)[0] if len(x) == 14 else 0
@@ -135,10 +149,10 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
         obv_slope = row['obv_slope']
         
         if executor.held_assets.get(symbol, 0.0) == 0:  # Not in position
-            signal = strategy.analyze_for_entry(
+            signal = oracle.analyze_for_entry(
                 symbol=symbol,
                 window_data=df.loc[:idx].tail(100),
-                bb=bb,
+                bb_vals=bb,
                 obv_slope=obv_slope,
                 metabolism_state=metabolism
             )
@@ -162,14 +176,13 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
                 positions.append(idx)
                 
         else:  # In position
-            signal = strategy.analyze_for_exit(
+            signal = guardian.analyze_for_exit(
                 symbol=symbol,
                 current_price=current_price,
                 entry_price=executor.entry_price,
                 bb=bb,
                 atr=row['atr'],
                 metabolism_state=metabolism,
-                entry_timestamp=None,
                 position_age_hours=0.0  # Backtest doesn't track position age yet
             )
             
@@ -203,6 +216,7 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     final_balance = executor.balance_usd + (qty_final * df['close'].iloc[-1] if qty_final > 0 else 0)
     
     win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+    total_pnl = final_balance - config.INITIAL_CAPITAL
     
     # 6. Print Results
     print(f"\n{'='*60}")

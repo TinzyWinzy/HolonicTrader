@@ -1,10 +1,16 @@
 import os
 import ccxt
+import time
 import pandas as pd
 import numpy as np
 from datetime import datetime
 from typing import Literal, Any
 from HolonicTrader.holon_core import Holon, Disposition, Message
+
+import requests
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+import config
 
 class ObserverHolon(Holon):
     """
@@ -21,9 +27,21 @@ class ObserverHolon(Holon):
         self.symbol = symbol
         self.exchange_id = exchange_id
         
-        # Initialize exchange
+        # Initialize exchange with rate limiting and larger pool size
         if hasattr(ccxt, exchange_id):
-            self.exchange = getattr(ccxt, exchange_id)()
+            # Create a custom session with a larger connection pool
+            session = requests.Session()
+            adapter = HTTPAdapter(
+                pool_connections=config.CCXT_POOL_SIZE, 
+                pool_maxsize=config.CCXT_POOL_SIZE
+            )
+            session.mount('https://', adapter)
+            session.mount('http://', adapter)
+
+            self.exchange = getattr(ccxt, exchange_id)({
+                'enableRateLimit': config.CCXT_RATE_LIMIT,
+                'session': session
+            })
         else:
             raise ValueError(f"Exchange {exchange_id} not found in ccxt")
 
@@ -43,7 +61,11 @@ class ObserverHolon(Holon):
             'BTC/USDT': 'BTCUSD_1h.csv',
             'DOGE/USDT': 'DOGEUSDT_1h.csv',
             'SUI/USDT': 'SUIUSDT_1h.csv',
-            'XRP/USDT': 'XRPUSDT_1h.csv'
+            'XRP/USDT': 'XRPUSDT_1h.csv',
+            'SHIB/USDT': 'SHIBUSDT_1h.csv',
+            'LTC/USDT': 'LTCUSDT_1h.csv',
+            'LINK/USDT': 'LINKUSDT_1h.csv',
+            'ALGO/USDT': 'ALGOUSDT_1h.csv'
         }
         
         filename = symbol_map.get(symbol)
@@ -90,13 +112,16 @@ class ObserverHolon(Holon):
                 # If we have local data, we fetch since last timestamp
                 if not df_local.empty:
                     last_ts = int(df_local['timestamp'].iloc[-1].timestamp() * 1000)
-                    ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, timeframe, since=last_ts, limit=limit)
+                    # We fetch with a larger limit to bridge gaps, or multiple fetches
+                    # For simple robustness: fetch up to 1000 candles since last_ts
+                    ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, timeframe, since=last_ts, limit=1000)
                 else:
                     ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, timeframe, limit=limit)
                 
-                df_temp = pd.DataFrame(ohlcv_live, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-                df_temp['timestamp'] = pd.to_datetime(df_temp['timestamp'], unit='ms')
-                df_live = df_temp
+                if ohlcv_live:
+                    df_temp = pd.DataFrame(ohlcv_live, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+                    df_temp['timestamp'] = pd.to_datetime(df_temp['timestamp'], unit='ms')
+                    df_live = df_temp
                 break # Success
             except Exception as e:
                 print(f"[{self.name}] Sync Attempt {attempt+1}/3 failed for {target_symbol}: {e}")

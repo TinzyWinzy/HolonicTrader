@@ -110,10 +110,12 @@ class DeepQLearningHolon(Holon):
         # Keras expects (batch_size, input_dim), so we expand dims
         state_tensor = np.array([state], dtype=np.float32) 
         
-        # Run prediction (verbose=0 to avoid log spam)
-        q_values = self.model.predict(state_tensor, verbose=0)
-        action_idx = np.argmax(q_values[0])
+        # High-Performance Functional Call
+        s_tensor = tf.convert_to_tensor(state_tensor, dtype=tf.float32)
+        q_tensor = self.model(s_tensor, training=False)
+        q_values = q_tensor.numpy()
         
+        action_idx = np.argmax(q_values[0])
         return self.actions[action_idx]
 
     def remember(self, state, action_idx, reward, next_state, done):
@@ -135,9 +137,12 @@ class DeepQLearningHolon(Holon):
         next_states = np.array([m[3] for m in minibatch], dtype=np.float32)
         
         # Predict Q-values for current and next states
-        # Doing this in batch is much faster than one by one
-        current_qs = self.model.predict(states, verbose=0)
-        next_qs = self.model.predict(next_states, verbose=0)
+        # Functional calls for speed and retrace safety
+        s_tensor = tf.convert_to_tensor(states, dtype=tf.float32)
+        ns_tensor = tf.convert_to_tensor(next_states, dtype=tf.float32)
+        
+        current_qs = self.model(s_tensor, training=False).numpy()
+        next_qs = self.model(ns_tensor, training=False).numpy()
         
         X = states
         y = current_qs.copy() # We only update the Q-value for the taken action

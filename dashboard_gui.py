@@ -6,6 +6,8 @@ from datetime import datetime
 
 # Matplotlib
 import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -23,11 +25,15 @@ class HolonicDashboard:
         self.root.geometry("1400x900") # Expanded for Tabs
         
         # Threading vars
-        self.status_queue = queue.Queue()
-        self.stop_event = threading.Event()
+        self.gui_queue = queue.Queue()
+        self.gui_stop_event = threading.Event()
         self.bot_thread = None
         self.is_running_live = False
         self.is_running_backtest = False
+        
+        # PPO Tracking
+        self.last_ppo_conviction = 0.5
+        self.last_ppo_reward = 0.0
         
         # Configuration Vars
         self.conf_symbol = tk.StringVar(value="XRP/USDT")
@@ -105,18 +111,20 @@ class HolonicDashboard:
         tbl_frame = ttk.LabelFrame(left_col, text="Market Overview", padding=10)
         tbl_frame.pack(fill=tk.BOTH, expand=True, pady=5)
         
-        cols = ("Symbol", "Price", "RSI", "Stack", "PnL", "Action", "Note")
+        cols = ("Symbol", "Price", "Regime", "Entropy", "RSI", "LSTM", "XGB", "PnL", "Action")
         self.tree = ttk.Treeview(tbl_frame, columns=cols, show='headings', height=10)
         self.tree.pack(fill=tk.BOTH, expand=True)
         
         # Configure columns with appropriate widths
-        self.tree.column("Symbol", width=80)
-        self.tree.column("Price", width=100)
-        self.tree.column("RSI", width=60)
-        self.tree.column("Stack", width=60)
-        self.tree.column("PnL", width=80)
-        self.tree.column("Action", width=120)
-        self.tree.column("Note", width=150)
+        self.tree.column("Symbol", width=70)
+        self.tree.column("Price", width=80)
+        self.tree.column("Regime", width=80)
+        self.tree.column("Entropy", width=60)
+        self.tree.column("RSI", width=50)
+        self.tree.column("LSTM", width=50)
+        self.tree.column("XGB", width=50)
+        self.tree.column("PnL", width=70)
+        self.tree.column("Action", width=110)
         
         for col in cols:
             self.tree.heading(col, text=col)
@@ -177,8 +185,10 @@ class HolonicDashboard:
         self.ag_entropy = self._metric(brain_frame, "Entropy Score:", "0.0000", 1)
         self.ag_model = self._metric(brain_frame, "Strategy Model:", "-", 2)
         self.ag_kalman = self._metric(brain_frame, "Kalman Active:", "-", 3)
-        self.ag_dqn_eps = self._metric(brain_frame, "DQN Epsilon:", "-", 4)
-        self.ag_dqn_mem = self._metric(brain_frame, "DQN Memory:", "-", 5)
+        self.ag_ppo_conv = self._metric(brain_frame, "PPO Conviction:", "-", 4)
+        self.ag_ppo_reward = self._metric(brain_frame, "PPO Reward:", "-", 5)
+        self.ag_lstm_prob = self._metric(brain_frame, "LSTM Prob:", "-", 6)
+        self.ag_xgb_prob = self._metric(brain_frame, "XGB Prob:", "-", 7)
         
         # Performance
         perf_frame = ttk.LabelFrame(container, text="📈 Session Performance", padding=15)
@@ -196,6 +206,9 @@ class HolonicDashboard:
         self.p12_minimax = self._metric(phase12_frame, "Max Risk:", "-", 1)
         self.p12_vol_scalar = self._metric(phase12_frame, "Vol Scalar:", "-", 2)
         self.p12_principal = self._metric(phase12_frame, "Principal:", "$10.00", 3)
+        self.p12_exposure = self._metric(phase12_frame, "Total Exposure:", "$0.00", 4)
+        self.p12_margin = self._metric(phase12_frame, "Used Margin:", "$0.00", 5)
+        self.p12_actual_lev = self._metric(phase12_frame, "Actual Leverage:", "0.00x", 6)
         
         container.columnconfigure(0, weight=1)
         container.columnconfigure(1, weight=1)
@@ -309,8 +322,20 @@ class HolonicDashboard:
         if not clean_values:
              self.ax_pie.text(0.5, 0.5, "Empty", ha='center')
         else:
-            self.ax_pie.pie(clean_values, labels=clean_labels, autopct='%1.0f%%', startangle=90, textprops={'fontsize': 8})
-            self.ax_pie.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            # Enhanced Aesthetics (Phase 30: Glassmorphism/Vibrant)
+            colors = plt.cm.Paired(np.linspace(0, 1, len(clean_values)))
+            
+            wedges, texts, autotexts = self.ax_pie.pie(
+                clean_values, labels=clean_labels, autopct='%1.0f%%', 
+                startangle=90, colors=colors, pctdistance=0.85, 
+                textprops={'fontsize': 7, 'color': 'black'}
+            )
+            
+            # Donut style
+            centre_circle = plt.Circle((0,0), 0.70, fc='white')
+            self.ax_pie.add_artist(centre_circle)
+            
+            self.ax_pie.axis('equal')
             
         self.canvas_pie.draw()
 
@@ -351,8 +376,8 @@ class HolonicDashboard:
             'leverage_cap': self.conf_leverage.get()
         }
         
-        self.stop_event.clear()
-        self.bot_thread = threading.Thread(target=run_bot, args=(self.stop_event, self.status_queue, cfg))
+        self.gui_stop_event.clear()
+        self.bot_thread = threading.Thread(target=run_bot, args=(self.gui_stop_event, self.gui_queue, cfg))
         self.bot_thread.daemon = True
         self.bot_thread.start()
         
@@ -367,7 +392,7 @@ class HolonicDashboard:
 
     def stop_bot(self):
         if not self.is_running_live: return
-        self.stop_event.set()
+        self.gui_stop_event.set()
         self.is_running_live = False
         self.status_var.set("STOPPING...")
         # Note: Actual stop happens when thread sees event
@@ -386,7 +411,7 @@ class HolonicDashboard:
     def process_queue(self):
         try:
             while True:
-                msg = self.status_queue.get_nowait()
+                msg = self.gui_queue.get_nowait()
                 mtype = msg.get("type")
                 
                 if mtype == 'log':
@@ -404,11 +429,13 @@ class HolonicDashboard:
                         values = (
                             row.get('Symbol'),
                             row.get('Price'),
+                            row.get('Regime', '?'),
+                            row.get('Entropy', '0.00'),
                             row.get('RSI', '-'),
-                            row.get('Stack', '0'),
+                            row.get('LSTM', '0.50'),
+                            row.get('XGB', '0.50'),
                             row.get('PnL'),
-                            row.get('Action'),
-                            row.get('Note')
+                            row.get('Action')
                         )
                         self.tree.insert('', tk.END, values=values)
                         
@@ -432,8 +459,10 @@ class HolonicDashboard:
                     self.ag_entropy.config(text=data.get('entropy', '0.0'))
                     self.ag_model.config(text=data.get('strat_model', '-'))
                     self.ag_kalman.config(text=data.get('kalman_active', '-'))
-                    self.ag_dqn_eps.config(text=data.get('dqn_epsilon', '-'))
-                    self.ag_dqn_mem.config(text=data.get('dqn_mem', '-'))
+                    self.ag_ppo_conv.config(text=data.get('ppo_conv', '0.50'))
+                    self.ag_ppo_reward.config(text=data.get('ppo_reward', '0.00'))
+                    self.ag_lstm_prob.config(text=data.get('lstm_prob', '0.50'))
+                    self.ag_xgb_prob.config(text=data.get('xgb_prob', '0.50'))
                     
                     # Update Last Order
                     self.act_last_ord.config(text=data.get('last_order', 'NONE'))
@@ -442,6 +471,11 @@ class HolonicDashboard:
                     self.perf_winrate.config(text=data.get('win_rate', '-'))
                     self.perf_pnl.config(text=data.get('pnl', '-'))
                     self.perf_omega.config(text=data.get('omega', '-'))
+                    
+                    # Update Risk Metrics
+                    self.p12_exposure.config(text=data.get('exposure', '$0.00'))
+                    self.p12_margin.config(text=data.get('margin', '$0.00'))
+                    self.p12_actual_lev.config(text=data.get('actual_lev', '0.00x'))
                     
                     # Update Pie
                     holdings = data.get('holdings')

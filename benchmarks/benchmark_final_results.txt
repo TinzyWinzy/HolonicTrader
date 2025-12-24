@@ -1,0 +1,29 @@
+HOLONIC TRADER SYSTEM BENCHMARK
+Timestamp: 2025-12-23T21:06:59.192425
+
+Summary:
+total_assets            16.000000
+avg_roi                 -0.158068
+avg_win_rate            34.700349
+total_trades          1786.000000
+profitable_assets        5.000000
+total_combined_pnl      -2.529088
+
+Detail Table:
+       symbol       roi   win_rate  total_trades  total_pnl
+0    ADA/USDT -1.000300  39.403974           302  -1.000300
+1    BNB/USDT -0.129661  21.052632            19  -0.129661
+2    BTC/USDT  0.422465  42.293907           279   0.422465
+3   DOGE/USDT  0.028200  45.192308           312   0.028200
+4    ETH/USDT -0.111528  36.000000            25  -0.111528
+5    SOL/USDT -0.315827  25.806452            31  -0.315827
+6    SUI/USDT -0.498935  45.896657           329  -0.498935
+7    XRP/USDT  0.411896  42.293907           279   0.411896
+8   SHIB/USDT -0.145863  29.032258            31  -0.145863
+9   PAXG/USDT  0.086638  50.000000             6   0.086638
+10   LTC/USDT -0.230109   8.333333            12  -0.230109
+11  LINK/USDT -0.298335  30.000000            30  -0.298335
+12   XMR/USDT  0.345958  58.333333            36   0.345958
+13  ALGO/USDT -0.354015  17.857143            28  -0.354015
+14   UNI/USDT -0.543842  25.000000            36  -0.543842
+15  AAVE/USDT -0.195829  38.709677            31  -0.195829

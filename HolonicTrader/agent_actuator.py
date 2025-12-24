@@ -12,92 +12,108 @@ we simulate the "Wait for Fill" logic.
 """
 
 import time
+import ccxt
+import config
+import os
 from typing import Any, Literal
-from HolonicTrader.holon_core import Holon, Disposition
+from HolonicTrader.holon_core import Holon, Disposition, Message
 
 class ActuatorHolon(Holon):
-    def __init__(self, name: str = "ActuatorAgent"):
+    def __init__(self, name: str = "ActuatorAgent", exchange_id: str = 'kraken'):
         super().__init__(name=name, disposition=Disposition(autonomy=0.8, integration=0.2))
         self.pending_orders = []
+        self.exchange_id = exchange_id
+        
+        # Initialize real exchange connection
+        if hasattr(ccxt, exchange_id):
+            self.exchange = getattr(ccxt, exchange_id)({
+                'apiKey': config.API_KEY,
+                'secret': config.API_SECRET,
+                'enableRateLimit': True,
+                # 'options': {'defaultType': 'margin'} # Or similar for futures/margin
+            })
+        else:
+            raise ValueError(f"Exchange {exchange_id} not found in ccxt")
 
-    def place_limit_order(self, symbol: str, direction: Literal['BUY', 'SELL'], quantity: float, limit_price: float, mock_execution: bool = True):
+        # Kraken Symbol Mapping (Internal USDT -> Kraken USD)
+        self.symbol_map = {
+            'UNI/USDT': 'UNI/USD',
+            'AAVE/USDT': 'AAVE/USD'
+        }
+
+    def place_limit_order(self, symbol: str, direction: Literal['BUY', 'SELL'], quantity: float, limit_price: float, margin: bool = True):
         """
         Place a Limit Order (Maker).
-        Returns the Order ID. The order is lazily tracked in self.pending_orders.
+        Returns the Order object.
         """
-        print(f"[{self.name}] PLACING LIMIT {direction} {quantity:.4f} {symbol} @ {limit_price:.4f}")
+        exec_symbol = self.symbol_map.get(symbol, symbol)
+        side = 'buy' if direction == 'BUY' else 'sell'
         
-        order_id = f"ord_{int(time.time()*1000)}"
-        order = {
-            'id': order_id,
-            'status': 'OPEN',
-            'symbol': symbol,
-            'direction': direction,
-            'quantity': quantity,
-            'limit_price': limit_price,
-            'timestamp': time.time()
-        }
-        self.pending_orders.append(order)
-        return order # Return the OPEN order object
+        print(f"[{self.name}] 🚀 PLACING REAL LIMIT {direction} {quantity:.4f} {exec_symbol} @ {limit_price:.4f}")
+        
+        try:
+            params = {'postOnly': True}
+            if margin:
+                # Isolated margin for shorting/leverage
+                params['marginMode'] = 'isolated' 
+                
+            order = self.exchange.create_order(
+                symbol=exec_symbol,
+                type='limit',
+                side=side,
+                amount=quantity,
+                price=limit_price,
+                params=params
+            )
             
-    def check_fills(self, candle_low: float, candle_high: float):
+            # Map back to our internal structure for tracking
+            internal_order = {
+                'id': order['id'],
+                'status': 'OPEN',
+                'symbol': symbol,
+                'direction': direction,
+                'quantity': quantity,
+                'limit_price': limit_price,
+                'timestamp': time.time()
+            }
+            self.pending_orders.append(internal_order)
+            return internal_order
+            
+        except Exception as e:
+            print(f"[{self.name}] ❌ Order Placement Failed: {e}")
+            return None
+            
+    def check_fills(self, candle_low: float = None, candle_high: float = None):
         """
-        Simulate the fill logic based on OHLC data (for backtesting).
+        Check if pending orders were filled. For live, we fetch from exchange.
         """
         filled_orders = []
         remaining_orders = []
         
         for order in self.pending_orders:
-            is_filled = False
-            
-            if order['direction'] == 'BUY':
-                if candle_low <= order['limit_price']:
-                    is_filled = True
-            elif order['direction'] == 'SELL':
-                if candle_high >= order['limit_price']:
-                    is_filled = True
-            
-            if is_filled:
-                order['status'] = 'FILLED'
-                order['filled_qty'] = order['quantity']
-                order['cost_usd'] = order['quantity'] * order['limit_price']
-                filled_orders.append(order)
-            else:
+            try:
+                # Fetch order status from exchange
+                remote_order = self.exchange.fetch_order(order['id'], order['symbol'])
+                
+                if remote_order['status'] == 'closed':
+                    order['status'] = 'FILLED'
+                    order['filled_qty'] = remote_order['filled']
+                    order['cost_usd'] = remote_order['cost']
+                    filled_orders.append(order)
+                    print(f"[{self.name}] ✅ FILL CONFIRMED: {order['id']}")
+                elif remote_order['status'] == 'canceled':
+                    print(f"[{self.name}] ⚠️ Order {order['id']} was CANCELED.")
+                else:
+                    # Timeout logic (5 mins)
+                    if time.time() - order['timestamp'] > 300:
+                        self.exchange.cancel_order(order['id'], order['symbol'])
+                        print(f"[{self.name}] ⏱️ Order {order['id']} TIMEOUT. Canceled.")
+                    else:
+                        remaining_orders.append(order)
+            except Exception as e:
+                print(f"[{self.name}] Error checking fill for {order['id']}: {e}")
                 remaining_orders.append(order)
                 
-        self.pending_orders = remaining_orders
-        return filled_orders
-
-    def check_fills_live(self, current_price: float):
-        """
-        Simulate the fill logic based on the real-time ticker (for live paper-trading).
-        """
-        filled_orders = []
-        remaining_orders = []
-
-        for order in self.pending_orders:
-            is_filled = False
-            
-            if order['direction'] == 'BUY':
-                if current_price <= order['limit_price']:
-                    is_filled = True
-            elif order['direction'] == 'SELL':
-                if current_price >= order['limit_price']:
-                    is_filled = True
-            
-            if is_filled:
-                order['status'] = 'FILLED'
-                order['filled_qty'] = order['quantity']
-                order['cost_usd'] = order['quantity'] * order['limit_price']
-                filled_orders.append(order)
-                print(f"[{self.name}] LIVE FILL: {order['direction']} {order['quantity']} @ {order['limit_price']}")
-            else:
-                # Cancel if too old (e.g. 5 minutes)
-                if time.time() - order['timestamp'] > 300:
-                    print(f"[{self.name}] LIVE CANCEL: Order timed out.")
-                else:
-                    remaining_orders.append(order)
-
         self.pending_orders = remaining_orders
         return filled_orders
 
@@ -105,7 +121,6 @@ class ActuatorHolon(Holon):
         """Handle incoming messages."""
         if isinstance(content, Message):
             if content.type == 'PLACE_ORDER':
-                # content.payload = {'symbol': ..., 'direction': ..., ...}
                 pass
         else:
             pass
