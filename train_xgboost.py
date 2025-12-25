@@ -40,7 +40,7 @@ def compute_indicators(df):
     
     return df
 
-def generate_stacked_dataset():
+def generate_stacked_dataset(file_list=None):
     """Run LSTM inference on historical data to create the stacked feature set."""
     oracle = EntryOracleHolon()
     if oracle.model is None:
@@ -48,17 +48,18 @@ def generate_stacked_dataset():
         return None
         
     # Final dataset expansion to 12 assets for live-readiness
-    top_symbols = [
-        'BTCUSD_1h.csv', 'ETHUSDT_1h.csv', 'ADAUSDT_1h.csv', 'XRPUSDT_1h.csv',
-        'SOLUSDT_1h.csv', 'DOGEUSDT_1h.csv', 'SUIUSDT_1h.csv', 'BNBUSDT_1h.csv',
-        'LINKUSDT_1h.csv', 'LTCUSDT_1h.csv', 'UNIUSDT_1h.csv', 'AAVEUSDT_1h.csv'
-    ]
-    all_files = [os.path.join(DATA_DIR, f) for f in top_symbols if os.path.exists(os.path.join(DATA_DIR, f))]
+    if file_list is None:
+        top_symbols = [
+            'BTCUSD_1h.csv', 'ETHUSDT_1h.csv', 'ADAUSDT_1h.csv', 'XRPUSDT_1h.csv',
+            'SOLUSDT_1h.csv', 'DOGEUSDT_1h.csv', 'SUIUSDT_1h.csv', 'BNBUSDT_1h.csv',
+            'LINKUSDT_1h.csv', 'LTCUSDT_1h.csv', 'UNIUSDT_1h.csv', 'AAVEUSDT_1h.csv'
+        ]
+        file_list = [os.path.join(DATA_DIR, f) for f in top_symbols if os.path.exists(os.path.join(DATA_DIR, f))]
     
     datasets = []
     
-    print(f"Generating Stacked Dataset (Optimized) from {len(all_files)} files...")
-    for f in all_files:
+    print(f"Generating Stacked Dataset (Optimized) from {len(file_list)} files...")
+    for f in file_list:
         df = pd.read_csv(f)
         if len(df) < 150: continue
         
@@ -80,33 +81,43 @@ def generate_stacked_dataset():
         datasets.append(df.iloc[60:-3].dropna()) # Drop padding and target lookahead
         print(f"  Processed {os.path.basename(f)}: {len(df)} samples")
         
+    if not datasets:
+        return None
+        
     return pd.concat(datasets)
 
-def train_stacked_holon():
+def train_model(train_df, params=None):
+    """Train XGBoost model on the provided dataframe."""
+    features = ['lstm_prob', 'rsi', 'bb_pct_b', 'macd_hist', 'volatility']
+    X = train_df[features]
+    y = train_df['target']
+    
+    dtrain = xgb.DMatrix(X, label=y)
+    
+    if params is None:
+        params = {
+            'max_depth': 6,
+            'eta': 0.05,
+            'objective': 'binary:logistic',
+            'eval_metric': 'logloss',
+            'subsample': 0.8,
+            'colsample_bytree': 0.8
+        }
+    
+    model = xgb.train(params, dtrain, num_boost_round=150)
+    return model
+
+def train_stacked_holon(save_path=MODEL_PATH):
     full_df = generate_stacked_dataset()
     if full_df is None: return
     
-    features = ['lstm_prob', 'rsi', 'bb_pct_b', 'macd_hist', 'volatility']
-    X = full_df[features]
-    y = full_df['target']
+    print(f"\nTraining Monolith-V4 (Stacked Holon) on {len(full_df)} samples...")
     
-    print(f"\nTraining Monolith-V4 (Stacked Holon) on {len(X)} samples...")
-    dtrain = xgb.DMatrix(X, label=y)
-    
-    params = {
-        'max_depth': 6,
-        'eta': 0.05,
-        'objective': 'binary:logistic',
-        'eval_metric': 'logloss',
-        'subsample': 0.8,
-        'colsample_bytree': 0.8
-    }
-    
-    model = xgb.train(params, dtrain, num_boost_round=150)
+    model = train_model(full_df)
     
     # Save model
-    model.save_model(MODEL_PATH)
-    print(f"Model saved to {MODEL_PATH}")
+    model.save_model(save_path)
+    print(f"Model saved to {save_path}")
     
     # Feature Importance
     importance = model.get_score(importance_type='gain')

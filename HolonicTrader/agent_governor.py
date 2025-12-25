@@ -141,16 +141,36 @@ class GovernorHolon(Holon):
         Integrates:
         1. Minimax Constraint (protect principal)
         2. Volatility Scalar (ATR-based sizing)
-        3. Modified Kelly Criterion (PREDATOR mode)
         4. Conviction Scalar (LSTM-based scaling)
         
         Returns:
             (is_approved: bool, quantity: float, leverage: float)
         """
+        # --- PHASE 25: SATELLITE OVERRIDE ---
+        # The executor passes 'conviction' which we used as a carrier for metadata in previous versions,
+        # but here we might need a clearer signal. 
+        # Actually, let's inspect the 'conviction' arg. If it's a dict or special object? 
+        # No, 'conviction' is float.
+        # We need to rely on the `symbol` being in `SATELLITE_ASSETS`.
+        if symbol in config.SATELLITE_ASSETS:
+             # Fixed Sizing: $10 Margin * 10x Lev = $100 Position
+             notional = config.SATELLITE_MARGIN * config.SATELLITE_LEVERAGE
+             quantity = notional / asset_price
+             return True, quantity, config.SATELLITE_LEVERAGE
+        # ------------------------------------
+
         if self.state == 'HIBERNATE':
             print(f"[{self.name}] Trade REJECTED: System in HIBERNATION.")
             return False, 0.0, 0.0
 
+        # --- PHASE 35: IMMUNE SYSTEM CHECKS ---
+        if not self.check_cluster_risk(symbol):
+            return False, 0.0, 0.0
+            
+        # --------------------------------------
+
+        # 1. Minimax Constraint (The "House Money" Rule)
+        max_loss_usd = self.calculate_max_risk(self.balance)
         if asset_price <= 0:
             print(f"[{self.name}] Trade REJECTED: Invalid Asset Price.")
             return False, 0.0, 0.0
@@ -247,6 +267,16 @@ class GovernorHolon(Holon):
         # Convert to quantity
         quantity = final_notional / asset_price
         
+        # Leverage Cap (Dynamic based on Conviction?)
+        # For now, we stick to Config limits per asset class
+        max_leverage = config.SCAVENGER_LEVERAGE if state == 'SCAVENGER' else config.PREDATOR_LEVERAGE
+        
+        # --- PHASE 35: LEVERAGE CHECK ---
+        notional_value = quantity * asset_price
+        if not self.check_leverage_risk(notional_value):
+            return False, 0.0, 0.0
+        # -------------------------------
+        
         # Log decision
         if state == 'SCAVENGER':
             print(f"[{self.name}] SCAVENGER: Margin ${margin:.2f}, Lev {leverage}x, Vol Scalar {vol_scalar:.2f}x, Conv Scalar {conv_scalar:.2f}x, Qty {quantity:.4f}")
@@ -271,7 +301,10 @@ class GovernorHolon(Holon):
             new_qty = old_qty + quantity
             
             # Weighted Average Price
-            avg_price = ((old_qty * old_price) + (quantity * entry_price)) / new_qty
+            if abs(new_qty) > 1e-9:
+                avg_price = ((old_qty * old_price) + (quantity * entry_price)) / new_qty
+            else:
+                avg_price = 0.0
             
             self.positions[symbol] = {
                 'direction': direction,
@@ -386,9 +419,48 @@ class GovernorHolon(Holon):
             except Exception as e:
                 print(f"[{self.name}] ⚠️ Win rate calculation failed: {e}")
         
-        # Conservative default if database unavailable
         return 0.40
-    
+
+    def check_cluster_risk(self, symbol: str) -> bool:
+        """
+        Refuse trade if we already hold an asset from the same family.
+        Returns: False if RISK DETECTED (Reject), True if SAFE.
+        """
+        family = None
+        if symbol in config.FAMILY_L1: family = config.FAMILY_L1
+        elif symbol in config.FAMILY_PAYMENT: family = config.FAMILY_PAYMENT
+        elif symbol in config.FAMILY_MEME: family = config.FAMILY_MEME
+        
+        if not family: return True # No family, no risk
+        
+        # Check holdings
+        for asset, data in self.positions.items():
+            if abs(data['quantity']) > 0 and asset in family and asset != symbol:
+                print(f"[{self.name}] ⚠️ CLUSTER RISK: Rejecting {symbol} (Already hold {asset})")
+                return False
+        return True
+
+    def check_leverage_risk(self, new_notional_value: float) -> bool:
+        """
+        Refuse trade if Total Notional Exposure > 10x Balance.
+        """
+        current_exposure = 0.0
+        # Sum absolute notional value of all positions
+        for asset, data in self.positions.items():
+            # We need current price for accurate notional, but entry_price is a decent proxy for risk check
+            # preventing API calls here.
+            qty = abs(data['quantity'])
+            price = data['entry_price']
+            current_exposure += (qty * price)
+            
+        total_exposure = current_exposure + new_notional_value
+        max_allowed = self.balance * config.IMMUNE_MAX_LEVERAGE_RATIO
+        
+        if total_exposure > max_allowed:
+            print(f"[{self.name}] ⚠️ OVER-LEVERAGE: Exposure ${total_exposure:.0f} > Limit ${max_allowed:.0f}")
+            return False
+        return True
+
     def calculate_kelly_size(self, balance: float, win_rate: float = None, risk_reward: float = None) -> float:
         """
         Modified Kelly Criterion (Half-Kelly):
@@ -439,7 +511,11 @@ class GovernorHolon(Holon):
             symbol = content.get('symbol')
             price = content.get('price')
             atr = content.get('atr')
-            return self.calc_position_size(symbol, price, atr)
+            conviction = content.get('conviction', 0.5)
+            # Check if conviction is None (if key exists but value is None)
+            if conviction is None: conviction = 0.5
+            
+            return self.calc_position_size(symbol, price, atr, conviction=conviction)
             
         elif msg_type == 'POSITION_FILLED':
             self.open_position(

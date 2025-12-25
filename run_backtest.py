@@ -52,10 +52,13 @@ def calculate_obv(df):
             obv.append(obv[-1])
     return pd.Series(obv, index=df.index)
 
-def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date=None):
+def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date=None, 
+                 injected_oracle=None, data_df=None):
     """
     Run backtest simulation for a single asset.
     Accepts status_queue for GUI compatibility.
+    Accepts injected_oracle for Walk-Forward Optimization.
+    Accepts data_df to avoid reloading from disk.
     """
     print(f"\n{'='*60}")
     print(f"BACKTEST SIMULATION: {symbol}")
@@ -63,8 +66,12 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     
     # 1. Load Data
     print("[1/6] Loading historical data...")
-    observer = ObserverHolon(exchange_id='kucoin')
-    df = observer.load_local_history(symbol)
+    if data_df is None:
+        observer = ObserverHolon(exchange_id='kucoin')
+        df = observer.load_local_history(symbol)
+    else:
+        df = data_df.copy()
+    
     
     if df.empty:
         print(f"❌ No data available for {symbol}")
@@ -82,7 +89,7 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     # 2. Initialize Agents
     print("\n[2/6] Initializing Holonic Agents...")
     entropy = EntropyHolon()
-    oracle = EntryOracleHolon()
+    oracle = injected_oracle if injected_oracle else EntryOracleHolon()
     guardian = ExitGuardianHolon()
     governor = GovernorHolon(initial_balance=config.INITIAL_CAPITAL)
     executor = ExecutorHolon(

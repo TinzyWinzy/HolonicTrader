@@ -76,19 +76,27 @@ class ObserverHolon(Holon):
             
         return os.path.join(self.data_dir, filename)
 
-    def load_local_history(self, symbol: str) -> pd.DataFrame:
+    def load_local_history(self, symbol: str, timeframe: str = '1h') -> pd.DataFrame:
         """Load historical data from market_data directory (Cached)."""
-        if symbol in self._cache:
-            return self._cache[symbol]
+        cache_key = f"{symbol}_{timeframe}"
+        if cache_key in self._cache:
+            return self._cache[cache_key]
 
-        filepath = self._get_local_filename(symbol)
+        filepath = self._get_local_filename(symbol) # Filename logic might need update if we had multiplle files, but currently only 1h.
+        # CRITICAL: We only have 1h CSVs locally. We cannot load 15m from disk yet.
+        # We will rely on CCXT for 15m if not local. 
+        # But for '1h', we use local.
+        
+        if timeframe != '1h':
+             return pd.DataFrame() 
+
         if not os.path.exists(filepath):
             # print(f"[{self.name}] No local history for {symbol} at {filepath}") # Reduce noise
             return pd.DataFrame()
             
         print(f"[{self.name}] Loading local history for {symbol} from {filepath} (DISK READ)")
         df = self.load_data_from_csv(filepath)
-        self._cache[symbol] = df
+        self._cache[cache_key] = df
         return df
 
     def fetch_market_data(self, timeframe: str = '1h', limit: int = 500, symbol: str = None) -> pd.DataFrame:
@@ -98,7 +106,7 @@ class ObserverHolon(Holon):
         target_symbol = symbol if symbol else self.symbol
         
         # 1. Load Local History
-        df_local = self.load_local_history(target_symbol)
+        df_local = self.load_local_history(target_symbol, timeframe)
         
         # 2. Fetch Live Sync (CCXT)
         if not self.exchange.has['fetchOHLCV']:

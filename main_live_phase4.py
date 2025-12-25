@@ -14,6 +14,13 @@ from HolonicTrader.agent_governor import GovernorHolon
 from HolonicTrader.agent_executor import ExecutorHolon
 from HolonicTrader.agent_actuator import ActuatorHolon
 from HolonicTrader.agent_ppo import PPOHolon
+from HolonicTrader.agent_ppo import PPOHolon
+
+try:
+    from HolonicTrader.agent_telegram import TelegramHolon
+except ImportError:
+    TelegramHolon = None
+    print("⚠️ TelegramHolon module not found using robust import.")
 
 from database_manager import DatabaseManager
 
@@ -22,6 +29,7 @@ from queue import Queue
 import threading
 import sys
 from datetime import datetime
+import re
 
 class QueueLogger:
     """Redirects stdout to a Queue for GUI display, plus file logging."""
@@ -52,9 +60,13 @@ class QueueLogger:
         # 3. Push to Queue (if exists)
         if self.log_queue:
             try:
+                # Strip ANSI codes for GUI display using regex
+                ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+                clean_msg = ansi_escape.sub('', final_msg)
+                
                 self.log_queue.put({
                     'type': 'log',
-                    'message': final_msg
+                    'message': clean_msg
                 }, block=False)
             except Exception:
                 pass # Queue full or closed
@@ -101,7 +113,18 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
     
     # 2b. Sync Governor
     governor.sync_positions(executor.held_assets, executor.position_metadata)
-    
+
+    # 2c. Telegram Bot (Robust Instantiation)
+    if stop_event is None:
+        stop_event = threading.Event()
+
+    telegram = None
+    if config.TELEGRAM_ENABLED and TelegramHolon:
+        try:
+            telegram = TelegramHolon(executor=executor, stop_event=stop_event)
+        except Exception as e:
+            print(f"⚠️ Telegram Launch Failed: {e}")
+
     # 3. Instantiate Trader
     trader = TraderHolon("TraderNexus", sub_holons={
         'observer': observer,
@@ -111,7 +134,8 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
         'monitor': monitor,
         'governor': governor,
         'executor': executor,
-        'ppo': ppo
+        'ppo': ppo,
+        'telegram': telegram
     })
     
     # 4. Start Loop

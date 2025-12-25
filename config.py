@@ -12,6 +12,11 @@ load_dotenv()
 API_KEY = os.getenv('KRAKEN_API_KEY')
 API_SECRET = os.getenv('KRAKEN_PRIVATE_KEY')
 
+# === TELEGRAM INTEGRATION ===
+TELEGRAM_ENABLED = True
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '8127012252:AAGn4mSzbhHhR2cqInKmEnabSwgPKF9LKLo')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', 'holonictraderbot')
+
 SCAVENGER_THRESHOLD = 90.0  # Balance <= this = Scavenger Mode (PREDATOR @ $100)
 INITIAL_CAPITAL = 100.0     # Starting simulation balance
 PRINCIPAL = 80.0            # Protect $80 of the $100 (allows $20 risk buffer)
@@ -99,5 +104,34 @@ TRADER_MAX_WORKERS = 16    # Parallel analysis threads
 
 # === PHASE 33: INTEL GPU ACCELERATION ===
 USE_INTEL_GPU = True
+USE_INTEL_GPU = True
 USE_OPENVINO = True
+
+# === PHASE 25: SATELLITE COMMANDER (TIER 2) ===
+SATELLITE_ASSETS = ['XRP/USDT', 'DOGE/USDT', 'ADA/USDT', 'LINK/USDT']
+SATELLITE_MARGIN = 10.0      # Fixed $10 Margin per trade
+SATELLITE_LEVERAGE = 10.0    # 10x Fixed Leverage (Position = $100)
+SATELLITE_RVOL_THRESHOLD = 1.5   # 1.5x Volume required
+SATELLITE_DOGE_RVOL_THRESHOLD = 2.0 # 2.0x for DOGE specifically
+SATELLITE_BBW_EXPANSION_THRESHOLD = 0.20 # 20% Expansion required
+SATELLITE_BREAKEVEN_TRIGGER = 0.015  # +1.5% Move -> Move SL to BE
+SATELLITE_TAKE_PROFIT_1 = 0.03       # +3.0% Move -> Close 50%
+
+# === PHASE 35: IMMUNE SYSTEM & PERSONALITY ===
+# Asset Families (Cluster Risk)
+FAMILY_L1 = ['ETH/USDT', 'SOL/USDT', 'ADA/USDT', 'AVAX/USDT']
+FAMILY_PAYMENT = ['XRP/USDT', 'LTC/USDT', 'BCH/USDT']
+FAMILY_MEME = ['DOGE/USDT', 'SHIB/USDT', 'PEPE/USDT']
+
+# Health Thresholds
+IMMUNE_MAX_DAILY_DRAWDOWN = 0.05     # 5% Daily Loss Limit
+IMMUNE_MAX_LEVERAGE_RATIO = 10.0     # Max 10x Total Account Leverage
+
+# Personality Parameters
+PERSONALITY_BTC_ATR_FILTER = 0.5     # Ignore if ATR < 50% of 30d Avg
+PERSONALITY_SOL_RSI_LONG = 55.0      # Min RSI to Long SOL
+PERSONALITY_SOL_RSI_SHORT = 45.0     # Max RSI to Short SOL
+PERSONALITY_DOGE_RVOL = 2.0          # Higher RVOL for DOGE
+
+
 

@@ -144,6 +144,13 @@ class HolonicDashboard:
         self.log_text.pack(fill=tk.BOTH, expand=True)
         self.log_text.see(tk.END)
         
+        # Configure Tags for Syntax Highlighting
+        self.log_text.tag_config("POSITIVE", foreground="#00e676") # Bright Green
+        self.log_text.tag_config("NEGATIVE", foreground="#ff5252") # Bright Red
+        self.log_text.tag_config("WARNING", foreground="#ffd740")  # Amber
+        self.log_text.tag_config("INFO", foreground="#40c4ff")     # Light Blue
+        self.log_text.tag_config("DIM", foreground="#78909c")      # Grey
+
         # Asset Allocation Pie Chart (Small)
         pie_frame = ttk.LabelFrame(right_col, text="Asset Allocation", padding=5)
         pie_frame.pack(fill=tk.X, pady=5)
@@ -405,7 +412,36 @@ class HolonicDashboard:
         self.stop_btn.config(state=tk.DISABLED)
 
     def log(self, msg):
-        self.log_text.insert(tk.END, msg) # QueueLogger sends pre-formatted
+        self.log_text.insert(tk.END, msg)
+        
+        # Apply Highlight Logic to the last few lines
+        import re
+        
+        # Patterns for Syntax Highlighting
+        patterns = {
+             r"(BUY|LONG|PROFIT|WIN|EXECUTE)": "POSITIVE",
+             r"(SELL|SHORT|LOSS|STOP-LOSS|REJECTED|HALT)": "NEGATIVE",
+             r"(WARNING|RISK|Drawdown)": "WARNING",
+             r"(EXIT|COVER|CLOSE)": "INFO",
+             r"(\[.*?\])": "DIM" # Timestamps/Agent Names
+        }
+        
+        # Iterate line by line for the Last 5 lines to catch any split messages
+        count = int(self.log_text.index('end-1c').split('.')[0])
+        check_rows = 5
+        start_line = max(1, count - check_rows)
+        
+        for i in range(start_line, count + 1):
+            line_idx = f"{i}.0"
+            line_end = f"{i}.end"
+            line_text = self.log_text.get(line_idx, line_end)
+            
+            for pat, tag in patterns.items():
+                for match in re.finditer(pat, line_text, re.IGNORECASE):
+                    start = f"{i}.{match.start()}"
+                    end = f"{i}.{match.end()}"
+                    self.log_text.tag_add(tag, start, end)
+
         self.log_text.see(tk.END)
 
     def process_queue(self):

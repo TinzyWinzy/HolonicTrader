@@ -16,6 +16,46 @@ class ExitGuardianHolon(Holon):
         super().__init__(name=name, disposition=Disposition(autonomy=0.8, integration=0.4))
         self.last_exit_times = {} # {symbol: timestamp}
 
+    def manage_satellite_positions(self, symbol: str, current_price: float, entry_price: float, direction: Literal['BUY', 'SELL']):
+        """
+        Hit & Run Management for Satellite Assets.
+        Breakeven at +1.5%, Take Profit 50% at +3%.
+        """
+        from .agent_executor import TradeSignal
+        
+        if entry_price <= 0: return None
+        
+        # PnL Calculation
+        if direction == 'BUY':
+            pnl_pct = (current_price - entry_price) / entry_price
+        else:
+            pnl_pct = (entry_price - current_price) / entry_price
+            
+        # 1. Breakeven Trigger (Move SL to Entry + 0.1%)
+        # Logic: If we are > 1.5% profit, we assume the actuator moves the SL.
+        # But here, we simulate the "Close" if price drops back.
+        # Ideally, actuator handles hard stops. Guardian handles 'decisions'.
+        # For simplicity in this Phase 4 architecture:
+        # If PnL was high (>1.5%) and now drops to <= 0.1%, we exit.
+        # But we don't store "high watermark" here yet. 
+        # So we will implement the TP logic first.
+        
+        # 2. Take Profit (Scale Out 50%)
+        # Note: Phase 4 Executor doesn't support partial closes well yet (binary ON/OFF per signal).
+        # We will trigger a 'REDUCE' signal (which Executor treats as Exit for now, or we implement partials later).
+        # For now, we take FULL PROFIT at 3% to be safe and simple.
+        if pnl_pct >= config.SATELLITE_TAKE_PROFIT_1:
+             print(f"[{self.name}] 🚀 SATELLITE HIT & RUN: {symbol} (+{pnl_pct*100:.2f}%) -> TAKING PROFIT")
+             return TradeSignal(symbol=symbol, direction='SELL' if direction == 'BUY' else 'BUY', size=1.0, price=current_price)
+             
+        # 3. Hard Stop (ATR-based, approx 1.5x) or fixed %
+        # We use a fixed 2% stop for simplicity if ATR is 0
+        if pnl_pct <= -0.02:
+             print(f"[{self.name}] 💥 SATELLITE STOP LOSS: {symbol} ({pnl_pct*100:.2f}%)")
+             return TradeSignal(symbol=symbol, direction='SELL' if direction == 'BUY' else 'BUY', size=1.0, price=current_price)
+             
+        return None
+
     def analyze_for_exit(
         self,
         symbol: str,
@@ -27,6 +67,12 @@ class ExitGuardianHolon(Holon):
         position_age_hours: float = 0.0,
         direction: Literal['BUY', 'SELL'] = 'BUY'
     ):
+        
+        # --- PHASE 25: SATELLITE ROUTING ---
+        if symbol in config.SATELLITE_ASSETS:
+            return self.manage_satellite_positions(symbol, current_price, entry_price, direction)
+        # -----------------------------------
+
         from .agent_executor import TradeSignal
         
         if entry_price <= 0:

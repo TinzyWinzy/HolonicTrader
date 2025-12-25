@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from typing import Any, Literal, List, Optional, Dict
 import math
 
-from HolonicTrader.holon_core import Holon, Disposition
+from HolonicTrader.holon_core import Holon, Disposition, Message
 
 
 @dataclass
@@ -31,6 +31,7 @@ class TradeSignal:
     direction: Literal['BUY', 'SELL']
     size: float
     price: float
+    metadata: Dict = field(default_factory=dict)
 
 
 @dataclass
@@ -484,24 +485,47 @@ class ExecutorHolon(Holon):
         exec_qty = 0.0
         
         if is_long_entry or is_short_entry:
-            if self.use_compounding:
-                usd_to_spend = self.balance_usd * decision.adjusted_size
-            else:
-                usd_to_spend = self.fixed_stake * decision.adjusted_size
-                if usd_to_spend > self.balance_usd: usd_to_spend = self.balance_usd
+            # Treat adjusted_size as Absolute Quantity (Units of Asset)
+            # This aligns with Governor's output in Phase 4
+            requested_qty = decision.adjusted_size
+            usd_to_spend = requested_qty * current_price
                 
             if self.governor:
                 self.governor.update_balance(self.get_portfolio_value())
-                is_approved, safe_qty, leverage = self.governor.receive_message(self, {'type': 'VALIDATE_TRADE', 'price': current_price, 'symbol': symbol})
+                
+                # Extract context from signal metadata
+                meta_atr = decision.original_signal.metadata.get('atr')
+                meta_conviction = decision.original_signal.metadata.get('ppo_conviction')
+                
+                is_approved, safe_qty, leverage = self.governor.receive_message(self, {
+                    'type': 'VALIDATE_TRADE', 
+                    'price': current_price, 
+                    'symbol': symbol,
+                    'atr': meta_atr,
+                    'conviction': meta_conviction
+                })
+                
                 if not is_approved:
                     print(f"  [RISK] Governor REJECTED {direction} for {symbol}.")
                     return None
-                notional_to_spend = min(usd_to_spend / current_price, safe_qty) * current_price
+                
+                # Cap the requested quantity by the Governor's safe limit
+                exec_qty = min(requested_qty, safe_qty)
+                
             else:
-                notional_to_spend = usd_to_spend
+                # No Governor? Use the requested quantity directly
+                exec_qty = requested_qty
                 leverage = 1.0
             
-            exec_qty = notional_to_spend / current_price
+            # --- SOLVENCY CHECK (Prevent Infinite Negative Balance) ---
+            # Ensure the Margin Requirement doesn't exceed available Free Balance
+            margin_req = (exec_qty * current_price) / leverage
+            if margin_req > self.balance_usd:
+                max_affordable_margin = max(0.0, self.balance_usd)
+                max_qty = (max_affordable_margin * leverage) / current_price
+                print(f"  [SOLVENCY] Capping Qty {exec_qty:.4f} -> {max_qty:.4f} (Bal ${self.balance_usd:.2f})")
+                exec_qty = max_qty
+
             if exec_qty < 0.00000001: return None
             
         elif is_long_exit or is_short_cover:
@@ -673,26 +697,7 @@ class ExecutorHolon(Holon):
                 
         return equity
 
-    def get_execution_summary(self) -> Dict[str, float]:
-        """
-        Return a summary of current execution state metrics.
-        Used by Dashboard for Phase 12 Risk Management display.
-        """
-        total_margin_used = 0.0
-        
-        for sym, qty in self.held_assets.items():
-            if abs(qty) < 0.00000001: continue
-            entry_price = self.entry_prices.get(sym, 0.0)
-            meta = self.position_metadata.get(sym, {})
-            leverage = meta.get('leverage', 1.0)
-            
-            if entry_price > 0:
-                total_margin_used += (abs(qty) * entry_price) / leverage
-                
-        return {
-            'margin_used': total_margin_used,
-            'balance': self.balance_usd
-        }
+
 
     def receive_message(self, sender: Any, content: Any) -> None:
         """
@@ -703,6 +708,50 @@ class ExecutorHolon(Holon):
                  pass # Logic to trigger execution via message
         else:
             pass
+
+    def panic_close_all(self, current_prices: Dict[str, float]) -> List[str]:
+        """
+        🚨 PANIC BUTTON: Force close ALL positions immediately.
+        Bypasses Governor, Risk Checks, and Disposition.
+        Uses Actuator directly for maximum speed.
+        """
+        print(f"[{self.name}] 🚨🚨 PANIC PROTOCOL INITIATED 🚨🚨")
+        results = []
+        
+        # Iterate over a copy of items since we'll modify the dict
+        for symbol, qty in list(self.held_assets.items()):
+            if abs(qty) < 0.00000001: continue
+            
+            price = current_prices.get(symbol, self.latest_prices.get(symbol, 0.0))
+            if price <= 0:
+                results.append(f"❌ {symbol}: No Price Data")
+                continue
+                
+            direction = 'SELL' if qty > 0 else 'BUY' # Exit Long or Cover Short
+            # Panic -> Market Order equivalent (Aggressive Limit)
+            # For simplicity in this Actuator, we place a limit at current price 
+            # (or slightly worse if we wanted instant fill, but Actuator is limit-only)
+            
+            print(f"[{self.name}] PANIC CLOSING {symbol} ({qty:.4f}) @ {price}")
+            
+            # Direct Actuator Call
+            if self.actuator:
+                self.actuator.place_limit_order(symbol, direction, abs(qty), price, margin=True)
+                # In a real panic, we might not wait for fills, just dump.
+                # But here we simulate the fill immediate update for safety.
+                
+            # IMMEDIATE Local State Wipe (Assume filled for safety/stopping)
+            self.balance_usd += (abs(qty) * price) # Roughly returning capital
+            # Note: PnL calculation is skipped for speed/simplicity in Panic
+            
+            del self.held_assets[symbol]
+            if symbol in self.entry_prices: del self.entry_prices[symbol]
+            if symbol in self.position_metadata: del self.position_metadata[symbol]
+            
+            results.append(f"✅ {symbol} CLOSED")
+            
+        self._persist_portfolio()
+        return results
 
     def get_ledger_summary(self) -> dict:
         """

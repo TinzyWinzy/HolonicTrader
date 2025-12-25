@@ -2,8 +2,19 @@ import time
 import pandas as pd
 import numpy as np
 from typing import Dict, Any, Optional, List
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 from scipy.stats import linregress
+from rich.live import Live
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich import box
+from rich.console import Group
+import sys
+
+# Initialize Console for Real Terminal (sys.__stdout__)
+# We bypass sys.stdout (QueueLogger) so the Table doesn't spam the GUI/LogFile
+console = Console(file=sys.__stdout__, force_terminal=True, width=120)
 
 from HolonicTrader.holon_core import Holon, Disposition, Message
 from HolonicTrader.agent_executor import TradeSignal
@@ -68,9 +79,15 @@ class TraderHolon(Holon):
 
             with ThreadPoolExecutor(max_workers=config.TRADER_MAX_WORKERS) as t_pool:
                 futures = [t_pool.submit(fetch_and_warmup, s) for s in config.ALLOWED_ASSETS]
-                for f in as_completed(futures):
-                    sym, d = f.result()
-                    if d is not None: cycle_data_cache[sym] = d
+                try:
+                    for f in as_completed(futures, timeout=30):
+                        try:
+                            sym, d = f.result()
+                            if d is not None: cycle_data_cache[sym] = d
+                        except Exception as e:
+                            print(f"[{self.name}] ⚠️ Data Fetch Error: {e}")
+                except TimeoutError:
+                    print(f"[{self.name}] ⚠️ Data Fetch Cycle Timed Out (skipping remaining)")
             
             print(f"[{self.name}] 📊 GLOBAL BIAS: {oracle.get_market_bias():.2f}")
 
@@ -78,9 +95,15 @@ class TraderHolon(Holon):
         analysis_results = []
         with ThreadPoolExecutor(max_workers=config.TRADER_MAX_WORKERS) as t_pool:
             futures = [t_pool.submit(self._analyze_asset, s, cycle_data_cache.get(s)) for s in config.ALLOWED_ASSETS]
-            for f in as_completed(futures):
-                res = f.result()
-                if res: analysis_results.append(res)
+            try:
+                for f in as_completed(futures, timeout=30):
+                    try:
+                        res = f.result()
+                        if res: analysis_results.append(res)
+                    except Exception as e:
+                        print(f"[{self.name}] ⚠️ Analysis Logic Error: {e}")
+            except TimeoutError:
+                 print(f"[{self.name}] ⚠️ Analysis Cycle Timed Out (proceeding with partial results)")
 
         analysis_results.sort(key=lambda x: x['symbol'])
 
@@ -124,6 +147,13 @@ class TraderHolon(Holon):
                         decision = executor.decide_trade(entry_sig, regime, entropy_val)
                         if decision.action != 'HALT':
                             executor.execute_transaction(decision, current_price)
+                            
+                            # Safe Telegram Notification
+                            telegram = self.sub_holons.get('telegram')
+                            if telegram and hasattr(telegram, 'send_message'):
+                                msg = f"🚀 **ENTRY** {symbol}\nPrice: {current_price}\nSize: {entry_sig.size:.4f}"
+                                telegram.send_message(msg)
+                                
                             row_data['Action'] = f"BUY ({res['metabolism']})"
                     else:
                         row_data['Action'] = "BUY (GOV REJECT)"
@@ -152,13 +182,58 @@ class TraderHolon(Holon):
                         if guardian: guardian.record_exit(symbol, time.time())
                         if ppo and meta:
                             if meta.get('ppo_state') is not None and meta.get('ppo_conviction') is not None:
-                                # Reward = Realized PnL - (Drawdown Penalty * 2)
-                                reward = pnl_res - (governor.get_portfolio_health()['drawdown_pct'] * 2.0)
+                                # --- PPO REWARD REFACTOR (Hybrid Velocity/Pain) ---
+                                # Previous: reward = pnl_res - (drawdown * 2.0) [Death Spiral]
+                                # New: Asymmetric Loss Aversion + Time Decay Efficiency
+                                
+                                pnl_pct = pnl_res # pnl_res is percentage
+                                is_win = pnl_pct > 0
+                                
+                                # 1. Base Utility
+                                # Scale small % (0.01) to recognizable scalar (0.1)
+                                reward = pnl_pct * 10.0
+                                
+                                # 2. Asymmetric Punishment (Loss Aversion)
+                                if not is_win:
+                                    reward *= 2.5 # Pain Factor
+                                    
+                                # 3. Time Duration
+                                from datetime import datetime
+                                entry_ts_iso = meta.get('entry_timestamp')
+                                duration_mins = 1.0 # Default minimum
+                                if entry_ts_iso:
+                                    try:
+                                        # Handle ISO parsing manually if needed, but pd.to_datetime is robust
+                                        t_entry = pd.to_datetime(entry_ts_iso)
+                                        t_exit = pd.Timestamp.now(tz='UTC')
+                                        duration_mins = (t_exit - t_entry).total_seconds() / 60.0
+                                    except: pass
+                                    
+                                duration_mins = max(1.0, duration_mins)
+                                
+                                # 4. Time Decay / Velocity
+                                # log1p(duration) -> log(2) ~ 0.69, log(61) ~ 4.1
+                                time_factor = np.log1p(duration_mins)
+                                if time_factor < 1.0: time_factor = 1.0 # Floor at 1
+                                
+                                if is_win:
+                                    reward = reward / time_factor # Fast wins > Slow wins
+                                else:
+                                    reward = reward * time_factor # Long losses > Fast losses (Double Pain)
+                                    
                                 self.last_ppo_reward = reward
+                                print(f"[{self.name}] 🧠 PPO REWARD: {reward:.4f} (PnL {pnl_pct*100:.2f}%, {duration_mins:.0f}m)")
                                 
                                 # Convert list back to numpy if needed
                                 state = np.array(meta['ppo_state']) 
                                 ppo.remember(state, meta['ppo_conviction'], reward, 0.0, 0.0, True)
+
+                        # Safe Telegram Notification
+                        telegram = self.sub_holons.get('telegram')
+                        if telegram and hasattr(telegram, 'send_message'):
+                            msg = f"📉 **EXIT** {symbol}\nPrice: {current_price}\nPnL: {pnl_res*100:+.2f}% ({reason})"
+                            telegram.send_message(msg)
+
                         row_data['Action'] = f"SELL ({reason})"
 
             except Exception as e:
@@ -172,7 +247,7 @@ class TraderHolon(Holon):
             self.market_state['entropy'] = avg_e
             self.market_state['regime'] = self.sub_holons['entropy'].determine_regime(avg_e)
 
-        self._print_summary(cycle_report)
+        # Removed redundant _print_summary call
         if monitor and executor: monitor.update_health(executor.get_portfolio_value(0.0), get_performance_data())
         self.publish_agent_status()
         return cycle_report
@@ -244,18 +319,56 @@ class TraderHolon(Holon):
             'indicators': {'bb_vals': bb_vals, 'obv_slope': obv_slope, 'atr': atr, 'tr': tr}
         }
 
-    def _print_summary(self, cycle_report: List[Dict]):
+    def _create_summary_layout(self, cycle_report: List[Dict]):
         oracle = self.sub_holons.get('oracle')
         bias = oracle.get_market_bias() if oracle else 0.5
-        print("-" * 110)
-        print(f"[{self.name}] GLOBAL MARKET BIAS: {bias:.2f} | Status: {'BULLISH' if bias >= config.GMB_THRESHOLD else 'CAUTIOUS'}")
-        print("-" * 110)
-        print(f"{'SYMBOL':<10} {'PRICE':<12} {'REGIME':<10} {'ENTROPY':<8} {'BRAINS':<15} {'ACTION':<15} {'PNL':<10}")
-        print("-" * 110)
+        
+        # 1. Market Status Panel
+        bias_color = "green" if bias >= config.GMB_THRESHOLD else ("yellow" if bias >= 0.4 else "red")
+        status_text = f"[bold {bias_color}]GLOBAL MARKET BIAS: {bias:.2f}[/bold {bias_color}] | " \
+                      f"Status: [{'bold green' if bias >= config.GMB_THRESHOLD else 'bold red'}]" \
+                      f"{'BULLISH' if bias >= config.GMB_THRESHOLD else 'CAUTIOUS'}[/]"
+        
+        header = Panel(status_text, title=f"[{self.name}] Live Dashboard", border_style="blue", expand=False)
+
+        # 2. Detail Table
+        table = Table(title="Asset Register", box=box.SIMPLE_HEAD, show_lines=False)
+        table.add_column("Symbol", style="cyan", no_wrap=True)
+        table.add_column("Price", style="white")
+        table.add_column("Regime", style="magenta")
+        table.add_column("Entropy", justify="right")
+        table.add_column("Brains (LSTM/XGB)", justify="center")
+        table.add_column("Action", style="bold")
+        table.add_column("PnL", justify="right", style="green")
+
         for row in cycle_report:
             probes = oracle.last_probes.get(row['Symbol'], {'lstm': 0.5, 'xgb': 0.5}) if oracle else {'lstm': 0.5, 'xgb': 0.5}
-            print(f"{row['Symbol']:<10} {row['Price']:<12} {row['Regime']:<10} {row.get('Entropy','N/A'):<8} {probes['lstm']:.2f}/{probes['xgb']:.2f} {row['Action']:<15} {row['PnL']:<10}")
-        print("-" * 110)
+            
+            # Colorize Action
+            action = row['Action']
+            act_style = "dim"
+            if "BUY" in action: act_style = "bold green"
+            elif "SELL" in action: act_style = "bold red"
+            elif "HOLD" in action: act_style = "dim white"
+            
+            # Colorize Regime
+            reg_style = "white"
+            if row['Regime'] == 'CHAOTIC': reg_style = "red"
+            elif row['Regime'] == 'ORDERED': reg_style = "green"
+            
+            table.add_row(
+                row['Symbol'],
+                row['Price'],
+                f"[{reg_style}]{row['Regime']}[/{reg_style}]",
+                row.get('Entropy', 'N/A'),
+                f"{probes['lstm']:.2f} / {probes['xgb']:.2f}",
+                f"[{act_style}]{action}[/{act_style}]",
+                row['PnL']
+            )
+            
+        # Combine into group (or just return a group/layout)
+        from rich.console import Group
+        return Group(header, table)
 
     def publish_agent_status(self):
         if not self.gui_queue: return
@@ -304,12 +417,25 @@ class TraderHolon(Holon):
 
     def start_live_loop(self, interval_seconds: int = 60):
         self._active_interval = interval_seconds
+        
+        # User requested to remove terminal table and reduce noise
+        # with Live(console=console, screen=False, refresh_per_second=4) as live:
+            
         while True:
             if self.gui_stop_event and self.gui_stop_event.is_set(): break
             start = time.time()
             try: 
+                # Reduced Log Noise: Commented out cycle start print
+                # print(f"\n[{self.name}] --- Starting Warp Cycle (Interval: {interval_seconds}s) ---") 
+                
                 report = self.run_cycle()
+                
                 if self.gui_queue: self.gui_queue.put({'type': 'summary', 'data': report})
+                
+                # Disable Terminal Table Update
+                # layout = self._create_summary_layout(report)
+                # live.update(layout)
+                
             except Exception as e:
                 print(f"[{self.name}] ☠️ Cycle Error: {e}")
                 time.sleep(30)

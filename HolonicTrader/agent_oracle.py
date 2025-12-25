@@ -36,26 +36,144 @@ from typing import Any, Optional, Literal
 from HolonicTrader.holon_core import Holon, Disposition
 from .kalman import KalmanFilter1D
 import config
+import threading
 
 class EntryOracleHolon(Holon):
-    def __init__(self, name: str = "EntryOracle"):
+    def __init__(self, name: str = "EntryOracle", xgb_model=None):
         super().__init__(name=name, disposition=Disposition(autonomy=0.9, integration=0.6))
         
         # Parameters
         self.rsi_period = 14
+        self._lock = threading.Lock()
         
         # AI Brains
         self.model = None       # LSTM
         self.scaler = None      # Scaler for LSTM
-        self.xgb_model = None   # XGBoost
+        self.xgb_model = xgb_model   # XGBoost - ALLOW INJECTION
         self.ov_compiled_model = None # OpenVINO
-        self.load_brains()
         
         # State Memory
         self.kalman_filters = {} # {symbol: KalmanFilter1D}
         self.kalman_last_ts = {} # {symbol: timestamp}
         self.symbol_trends = {}  # {symbol: bool (is_bullish)}
         self.last_probes = {}    # {symbol: {'lstm': prob, 'xgb': prob}}
+        
+        # Load Brains
+        self.load_brains()
+        
+    def set_expert_model(self, model):
+        """Inject a specific XGBoost model (for Walk-Forward Optimization)."""
+        with self._lock:
+            self.xgb_model = model
+            print(f"[{self.name}] 🧠 New XGBoost Brain Injected.")
+        
+    def apply_asset_personality(self, symbol: str, signal: Any) -> Any:
+        """
+        Apply Asset-Specific Rules (The Physics Layer).
+        Modifies or Vetos signals based on asset class.
+        """
+        if not signal: return None
+        
+        # 1. BTC: Dead Market Filter
+        if symbol == 'BTC/USDT':
+            meta = signal.metadata
+            atr = meta.get('atr', 0)
+            avg_atr = meta.get('avg_atr', atr) # Fallback
+            if avg_atr > 0 and atr < (avg_atr * config.PERSONALITY_BTC_ATR_FILTER):
+                print(f"[{self.name}] ☠️ BTC FILTER: Market Dead (ATR {atr:.2f} < 50% Avg). Signal IGNORED.")
+                return None
+                
+        # 2. DOGE: Fakeout Filter (RVOL)
+        elif symbol == 'DOGE/USDT':
+            # This is partly handled in Satellite logic, but as a safety net for standard signals:
+            rvol = signal.metadata.get('rvol', 1.0)
+            if rvol < config.PERSONALITY_DOGE_RVOL:
+                print(f"[{self.name}] 🐕 DOGE FILTER: Potential Fakeout (RVOL {rvol:.1f} < {config.PERSONALITY_DOGE_RVOL}). IGNORED.")
+                return None
+                
+        # 3. SOL: Momentum Only
+        elif symbol == 'SOL/USDT':
+            rsi = signal.metadata.get('rsi', 50.0)
+            if signal.direction == 'BUY' and rsi < config.PERSONALITY_SOL_RSI_LONG:
+                print(f"[{self.name}] 🟣 SOL FILTER: Too Weak for Long (RSI {rsi:.1f} < {config.PERSONALITY_SOL_RSI_LONG})")
+                return None
+            elif signal.direction == 'SELL' and rsi > config.PERSONALITY_SOL_RSI_SHORT:
+                print(f"[{self.name}] 🟣 SOL FILTER: Too Strong for Short (RSI {rsi:.1f} > {config.PERSONALITY_SOL_RSI_SHORT})")
+                return None
+                
+        # 4. XRP: Whole Number Front-running
+        elif symbol == 'XRP/USDT':
+            # Add TP instruction to metadata
+            # For Phase 4 simple execution, we just log it. Real execution needs smarter order types.
+            signal.metadata['special_instruction'] = 'FRONT_RUN_WHOLE_NUMBERS'
+            
+        return signal
+
+    def analyze_satellite_entry(self, symbol: str, df_1h: pd.DataFrame, observer: Any) -> Any:
+        from .agent_executor import TradeSignal
+        
+        # 🔑 KEY 1: TIMEFRAME ALIGNMENT (Trend)
+        # 1H Check
+        ema200_1h = df_1h['close'].ewm(span=200, adjust=False).mean().iloc[-1]
+        price = df_1h['close'].iloc[-1]
+        
+        trend_1h = 'BULL' if price > ema200_1h else 'BEAR'
+        
+        # 15m Check (Fetch fresh data)
+        df_15m = observer.fetch_market_data(timeframe='15m', limit=100, symbol=symbol)
+        if df_15m.empty or len(df_15m) < 50: return None
+        
+        ema50_15m = df_15m['close'].ewm(span=50, adjust=False).mean().iloc[-1]
+        price_15m = df_15m['close'].iloc[-1]
+        
+        trend_15m = 'BULL' if price_15m > ema50_15m else 'BEAR'
+        
+        # Alignment Veto
+        if trend_1h != trend_15m: return None
+        
+        direction = 'BUY' if trend_1h == 'BULL' else 'SELL'
+        
+        # 🔑 KEY 2: VOLATILITY SQUEEZE (Timing)
+        # Bollinger Bands (20, 2) on 15m
+        sma20 = df_15m['close'].rolling(20).mean()
+        std20 = df_15m['close'].rolling(20).std()
+        upper = sma20 + (std20 * 2)
+        lower = sma20 - (std20 * 2)
+        
+        bbw = (upper - lower) / sma20
+        
+        # Expansion Check (Current BBW vs Previous BBW)
+        bbw_current = bbw.iloc[-1]
+        bbw_prevent = bbw.iloc[-2]
+        expansion_pct = (bbw_current - bbw_prevent) / bbw_prevent if bbw_prevent > 0 else 0
+        
+        if expansion_pct < config.SATELLITE_BBW_EXPANSION_THRESHOLD: return None
+        
+        # Breakout Check
+        if direction == 'BUY' and price_15m <= upper.iloc[-1]: return None
+        if direction == 'SELL' and price_15m >= lower.iloc[-1]: return None
+        
+        # 🔑 KEY 3: VOLUME CONFIRMATION (Truth)
+        # RVOL Calculation
+        current_vol = df_15m['volume'].iloc[-1]
+        avg_vol = df_15m['volume'].rolling(20).mean().iloc[-2] # Preceding 20 avg
+        rvol = current_vol / avg_vol if avg_vol > 0 else 0
+        
+        threshold = config.SATELLITE_DOGE_RVOL_THRESHOLD if 'DOGE' in symbol else config.SATELLITE_RVOL_THRESHOLD
+        
+        if rvol < threshold: return None
+        
+        # 🚀 ALL KEYS TURNED - FIRE
+        self._safe_print(f"[{self.name}] 🚀 SATELLITE ENTRY: {symbol} {direction} (1H/15m Align, BBW Exp {expansion_pct:.1%}, RVOL {rvol:.1f})")
+        
+        sig = TradeSignal(symbol=symbol, direction=direction, size=1.0, price=price_15m)
+        sig.metadata = {'strategy': 'SATELLITE', 'atr': 0.0} # ATR filled later if needed
+        return sig
+
+    def _safe_print(self, msg: str):
+        """Thread-safe printing to avoid log corruption."""
+        with self._lock:
+            print(msg)
 
     def load_brains(self):
         """Load AI brains (LSTM and XGBoost)."""
@@ -70,21 +188,21 @@ class EntryOracleHolon(Holon):
             try:
                 self.model = tf.keras.models.load_model(model_path)
                 self.scaler = joblib.load(scaler_path)
-                print(f"[{self.name}] LSTM Brain loaded successfully.")
+                self._safe_print(f"[{self.name}] LSTM Brain loaded successfully.")
             except Exception as e:
-                print(f"[{self.name}] Error loading LSTM: {e}")
+                self._safe_print(f"[{self.name}] Error loading LSTM: {e}")
         
         # 2. Load XGBoost
         if os.path.exists(xgb_path) and xgb is not None:
             try:
                 self.xgb_model = xgb.Booster()
                 self.xgb_model.load_model(xgb_path)
-                print(f"[{self.name}] XGBoost Brain loaded successfully.")
+                self._safe_print(f"[{self.name}] XGBoost Brain loaded successfully.")
             except Exception as e:
-                print(f"[{self.name}] Error loading XGBoost: {e}")
+                self._safe_print(f"[{self.name}] Error loading XGBoost: {e}")
 
         if self.model is None and self.xgb_model is None:
-            print(f"[{self.name}] All brains missing or deps failed. Running heuristic mode.")
+            self._safe_print(f"[{self.name}] All brains missing or deps failed. Running heuristic mode.")
 
         # 3. OpenVINO Integration (Speed Optimization)
         if self.model is not None and ov is not None and config.USE_OPENVINO:
@@ -94,9 +212,9 @@ class EntryOracleHolon(Holon):
                 ov_model = ov.convert_model(self.model)
                 device = "GPU" if config.USE_INTEL_GPU else "CPU"
                 self.ov_compiled_model = core.compile_model(ov_model, device)
-                print(f"[{self.name}] OpenVINO LSTM Backend initialized on {device}.")
+                self._safe_print(f"[{self.name}] OpenVINO LSTM Backend initialized on {device}.")
             except Exception as e:
-                print(f"[{self.name}] OpenVINO Setup failed: {e}. Falling back to native TensorFlow.")
+                self._safe_print(f"[{self.name}] OpenVINO Setup failed: {e}. Falling back to native TensorFlow.")
 
     def predict_trend_lstm(self, prices: pd.Series) -> float:
         if self.model is None or self.scaler is None or len(prices) < 60 or tf is None:
@@ -118,7 +236,7 @@ class EntryOracleHolon(Holon):
             
             return float(prob)
         except Exception as e:
-            print(f"[{self.name}] Prediction Error: {e}")
+            self._safe_print(f"[{self.name}] Prediction Error: {e}")
             return 0.5
 
     def predict_trend_xgboost(self, features: dict) -> float:
@@ -132,7 +250,7 @@ class EntryOracleHolon(Holon):
             prob = self.xgb_model.predict(dmatrix)[0]
             return float(prob)
         except Exception as e:
-            print(f"[{self.name}] XGBoost Prediction Error: {e}")
+            self._safe_print(f"[{self.name}] XGBoost Prediction Error: {e}")
             return 0.5
     def get_kalman_estimate(self, symbol: str, window_data: pd.DataFrame) -> float:
         prices = window_data['close']
@@ -229,7 +347,7 @@ class EntryOracleHolon(Holon):
         
         # Logging Consensus (Internal Diagnostic)
         if lstm_prob > 0.6 or xgb_prob > 0.6:
-            print(f"[{self.name}] Ensemble Check {symbol}: LSTM({lstm_prob:.2f}) XGB({xgb_prob:.2f})")
+            self._safe_print(f"[{self.name}] Ensemble Check {symbol}: LSTM({lstm_prob:.2f}) XGB({xgb_prob:.2f})")
 
         if metabolism_state == 'SCAVENGER':
             # --- BULLISH SCAVENGER ---
@@ -240,7 +358,7 @@ class EntryOracleHolon(Holon):
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if should_buy and (is_bullish or rsi < 30) and (current_price < kalman_price or high_conv_bullish):
                 if is_market_bullish:
-                    print(f"[{self.name}] {symbol} ENSEMBLE BUY (GMB {market_bias:.2f})")
+                    self._safe_print(f"[{self.name}] {symbol} ENSEMBLE BUY (GMB {market_bias:.2f})")
                     return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
             
             # --- BEARISH SCAVENGER ---
@@ -251,7 +369,7 @@ class EntryOracleHolon(Holon):
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if should_short and (not is_bullish or rsi > 80) and (current_price > kalman_price or high_conv_bearish):
                 if not is_market_bullish:
-                    print(f"[{self.name}] {symbol} ENSEMBLE SHORT (GMB {market_bias:.2f})")
+                    self._safe_print(f"[{self.name}] {symbol} ENSEMBLE SHORT (GMB {market_bias:.2f})")
                     return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
                     
         else: # PREDATOR
@@ -265,7 +383,7 @@ class EntryOracleHolon(Holon):
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if is_momentum_up and is_bullish and (current_price > kalman_price or high_conv_bullish):
                  if is_market_bullish:
-                    print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM BUY (GMB {market_bias:.2f})")
+                    self._safe_print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM BUY (GMB {market_bias:.2f})")
                     return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
             
             # --- BEARISH MOMENTUM (Shorting) ---
@@ -278,7 +396,7 @@ class EntryOracleHolon(Holon):
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if is_momentum_down and (not is_bullish) and (current_price < kalman_price or high_conv_bearish):
                 if not is_market_bullish:
-                    print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM SHORT (GMB {market_bias:.2f})")
+                    self._safe_print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM SHORT (GMB {market_bias:.2f})")
                     return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
         
         return None
