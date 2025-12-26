@@ -53,6 +53,17 @@ class TraderHolon(Holon):
 
     def run_cycle(self):
         self.perform_health_check()
+        
+        # --- PATCH 1: THE KILL SWITCH (Connect the Brakes) ---
+        monitor = self.sub_holons.get('monitor')
+        if monitor:
+            is_healthy, risk_msg = monitor.check_vital_signs()
+            if not is_healthy:
+                print(f"[{self.name}] 🛑 CRITICAL HEALTH LOCKDOWN: {risk_msg}")
+                print(f"[{self.name}] 💤 HIBERNATING for 4 hours to cool down...")
+                time.sleep(14400) # 4 Hour Hard Sleep
+                return [] # Skip cycle
+                
         interval = getattr(self, '_active_interval', 60)
         print(f"\n[{self.name}] --- Starting Warp Cycle (Interval: {interval}s) ---") 
         
@@ -248,7 +259,18 @@ class TraderHolon(Holon):
             self.market_state['regime'] = self.sub_holons['entropy'].determine_regime(avg_e)
 
         # Removed redundant _print_summary call
-        if monitor and executor: monitor.update_health(executor.get_portfolio_value(0.0), get_performance_data())
+        if monitor and executor: 
+            exec_summary = executor.get_execution_summary()
+            is_solvent = monitor.update_health(exec_summary, get_performance_data())
+            
+            if not is_solvent:
+                # TRIGGER LIQUIDATION
+                print(f"[{self.name}] 📞 MARGIN CALL RECEIVED. LIQUIDATING...")
+                executor.panic_close_all(executor.latest_prices)
+                self.last_ppo_reward = -100.0 # Severe Penalty for Liquidation
+                # Maybe pause for a bit?
+                time.sleep(5)
+
         self.publish_agent_status()
         return cycle_report
 

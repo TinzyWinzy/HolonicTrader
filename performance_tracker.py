@@ -57,9 +57,9 @@ def get_performance_data():
         # 1. TRADES ANALYSIS
         df = pd.read_sql_query("SELECT * FROM trades ORDER BY id ASC", conn)
         if not df.empty:
-            # Exits are rows where PnL is non-zero OR direction is an EXIT type (SELL for long, BUY for cover)
-            # In our refined agent_executor, exits ALWAYs have pnl calculated.
-            exits = df[df['pnl'].notnull() & (df['pnl'].abs() > 0)].copy()
+            # Exits are rows where cost_usd is 0 (Margin Release) vs Entries which have cost > 0
+            # This correctly captures Breakevens (PnL=0) which simple PnL filtering misses.
+            exits = df[df['cost_usd'] <= 1e-9].copy()
             
             total_trades = len(exits)
             data['total_trades'] = total_trades
@@ -164,7 +164,7 @@ def render_performance_report():
 
     # 4. Recent Activity Table
     activity_table = Table(title=f"[bold]Recent Activity (Last {len(data['recent_trades'])})[/bold]", box=box.SIMPLE_HEAVY, header_style="bold cyan")
-    activity_table.add_column("Timestamp", style="dim")
+    activity_table.add_column("Timestamp", style="dim", width=20)
     activity_table.add_column("Symbol")
     activity_table.add_column("Type", justify="center")
     activity_table.add_column("Price", justify="right")
@@ -183,7 +183,7 @@ def render_performance_report():
             type_label = "L-ENTRY" if raw_dir == 'BUY' else "S-ENTRY"
             
         activity_table.add_row(
-            t['timestamp'][11:19], # Time only
+            t['timestamp'][:19].replace('T', ' '), # Full Date + Time (YYYY-MM-DD HH:MM:SS)
             t['symbol'],
             type_label,
             f"{t['price']:.4f}",

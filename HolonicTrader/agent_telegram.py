@@ -60,10 +60,26 @@ class TelegramHolon(Holon):
             print(f"[{self.name}] ❌ Init Failed: {e}")
 
     def _run_bot_loop(self):
-        """Entry point for the bot thread."""
+        """Entry point for the bot thread with auto-retry."""
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
-        self.loop.run_until_complete(self.app.run_polling())
+        
+        while not (self.stop_event and self.stop_event.is_set()):
+            try:
+                # Polling is blocking, so this will run until stop or error
+                # We specify close_loop=False so we can restart it if needed
+                
+                print(f"[{self.name}] 🔄 Starting Polling...")
+                self.app.run_polling(stop_signals=None, close_loop=False)
+                
+            except Exception as e:
+                # If we are here, polling crashed.
+                print(f"[{self.name}] ⚠️ Telegram Connection Lost: {e}. Retrying in 10s...")
+                import time
+                time.sleep(10)
+                
+            if self.stop_event and self.stop_event.is_set():
+                break
 
     async def _start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(

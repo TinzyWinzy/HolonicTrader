@@ -23,6 +23,9 @@ PRINCIPAL = 80.0            # Protect $80 of the $100 (allows $20 risk buffer)
 
 PAPER_TRADING = True        # Set to False to enable real exchange execution
 
+# === TIME SETTINGS ===
+TIMEFRAME = '1h'            # Default trading timeframe
+
 # === LEVERAGE SETTINGS ===
 SCAVENGER_LEVERAGE = 20      # WARP SPEED: Max Alt Leverage
 PREDATOR_LEVERAGE = 50       # WARP SPEED: Max BTC Leverage
@@ -52,9 +55,9 @@ PREDATOR_TRAILING_STOP_ATR_MULT = 2.0
 # === ASSET CONSTRAINTS ===
 ALLOWED_ASSETS = [
     'ADA/USDT', 'BNB/USDT', 'BTC/USDT', 'DOGE/USDT', 'ETH/USDT', 'SOL/USDT', 'SUI/USDT', 'XRP/USDT',
-    'SHIB/USDT', 'PAXG/USDT', 'LTC/USDT', 'LINK/USDT', 'XMR/USDT', 'ALGO/USDT', 'UNI/USDT', 'AAVE/USDT'
+    'SHIB/USDT', 'PAXG/USDT', 'LTC/USDT', 'LINK/USDT', 'XMR/USDT', 'UNI/USDT', 'AAVE/USDT'
 ]
-FORBIDDEN_ASSETS = []
+FORBIDDEN_ASSETS = ['ALGO/USDT']
 
 # === STRATEGY SETTINGS (Centralized) ===
 STRATEGY_RSI_OVERSOLD = 45
@@ -119,7 +122,7 @@ SATELLITE_TAKE_PROFIT_1 = 0.03       # +3.0% Move -> Close 50%
 
 # === PHASE 35: IMMUNE SYSTEM & PERSONALITY ===
 # Asset Families (Cluster Risk)
-FAMILY_L1 = ['ETH/USDT', 'SOL/USDT', 'ADA/USDT', 'AVAX/USDT']
+FAMILY_L1 = ['SOL/USDT', 'ADA/USDT', 'AVAX/USDT']
 FAMILY_PAYMENT = ['XRP/USDT', 'LTC/USDT', 'BCH/USDT']
 FAMILY_MEME = ['DOGE/USDT', 'SHIB/USDT', 'PEPE/USDT']
 
@@ -133,5 +136,5 @@ PERSONALITY_SOL_RSI_LONG = 55.0      # Min RSI to Long SOL
 PERSONALITY_SOL_RSI_SHORT = 45.0     # Max RSI to Short SOL
 PERSONALITY_DOGE_RVOL = 2.0          # Higher RVOL for DOGE
 
-
-
+# === PHASE 36: LIQUIDATION ENGINE ===
+MAINTENANCE_MARGIN_RATE = 0.50       # Liquidation if Equity < 50% of Used Margin

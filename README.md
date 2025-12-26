@@ -1,9 +1,9 @@
-# HolonicTrader: AEHML Framework Proof of Concept
-
-**Autonomous Entropy-Holonic Machine Learning (AEHML) Framework**  
-A production-ready cryptocurrency trading system demonstrating holonic architecture, entropy-based regime detection, and adaptive autonomous agents.
-
-[![Status](https://img.shields.io/badge/status-live-success)](https://github.com/TinzyWinzy/HolonicTrader)
+# HolonicTrader: AEHML Framework Prototype V3.1
+ 
+ **Autonomous Entropy-Holonic Machine Learning (AEHML) Framework**  
+ A production-hardened cryptocurrency trading system demonstrating holonic architecture, entropy-based regime detection, and "Immune System" homeostasis.
+ 
+ [![Status](https://img.shields.io/badge/status-live%20V3.1-success)](https://github.com/TinzyWinzy/HolonicTrader)
 [![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -33,10 +33,12 @@ A production-ready cryptocurrency trading system demonstrating holonic architect
                             │
         ┌───────────────────┼───────────────────┐
         │                   │                   │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
 ┌───────▼────────┐  ┌──────▼──────┐  ┌────────▼────────┐
-│  ObserverHolon │  │EntropyHolon │  │  EntryOracle    │
-│  Live/Local    [Observer] -> [Global State] -> [PPO Sovereign Brain (Monolith-V5)]
-                                               |
+│  ObserverHolon │  │EntropyHolon │  │  MonitorHolon   │
+│  Live/Local    [Observer] -> [Global State] -> [Homeostasis Veto (Kill Switch)]
+                                                |
                                         [EntryOracle (Monolith-V4)]
   │
 └────────────────┘  └─────────────┘  └─────────────────┘
@@ -61,6 +63,7 @@ A production-ready cryptocurrency trading system demonstrating holonic architect
 | Component | Purpose | Key Features |
 |:---|:---|:---|
 | **ObserverHolon** | Market data acquisition | 1000-candle live sync, hybrid local CSV support |
+| **MonitorHolon** | Homeostasis (Immune System) | **Kill Switch**, Daily Drawdown Fever Check |
 | **EntropyHolon** | Regime classification | Shannon entropy, calibrated thresholds (0.67/0.80) |
 | **EntryOracle** | Trend Prediction | **Monolith-V4**: Stacked Holon (LSTM -> XGBoost) |
 | **GovernorHolon** | Risk Management | Kelly Criterion, Volatility Scaling, Conviction |
@@ -119,6 +122,13 @@ Combines deep learning (LSTM) for direction with signal processing (Kalman Filte
 
 ### 3. Institutional Risk Management 🛡️
 Features a "Multi-Brain" governance stack including **Half-Kelly** position sizing, **Volatility Scaling**, and **LSTM-based Conviction** to protect principal while maximizing trend capture.
+
+### 4. Immunization Protocol (V3.1) 💉
+A set of emergency hard-patches ("The 4 Horsemen") installed after initial stress testing:
+- **Kill Switch**: Hard sleep (4h) if Daily Drawdown > 5% (Fever).
+- **Stacking Cap**: Prevents Martingale death spirals (Max 3 stacks).
+- **Trend Lock**: Enforces Global Market Bias (80/20 Rule) to ban fighting trends.
+- **Reality Check**: Atomic verification of position math to prevent "Phantom Whales".
 
 ---
 

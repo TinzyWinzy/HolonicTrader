@@ -244,6 +244,18 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
     print(f"ROI:             {(total_pnl / config.INITIAL_CAPITAL * 100):.1f}%")
     print(f"{'='*60}\n")
     
+    # Notify GUI of completion
+    if status_queue:
+        status_queue.put({
+            'type': 'backtest_result',
+            'data': {
+                'symbol': symbol,
+                'roi': (total_pnl / config.INITIAL_CAPITAL * 100),
+                'pnl': total_pnl,
+                'history': history
+            }
+        })
+
     return {
         'symbol': symbol,
         'total_trades': total_trades,
@@ -256,18 +268,6 @@ def run_backtest(status_queue=None, symbol='XRP/USDT', start_date=None, end_date
         'history': history,
         'roi': (total_pnl / config.INITIAL_CAPITAL * 100)
     }
-    
-    # Notify GUI of completion
-    if status_queue:
-        status_queue.put({
-            'type': 'backtest_result',
-            'data': {
-                'symbol': symbol,
-                'roi': (total_pnl / config.INITIAL_CAPITAL * 100),
-                'pnl': total_pnl,
-                'history': history
-            }
-        })
 
 def run_multi_asset_backtest():
     """Run backtest across all ALLOWED_ASSETS."""

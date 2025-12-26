@@ -107,6 +107,15 @@ class EntryOracleHolon(Holon):
             # For Phase 4 simple execution, we just log it. Real execution needs smarter order types.
             signal.metadata['special_instruction'] = 'FRONT_RUN_WHOLE_NUMBERS'
             
+        # 5. FAIR WEATHER PROTOCOL (Global Bias Veto)
+        # Block ALL Satellite Longs if Global Bias is weak (< 0.45)
+        # Core assets (BTC/ETH) are strong enough to buck the trend.
+        if signal.direction == 'BUY' and symbol in config.SATELLITE_ASSETS:
+            gmb = self.get_market_bias()
+            if gmb < 0.45:
+                print(f"[{self.name}] ☁️ FAIR WEATHER VETO: {symbol} Long blocked (Bias {gmb:.2f} < 0.45)")
+                return None
+
         return signal
 
     def analyze_satellite_entry(self, symbol: str, df_1h: pd.DataFrame, observer: Any) -> Any:
@@ -168,7 +177,7 @@ class EntryOracleHolon(Holon):
         
         sig = TradeSignal(symbol=symbol, direction=direction, size=1.0, price=price_15m)
         sig.metadata = {'strategy': 'SATELLITE', 'atr': 0.0} # ATR filled later if needed
-        return sig
+        return self.apply_asset_personality(symbol, sig)
 
     def _safe_print(self, msg: str):
         """Thread-safe printing to avoid log corruption."""
@@ -293,7 +302,20 @@ class EntryOracleHolon(Holon):
         metabolism_state: Literal['SCAVENGER', 'PREDATOR']
     ):
         from .agent_executor import TradeSignal
+
+        # --- PATCH 3: THE TREND LOCK (Respect the Bias) ---
+        global_bias = self.get_market_bias()
         
+        # Rule A: If Global_Bias >= 0.80 (Max Bullish), HARD BAN on all SHORT signals.
+        can_short = global_bias < 0.80
+        
+        # Rule B: If Global_Bias <= 0.20 (Max Bearish), HARD BAN on all LONG signals.
+        can_long = global_bias > 0.20
+        
+        # Optimization: Early exit if trapped (though we need analysis to know direction...
+        # unless we pass 'allowed_directions' down? Or just filter at the end.)
+        # Let's filter at the decision point below.
+        # --------------------------------------------------
         prices = window_data['close']
         current_price = float(prices.iloc[-1])
         
@@ -357,9 +379,10 @@ class EntryOracleHolon(Holon):
             
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if should_buy and (is_bullish or rsi < 30) and (current_price < kalman_price or high_conv_bullish):
-                if is_market_bullish:
+                if is_market_bullish and can_long:
                     self._safe_print(f"[{self.name}] {symbol} ENSEMBLE BUY (GMB {market_bias:.2f})")
-                    return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    sig = TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    return self.apply_asset_personality(symbol, sig)
             
             # --- BEARISH SCAVENGER ---
             is_above_middle = current_price >= bb_vals['middle']
@@ -368,9 +391,10 @@ class EntryOracleHolon(Holon):
             
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if should_short and (not is_bullish or rsi > 80) and (current_price > kalman_price or high_conv_bearish):
-                if not is_market_bullish:
+                if not is_market_bullish and can_short:
                     self._safe_print(f"[{self.name}] {symbol} ENSEMBLE SHORT (GMB {market_bias:.2f})")
-                    return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+                    sig = TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+                    return self.apply_asset_personality(symbol, sig)
                     
         else: # PREDATOR
             # --- BULLISH MOMENTUM ---
@@ -382,9 +406,10 @@ class EntryOracleHolon(Holon):
             
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if is_momentum_up and is_bullish and (current_price > kalman_price or high_conv_bullish):
-                 if is_market_bullish:
+                 if is_market_bullish and can_long:
                     self._safe_print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM BUY (GMB {market_bias:.2f})")
-                    return TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    sig = TradeSignal(symbol=symbol, direction='BUY', size=1.0, price=current_price)
+                    return self.apply_asset_personality(symbol, sig)
             
             # --- BEARISH MOMENTUM (Shorting) ---
             is_below_middle = current_price < bb_vals['middle']
@@ -395,9 +420,10 @@ class EntryOracleHolon(Holon):
             
             # RECALIBRATION: Relax Kalman filter if high-conviction
             if is_momentum_down and (not is_bullish) and (current_price < kalman_price or high_conv_bearish):
-                if not is_market_bullish:
+                if not is_market_bullish and can_short:
                     self._safe_print(f"[{self.name}] {symbol} ENSEMBLE MOMENTUM SHORT (GMB {market_bias:.2f})")
-                    return TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+                    sig = TradeSignal(symbol=symbol, direction='SELL', size=1.0, price=current_price)
+                    return self.apply_asset_personality(symbol, sig)
         
         return None
 

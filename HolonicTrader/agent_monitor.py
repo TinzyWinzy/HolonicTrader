@@ -31,26 +31,39 @@ class MonitorHolon(Holon):
         self.daily_start_balance = principal
         self.last_day_reset = None # To track 24h cycles
 
-    def update_health(self, current_balance: float, performance_data: dict):
-        """Analyze system health and potentially pause operations."""
+    def update_health(self, executor_summary: dict, performance_data: dict) -> bool:
+        """
+        Analyze system health. Returns False if CRITICAL FAILURE (Liquidation).
+        """
         import time
         
-        # 0. Daily Reset Logic (Simple 24h reset for now)
-        #Ideally this should be aligned with UTC midnight, but relative 24h is fine for robustness
+        current_balance = executor_summary.get('balance', 0.0)
+        current_equity = executor_summary.get('equity', 0.0)
+        margin_used = executor_summary.get('margin_used', 0.0)
+        
+        # 0. Daily Reset Logic
         current_time = time.time()
         if self.last_day_reset is None or (current_time - self.last_day_reset > 86400):
             print(f"[{self.name}] 🌅 NEW DAY: Resetting Daily Balance Tracker (${current_balance:.2f})")
             self.daily_start_balance = current_balance
             self.last_day_reset = current_time
 
+        # --- PHASE 36: LIQUIDATION ENGINE (Solvency Check) ---
+        maintenance_margin = margin_used * config.MAINTENANCE_MARGIN_RATE
+        if current_equity < maintenance_margin and margin_used > 0:
+            print(f"[{self.name}] ☠️ INSOLVENCY DETECTED: Equity ${current_equity:.2f} < Maint.Margin ${maintenance_margin:.2f}")
+            print(f"[{self.name}] 🩸 LIQUIDATING ALL POSITIONS TO PROTECT EXCHANGE.")
+            return False # FATAL HEALTH FAILURE
+
         # 1. FEVER CHECK (Daily Drawdown)
         daily_drawdown = (self.daily_start_balance - current_balance) / self.daily_start_balance
-        
         if daily_drawdown > config.IMMUNE_MAX_DAILY_DRAWDOWN:
              print(f"[{self.name}] 🌡️ FEVER DETECTED: Daily Drawdown {daily_drawdown*100:.2f}% > Limit {config.IMMUNE_MAX_DAILY_DRAWDOWN*100:.1f}%")
-             print(f"[{self.name}] 🔒 ACTION: INITIATING HARD LOCKDOWN (4 HOURS)")
              self.is_system_healthy = False
-             return # Stop processing
+             # Just lock, don't liquidate yet? Or halt?
+             # For now, we return True (Alive) but set healthy=False (Fever)
+             return True 
+
              
         # Normal Drawdown (All time)
         drawdown = (self.principal - current_balance) / self.principal if current_balance < self.principal else 0.0
@@ -70,6 +83,8 @@ class MonitorHolon(Holon):
         # 2. CONSECUTIVE LOSS PROTECTION (FUTURE)
         # If win_rate < 20% over last 10 trades, we are likely out of sync with market
         
+        return self.is_system_healthy
+        
     def get_health_report(self) -> dict:
         return {
             'healthy': self.is_system_healthy,
@@ -79,6 +94,23 @@ class MonitorHolon(Holon):
 
     def get_health(self) -> dict:
         return self.get_health_report()
+
+    def check_vital_signs(self) -> tuple[bool, str]:
+        """
+        Non-intrusive health check for the Kill Switch.
+        Returns: (is_healthy, risk_message)
+        """
+        if not self.is_system_healthy:
+            return False, "System Unhealthy (Previous Trigger)"
+            
+        # Check Daily Drawdown (using cached state)
+        if hasattr(self, 'daily_start_balance') and self.daily_start_balance > 0:
+            # We need current balance access. If not available, use last known metrics?
+            # Ideally we pass current balance. But for the Kill Switch at start of loop, we might not have it.
+            # Reliance on internal state 'is_system_healthy' set by previous update_health call is safest.
+            pass
+            
+        return self.is_system_healthy, "OK"
 
     def receive_message(self, sender: Any, content: Any) -> Any:
         if isinstance(content, dict) and content.get('type') == 'CHECK_HEALTH':

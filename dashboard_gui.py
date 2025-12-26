@@ -532,7 +532,7 @@ class HolonicDashboard:
         symbol = self.conf_symbol.get()
         
         def run_and_reset():
-            run_backtest(self.status_queue, symbol=symbol)
+            run_backtest(self.gui_queue, symbol=symbol)
             self.is_running_backtest = False  # Reset flag on completion
         
         t = threading.Thread(target=run_and_reset)

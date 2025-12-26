@@ -571,7 +571,17 @@ class ExecutorHolon(Holon):
         if is_long_entry:
             self.balance_usd -= margin_impact
             old_qty = self.held_assets.get(symbol, 0.0)
+            
+            # --- PATCH 4: REALITY CHECK (Fix the Math) ---
+            # Ensure we are adding Quantity (Units), NOT Notional (USD)
+            # new_total_qty = old_qty + order_qty
             new_qty = old_qty + actual_qty
+            
+            # Sanity Guard
+            if new_qty > 1_000_000 and actual_price > 1.0:
+                 print(f"[{self.name}] ⚠️ CRITICAL MATH WARNING: Phantom Whale Detected? Qty: {new_qty}")
+            # ---------------------------------------------
+            
             # Weighted average entry price
             old_entry = self.entry_prices.get(symbol, actual_price)
             self.entry_prices[symbol] = ((old_qty * old_entry) + (actual_qty * actual_price)) / new_qty
@@ -582,12 +592,20 @@ class ExecutorHolon(Holon):
                 'entry_timestamp': datetime.now(timezone.utc).isoformat(),
                 'direction': 'BUY'
             }
-            print(f"[{self.name}] LONG ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, Margin: ${margin_impact:.2f})")
+            print(f"[{self.name}] LONG ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, NewTotal: {new_qty:.4f}, Margin: ${margin_impact:.2f})")
             
         elif is_short_entry:
             self.balance_usd -= margin_impact
             old_qty_abs = abs(self.held_assets.get(symbol, 0.0))
+            
+            # --- PATCH 4: REALITY CHECK (Fix the Math) ---
+            # new_total_qty = old_qty + order_qty
             new_qty_abs = old_qty_abs + actual_qty
+             # Sanity Guard
+            if new_qty_abs > 1_000_000 and actual_price > 1.0:
+                 print(f"[{self.name}] ⚠️ CRITICAL MATH WARNING: Phantom Whale Detected? Qty: {new_qty_abs}")
+            # ---------------------------------------------
+
             # Weighted average entry price
             old_entry = self.entry_prices.get(symbol, actual_price)
             self.entry_prices[symbol] = ((old_qty_abs * old_entry) + (actual_qty * actual_price)) / new_qty_abs
@@ -598,7 +616,7 @@ class ExecutorHolon(Holon):
                 'entry_timestamp': datetime.now(timezone.utc).isoformat(),
                 'direction': 'SELL'
             }
-            print(f"[{self.name}] SHORT ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, Margin: ${margin_impact:.2f})")
+            print(f"[{self.name}] SHORT ENTRY: {symbol} @ {actual_price} (Qty: {actual_qty:.4f}, NewTotal: {new_qty_abs:.4f}, Margin: ${margin_impact:.2f})")
 
         elif is_long_exit:
             entry_p = self.entry_prices.get(symbol, actual_price)
@@ -729,26 +747,51 @@ class ExecutorHolon(Holon):
                 
             direction = 'SELL' if qty > 0 else 'BUY' # Exit Long or Cover Short
             # Panic -> Market Order equivalent (Aggressive Limit)
-            # For simplicity in this Actuator, we place a limit at current price 
-            # (or slightly worse if we wanted instant fill, but Actuator is limit-only)
             
-            print(f"[{self.name}] PANIC CLOSING {symbol} ({qty:.4f}) @ {price}")
+            # Calculate PnL for DB Record
+            entry_p = self.entry_prices.get(symbol, price)
+            pnl_usd = 0.0
+            pnl_pct = 0.0
+            
+            if direction == 'SELL': # Closing Long
+                pnl_usd = (price - entry_p) * abs(qty)
+                pnl_pct = (price - entry_p) / entry_p if entry_p > 0 else 0
+            else: # Covering Short
+                pnl_usd = (entry_p - price) * abs(qty) 
+                pnl_pct = (entry_p - price) / entry_p if entry_p > 0 else 0
+
+            print(f"[{self.name}] PANIC CLOSING {symbol} ({qty:.4f}) @ {price} | PnL: ${pnl_usd:.2f} ({pnl_pct*100:.2f}%)")
             
             # Direct Actuator Call
             if self.actuator:
                 self.actuator.place_limit_order(symbol, direction, abs(qty), price, margin=True)
-                # In a real panic, we might not wait for fills, just dump.
-                # But here we simulate the fill immediate update for safety.
                 
             # IMMEDIATE Local State Wipe (Assume filled for safety/stopping)
             self.balance_usd += (abs(qty) * price) # Roughly returning capital
-            # Note: PnL calculation is skipped for speed/simplicity in Panic
             
+            # Save to Ledger DB
+            if self.db_manager:
+                self.db_manager.save_trade({
+                    'symbol': symbol,
+                    'direction': direction,
+                    'quantity': abs(qty),
+                    'price': price,
+                    'cost_usd': 0, # Exit so cost is 0 (Margin Release logic)
+                    'leverage': self.position_metadata.get(symbol, {}).get('leverage', 1.0),
+                    'notional_value': abs(qty) * price,
+                    'timestamp': datetime.now(timezone.utc).isoformat(),
+                    'pnl': pnl_usd,
+                    'pnl_percent': pnl_pct,
+                    'unrealized_pnl': 0.0,
+                    'unrealized_pnl_percent': 0.0,
+                    'note': 'PANIC_CLOSE'
+                })
+
             del self.held_assets[symbol]
             if symbol in self.entry_prices: del self.entry_prices[symbol]
             if symbol in self.position_metadata: del self.position_metadata[symbol]
             
-            results.append(f"✅ {symbol} CLOSED")
+            results.append(f"✅ {symbol} CLOSED (PnL ${pnl_usd:.2f})")
             
         self._persist_portfolio()
         return results

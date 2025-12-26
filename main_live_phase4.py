@@ -6,6 +6,7 @@ import config
 from HolonicTrader.agent_trader import TraderHolon
 from HolonicTrader.holon_core import Disposition
 from HolonicTrader.agent_observer import ObserverHolon
+from HolonicTrader.agent_diagnostic import DiagnosticHolon
 from HolonicTrader.agent_entropy import EntropyHolon
 from HolonicTrader.agent_oracle import EntryOracleHolon
 from HolonicTrader.agent_guardian import ExitGuardianHolon
@@ -38,38 +39,40 @@ class QueueLogger:
         self.filename = filename
         self.log_queue = log_queue
         self.log = open(filename, "a", encoding='utf-8')
+        self.lock = threading.Lock()
     
     def write(self, message):
-        # Timestamp logic
-        final_msg = message
-        if message.strip():
-            timestamp = datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ")
-            if not message.startswith("[20"): 
-                final_msg = f"{timestamp}{message}"
-        
-        # 1. Print to Real Terminal (Hidden in GUI mode usually, but good for debug)
-        # self.terminal.write(final_msg)
-        
-        # 2. Write to File
-        try:
-            self.log.write(final_msg)
-            self.log.flush()
-        except Exception:
-            pass # Prevent logging errors from crashing the bot
-        
-        # 3. Push to Queue (if exists)
-        if self.log_queue:
+        with self.lock:
+            # Timestamp logic
+            final_msg = message
+            if message.strip():
+                timestamp = datetime.now().strftime("[%Y-%m-%d %H:%M:%S] ")
+                if not message.startswith("[20"): 
+                    final_msg = f"{timestamp}{message}"
+            
+            # 1. Print to Real Terminal (Hidden in GUI mode usually, but good for debug)
+            # self.terminal.write(final_msg)
+            
+            # 2. Write to File
             try:
-                # Strip ANSI codes for GUI display using regex
-                ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-                clean_msg = ansi_escape.sub('', final_msg)
-                
-                self.log_queue.put({
-                    'type': 'log',
-                    'message': clean_msg
-                }, block=False)
+                self.log.write(final_msg)
+                self.log.flush()
             except Exception:
-                pass # Queue full or closed
+                pass # Prevent logging errors from crashing the bot
+            
+            # 3. Push to Queue (if exists)
+            if self.log_queue:
+                try:
+                    # Strip ANSI codes for GUI display using regex
+                    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+                    clean_msg = ansi_escape.sub('', final_msg)
+                    
+                    self.log_queue.put({
+                        'type': 'log',
+                        'message': clean_msg
+                    }, block=False)
+                except Exception:
+                    pass # Queue full or closed
 
     def flush(self):
         try:
@@ -85,6 +88,12 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
     
     # 0. Initialize Database
     db = DatabaseManager()
+
+    # 0b. System Diagnostics
+    diagnostic = DiagnosticHolon()
+    if not diagnostic.run_system_check(db):
+        print(">> 🛑 SYSTEM CHECK FAILED. HALTING STARTUP.")
+        return
     
     # 1. Instantiate Core Agents
     observer = ObserverHolon(exchange_id='kucoin')

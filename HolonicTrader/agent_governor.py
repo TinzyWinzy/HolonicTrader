@@ -163,6 +163,17 @@ class GovernorHolon(Holon):
             print(f"[{self.name}] Trade REJECTED: System in HIBERNATION.")
             return False, 0.0, 0.0
 
+        # --- PATCH 2: THE STACKING CAP (Stop the Martingale) ---
+        MAX_STACKS = 3
+        existing_pos = self.positions.get(symbol)
+        if existing_pos:
+            current_stacks = existing_pos.get('stack_count', 1)
+            if current_stacks >= MAX_STACKS:
+                if self.DEBUG:
+                     print(f"[{self.name}] ⚠️ MAX STACKS REACHED ({current_stacks}). REJECTING ORDER.")
+                return False, 0.0, 0.0
+        # -------------------------------------------------------
+
         # --- PHASE 35: IMMUNE SYSTEM CHECKS ---
         if not self.check_cluster_risk(symbol):
             return False, 0.0, 0.0
