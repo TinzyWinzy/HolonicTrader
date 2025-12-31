@@ -261,6 +261,101 @@ class ExecutorHolon(Holon):
             self.ledger._chain.append(restored_block)
             print(f"[{self.name}] ⛓️ Ledger Tip Restored: {restored_block.hash[:8]}...")
 
+    def reconcile_exchange_positions(self):
+        """
+        Fetch REAL positions from Exchange and sync them to Brain.
+        Critical for recovering from crashes where DB didn't save the trade.
+        """
+        if not self.actuator: return
+        
+        print(f"[{self.name}] 🔄 Reconciling Exchange Positions...")
+        try:
+            positions = self.actuator.exchange.fetch_positions()
+            
+            synced_count = 0
+            for p in positions:
+                size = float(p['contracts']) 
+                if size == 0: continue
+                
+                # 1. Map Exchange Symbol -> Internal Symbol
+                exchange_sym = p['symbol'] # 'XRP/USD:USD'
+                internal_sym = None
+                
+                # Try simple match first
+                if exchange_sym in config.ALLOWED_ASSETS:
+                    internal_sym = exchange_sym
+                else:
+                    # Reverse Lookup in KRAKEN_SYMBOL_MAP
+                    for k, v in config.KRAKEN_SYMBOL_MAP.items():
+                        if v == exchange_sym:
+                            internal_sym = k
+                            break
+                            
+                if not internal_sym:
+                    # HEURISTIC: Try to guess (XRP/USD:USD -> XRP/USDT)
+                    raw = exchange_sym.split('/')[0] # 'XRP' or 'PF_XRPUSD'
+                    # Strip PF_
+                    if raw.startswith('PF_'): raw = raw[3:6] # PF_XRP -> XRP
+                    
+                    # Try adding /USDT
+                    guess = f"{raw}/USDT"
+                    if guess in config.ALLOWED_ASSETS:
+                        internal_sym = guess
+                        
+                if not internal_sym:
+                    print(f"[{self.name}] ⚠️ Unknown Position Found: {exchange_sym} ({size}). Skipping.")
+                    continue
+                    
+                # 2. Check if we already know it
+                if internal_sym in self.held_assets and abs(self.held_assets[internal_sym] - size) < 0.1:
+                    continue
+                    
+                # 3. Import Ghost Position
+                print(f"[{self.name}] 👻 FOUND GHOST POSITION: {internal_sym} Size: {size} Entry: {p['entryPrice']}")
+                
+                # Assign to internal state
+                self.held_assets[internal_sym] = size if p['side'] == 'long' else -size
+                self.entry_prices[internal_sym] = float(p['entryPrice'])
+                self.entry_timestamps[internal_sym] = datetime.now(timezone.utc).isoformat()
+                
+                # Reconstruct Metadata using Default Config Protection
+                # (Since we don't know the original strategy, we assume PREDATOR defaults for safety)
+                direction_mult = 1.0 if p['side'] == 'long' else -1.0
+                entry_p = float(p['entryPrice'])
+                
+                # Default Hard Stop (Equity Protection)
+                sl_price = entry_p * (1.0 - (config.PREDATOR_STOP_LOSS * direction_mult))
+                
+                # Default Take Profit (Target)
+                tp_price = entry_p * (1.0 + (config.PREDATOR_TAKE_PROFIT * direction_mult))
+                
+                self.position_metadata[internal_sym] = {
+                    'symbol': internal_sym,
+                    'direction': 'BUY' if p['side'] == 'long' else 'SELL',
+                    'quantity': size,
+                    'entry_price': entry_p,
+                    'entry_timestamp': self.entry_timestamps[internal_sym],
+                    'leverage': float(p.get('leverage', 1.0) or 1.0),
+                    'stop_loss': sl_price,
+                    'take_profit': tp_price,
+                    'strategy': 'RECOVERED'
+                }
+                synced_count += 1
+                
+            if synced_count > 0:
+                print(f"[{self.name}] ✅ Imported {synced_count} positions from Exchange.")
+                # Force Guardian Watermark Initialization via Governor? 
+                # No, Executor doesn't talk to Guardian directly. 
+                # But Guardian will pick it up on next cycle.
+                
+                if self.governor:
+                    self.governor.sync_positions(self.held_assets, self.position_metadata)
+                if self.db_manager:
+                    self.db_manager.save_portfolio(self.balance_usd, self.held_assets, self.position_metadata)
+                
+        except Exception as e:
+            print(f"[{self.name}] ❌ Reconciliation Failed: {e}")
+
     def get_execution_summary(self) -> dict:
         """Returns a high-level summary of execution status and portfolio health."""
         equity = self.get_portfolio_value()
@@ -519,11 +614,34 @@ class ExecutorHolon(Holon):
             
             # --- SOLVENCY CHECK (Prevent Infinite Negative Balance) ---
             # Ensure the Margin Requirement doesn't exceed available Free Balance
-            margin_req = (exec_qty * current_price) / leverage
-            if margin_req > self.balance_usd:
-                max_affordable_margin = max(0.0, self.balance_usd)
-                max_qty = (max_affordable_margin * leverage) / current_price
-                print(f"  [SOLVENCY] Capping Qty {exec_qty:.4f} -> {max_qty:.4f} (Bal ${self.balance_usd:.2f})")
+            
+            # PATCH 5: REAL-TIME MARGIN CHECK (Buying Power)
+            if self.actuator:
+                # Use Leveraging Power if available
+                # We ask for buying power at default 5x leverage
+                real_avail_power = self.actuator.get_buying_power(leverage=5.0)
+                avail_capital = real_avail_power
+            else:
+                avail_capital = self.balance_usd * 5.0 # Simulating 5x in paper
+
+            # Safety Buffer (Leave 1% for fees/slippage)
+            safe_capital = avail_capital * 0.99
+            
+            # Margin Requirement for the new order (Notional Value)
+            # When checking against Buying Power (Equity * Lev), we check against the full Notional Value of the trade
+            notional_req = exec_qty * current_price
+            
+            if notional_req > safe_capital:
+                # Cap to Max Buying Power
+                max_affordable_notional = max(0.0, safe_capital)
+                max_qty = max_affordable_notional / current_price
+                
+                # Check Min Order Value again after capping
+                if (max_qty * current_price) < config.MIN_ORDER_VALUE:
+                    print(f"  [SOLVENCY] ❌ Insufficient Buying Power. Req: ${config.MIN_ORDER_VALUE}, Power: ${notional_req:.2f}/{safe_capital:.2f}")
+                    return None
+                    
+                print(f"  [SOLVENCY] Capping Qty {exec_qty:.4f} -> {max_qty:.4f} (Power ${avail_capital:.2f})")
                 exec_qty = max_qty
 
             if exec_qty < 0.00000001: return None
@@ -545,7 +663,19 @@ class ExecutorHolon(Holon):
             # Short Cover: BUY
             # Long Exit: SELL
             # Short Entry: SELL
-            self.actuator.place_limit_order(symbol=symbol, direction=direction, quantity=exec_qty, limit_price=current_price)
+            
+            # --- PATCH: PASS LEVERAGE ---
+            # We must pass the leverage we calculated/retrieved to the Actuator
+            # so it can set it on the exchange before placing the order.
+            self.actuator.place_limit_order(
+                symbol=symbol, 
+                direction=direction, 
+                quantity=exec_qty, 
+                limit_price=current_price, 
+                leverage=leverage
+            )
+            # ----------------------------
+            
             fills = self.actuator.check_fills(candle_low=current_price, candle_high=current_price)
         else:
             # High-Fidelity Simulation
@@ -764,7 +894,12 @@ class ExecutorHolon(Holon):
             
             # Direct Actuator Call
             if self.actuator:
-                self.actuator.place_limit_order(symbol, direction, abs(qty), price, margin=True)
+                # Use max leverage for Panic Close? Or assume 1x? 
+                # Panic close is usually reduce-only or implied. 
+                # Ideally, we knew the leverage of the position we are closing.
+                # Let's try to grab it from metadata.
+                panic_lev = self.position_metadata.get(symbol, {}).get('leverage', 1.0)
+                self.actuator.place_limit_order(symbol, direction, abs(qty), price, margin=True, leverage=panic_lev)
                 
             # IMMEDIATE Local State Wipe (Assume filled for safety/stopping)
             self.balance_usd += (abs(qty) * price) # Roughly returning capital

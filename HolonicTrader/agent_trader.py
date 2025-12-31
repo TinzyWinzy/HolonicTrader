@@ -250,6 +250,31 @@ class TraderHolon(Holon):
             except Exception as e:
                 print(f"[{self.name}] ❌ Error processing {symbol}: {e}")
 
+            # --- LIQUIDITY & HEALTH MONITOR ---
+            # If we hold a position, check its liquidity health on the EXECUTION VENUE
+            qty_held = executor.held_assets.get(symbol, 0.0) if executor else 0.0
+            actuator = self.sub_holons.get('executor', {}).actuator if executor else None
+            
+            # Note: Executor holds the Actuator reference
+            
+            if abs(qty_held) > 0.00000001 and guardian and actuator:
+                try:
+                    # Fetch live book from KRAKEN FUTURES (via Actuator)
+                    book = actuator.fetch_order_book(symbol)
+                    
+                    # Determine Exit Direction for check
+                    exit_dir = 'SELL' if qty_held > 0 else 'BUY'
+                    liq_status = guardian.check_liquidity_health(symbol, exit_dir, abs(qty_held), book)
+                    
+                    if liq_status != "HEALTHY":
+                        warn_msg = f"⚠️ LIQUIDITY WARNING for {symbol}: {liq_status}"
+                        print(f"[{self.name}] {warn_msg}")
+                        row_data['Note'] = liq_status
+                        
+                except Exception as e:
+                    # print(f"[{self.name}] LiqCheck error: {e}")
+                    pass
+
             cycle_report.append(row_data)
 
         # --- PHASE 3: AGGREGATE & UI ---

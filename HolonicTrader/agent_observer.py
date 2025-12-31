@@ -170,8 +170,33 @@ class ObserverHolon(Holon):
         Returns the current market price (last close).
         """
         target_symbol = symbol if symbol else self.symbol
-        ticker = self.exchange.fetch_ticker(target_symbol)
-        return float(ticker['last'])
+        try:
+            ticker = self.exchange.fetch_ticker(target_symbol)
+            return float(ticker['last'])
+        except Exception:
+            # Fallback to fetching order book mid price if ticker fails?
+            return 0.0
+
+    def fetch_order_book(self, symbol: str, limit: int = 20) -> dict:
+        """
+        Fetch current order book depth (Bids/Asks).
+        Returns {'bids': [[price, qty], ...], 'asks': [[price, qty], ...]}
+        """
+        try:
+            # Map symbol if needed
+            req_symbol = symbol
+            if config.TRADING_MODE == 'FUTURES':
+                req_symbol = config.KRAKEN_SYMBOL_MAP.get(symbol, symbol)
+                
+            book = self.exchange.fetch_order_book(req_symbol, limit)
+            return {
+                'bids': book['bids'],
+                'asks': book['asks'],
+                'timestamp': book['timestamp']
+            }
+        except Exception as e:
+            print(f"[{self.name}] ⚠️ OrderBook Fetch Fail {symbol}: {e}")
+            return {'bids': [], 'asks': []}
 
     def receive_message(self, sender: Any, content: Any) -> Any:
         """

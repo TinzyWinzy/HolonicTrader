@@ -44,8 +44,8 @@ class MonitorHolon(Holon):
         # 0. Daily Reset Logic
         current_time = time.time()
         if self.last_day_reset is None or (current_time - self.last_day_reset > 86400):
-            print(f"[{self.name}] 🌅 NEW DAY: Resetting Daily Balance Tracker (${current_balance:.2f})")
-            self.daily_start_balance = current_balance
+            print(f"[{self.name}] 🌅 NEW DAY: Resetting Daily Balance Tracker (${current_equity:.2f})")
+            self.daily_start_balance = current_equity
             self.last_day_reset = current_time
 
         # --- PHASE 36: LIQUIDATION ENGINE (Solvency Check) ---
@@ -56,7 +56,8 @@ class MonitorHolon(Holon):
             return False # FATAL HEALTH FAILURE
 
         # 1. FEVER CHECK (Daily Drawdown)
-        daily_drawdown = (self.daily_start_balance - current_balance) / self.daily_start_balance
+        # BUGFIX: Use Equity (Unrealized) not Balance (Realized) for Drawdown to allow open positions
+        daily_drawdown = (self.daily_start_balance - current_equity) / self.daily_start_balance
         if daily_drawdown > config.IMMUNE_MAX_DAILY_DRAWDOWN:
              print(f"[{self.name}] 🌡️ FEVER DETECTED: Daily Drawdown {daily_drawdown*100:.2f}% > Limit {config.IMMUNE_MAX_DAILY_DRAWDOWN*100:.1f}%")
              self.is_system_healthy = False
@@ -71,9 +72,10 @@ class MonitorHolon(Holon):
         self.metrics['win_rate'] = performance_data.get('win_rate', 0.0)
         
         # 2. PRINCIPAL PROTECTION
-        if current_balance < config.PRINCIPAL:
+        # BUGFIX: Use Equity (Total Value) to check Principal, otherwise opening positions (spending cash) triggers panic.
+        if current_equity < config.PRINCIPAL:
             if self.is_system_healthy:
-                print(f"[{self.name}] ⚠️ CRITICAL HEALTH: Principal Breach! Current: ${current_balance:.2f} < Min: ${config.PRINCIPAL:.2f}")
+                print(f"[{self.name}] ⚠️ CRITICAL HEALTH: Principal Breach! Equity: ${current_equity:.2f} < Min: ${config.PRINCIPAL:.2f}")
                 self.is_system_healthy = False
         else:
             # Only recover if not in Fever

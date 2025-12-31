@@ -9,8 +9,17 @@ import os
 
 load_dotenv()
 
-API_KEY = os.getenv('KRAKEN_API_KEY')
-API_SECRET = os.getenv('KRAKEN_PRIVATE_KEY')
+# Prioritize Futures Keys if present, otherwise fallback to Spot (if unified)
+KRAKEN_FUTURES_API_KEY = os.getenv('KRAKEN_FUTURES_API_KEY')
+KRAKEN_FUTURES_PRIVATE_KEY = os.getenv('KRAKEN_FUTURES_PRIVATE_KEY')
+
+# Base Keys (Spot)
+KRAKEN_SPOT_KEY = os.getenv('KRAKEN_API_KEY')
+KRAKEN_SPOT_SECRET = os.getenv('KRAKEN_PRIVATE_KEY')
+
+# Active Keys (Selected dynamically later or defaulted here)
+API_KEY = KRAKEN_SPOT_KEY
+API_SECRET = KRAKEN_SPOT_SECRET
 
 # === TELEGRAM INTEGRATION ===
 TELEGRAM_ENABLED = True
@@ -21,7 +30,7 @@ SCAVENGER_THRESHOLD = 90.0  # Balance <= this = Scavenger Mode (PREDATOR @ $100)
 INITIAL_CAPITAL = 100.0     # Starting simulation balance
 PRINCIPAL = 80.0            # Protect $80 of the $100 (allows $20 risk buffer)
 
-PAPER_TRADING = True        # Set to False to enable real exchange execution
+PAPER_TRADING = False        # Set to False to enable real exchange execution
 
 # === TIME SETTINGS ===
 TIMEFRAME = '1h'            # Default trading timeframe
@@ -52,10 +61,50 @@ BB_STD = 2
 # === PREDATOR TRAILING STOP ===
 PREDATOR_TRAILING_STOP_ATR_MULT = 2.0
 
+# === ORDER CONSTRAINTS ===
+MIN_ORDER_VALUE = 12.0       # Minimum order size in USD (Kraken requires ~$10+)
+
+# === TRADING MODE ===
+# 'SPOT' or 'FUTURES'
+TRADING_MODE = 'FUTURES'
+
+# === KRAKEN SYMBOL MAPPING ===
+# Maps internal USDT symbols to Kraken specific pairs.
+# For FUTURES, we use the Linear Swap symbols (USD Margined) found via CCXT.
+if TRADING_MODE == 'FUTURES':
+    KRAKEN_SYMBOL_MAP = {
+        'BTC/USDT': 'BTC/USD:USD',
+        'ETH/USDT': 'ETH/USD:USD',
+        'SOL/USDT': 'SOL/USD:USD',
+        'XRP/USDT': 'XRP/USD:USD',
+        'ADA/USDT': 'ADA/USD:USD',
+        'DOGE/USDT': 'DOGE/USD:USD',
+        'SUI/USDT': 'SUI/USD:USD',
+        'UNI/USDT': 'UNI/USD:USD',
+        'AAVE/USDT': 'AAVE/USD:USD',
+        'SHIB/USDT': 'SHIB/USD:USD',
+        'PAXG/USDT': 'PAXG/USD:USD',
+        'LINK/USDT': 'LINK/USD:USD',
+        'BNB/USDT': 'BNB/USD:USD',
+        'LTC/USDT': 'LTC/USD:USD',
+        'XMR/USDT': 'XMR/USD:USD',
+        'XTZ/USDT': 'XTZ/USD:USD',
+        # Add others as needed
+    }
+else:
+    # SPOT MAPPING
+    KRAKEN_SYMBOL_MAP = {
+        'SUI/USDT': 'SUI/USD',
+        'UNI/USDT': 'UNI/USD',
+        'AAVE/USDT': 'AAVE/USD',
+        'PAXG/USDT': 'PAXG/USD',
+        'LINK/USDT': 'LINK/USD',
+    }
+
 # === ASSET CONSTRAINTS ===
+# User Requested Focus: BTC, ETH, XRP, XTZ (Perps)
 ALLOWED_ASSETS = [
-    'ADA/USDT', 'BNB/USDT', 'BTC/USDT', 'DOGE/USDT', 'ETH/USDT', 'SOL/USDT', 'SUI/USDT', 'XRP/USDT',
-    'SHIB/USDT', 'PAXG/USDT', 'LTC/USDT', 'LINK/USDT', 'XMR/USDT', 'UNI/USDT', 'AAVE/USDT'
+    'BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'XTZ/USDT'
 ]
 FORBIDDEN_ASSETS = ['ALGO/USDT']
 

@@ -94,6 +94,58 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
     if not diagnostic.run_system_check(db):
         print(">> 🛑 SYSTEM CHECK FAILED. HALTING STARTUP.")
         return
+    # 0c. Capital Synchronization (Live & Paper)
+    # Fetch real account size to inform the simulation/live parameters
+    # 0c. Capital Synchronization (Live & Paper)
+    # Fetch real account size to inform the simulation/live parameters
+    try:
+        import ccxt
+        print(f">> 🔄 Syncing Capital from Kraken ({config.TRADING_MODE})...")
+        
+        if config.TRADING_MODE == 'FUTURES':
+            exchange_class = ccxt.krakenfutures
+            # Use specific Futures keys if available
+            api_key = config.KRAKEN_FUTURES_API_KEY or config.API_KEY
+            api_secret = config.KRAKEN_FUTURES_PRIVATE_KEY or config.API_SECRET
+        else:
+            exchange_class = ccxt.kraken
+            api_key = config.API_KEY
+            api_secret = config.API_SECRET
+            
+        exchange = exchange_class({'apiKey': api_key, 'secret': api_secret})
+        bal = exchange.fetch_balance()
+        info = bal.get('info', {})
+        
+        real_equity = 0.0
+        
+        if config.TRADING_MODE == 'FUTURES':
+            # Futures Equity Check (Multi-Collateral 'flex')
+            accounts = info.get('accounts', {})
+            flex = accounts.get('flex', {})
+            real_equity = float(flex.get('marginEquity', 0.0))
+            
+            if real_equity <= 0:
+                 # Fallback to cash USD if no margin account
+                 real_equity = bal.get('total', {}).get('USD', 0.0)
+        else:
+            # Spot Equity Check
+            real_equity = float(info.get('eb', 0.0))
+            if real_equity <= 0: real_equity = float(info.get('tb', 0.0))
+            if real_equity <= 0: 
+                 real_equity = bal['free'].get('USD', 0.0) + bal['free'].get('USDT', 0.0)
+        
+        if real_equity > 5.0: # Sanity check
+             print(f">> 💰 SYNC SUCCESS: Real Equity ${real_equity:.2f}")
+             config.INITIAL_CAPITAL = real_equity
+             config.PRINCIPAL = real_equity * 0.80 
+             print(f"   -> Set INITIAL_CAPITAL = ${config.INITIAL_CAPITAL:.2f}")
+             print(f"   -> Set PRINCIPAL (Hard Stop) = ${config.PRINCIPAL:.2f}")
+        else:
+             print(f">> ⚠️ Exchange Balance too low (${real_equity:.2f}), using Config Default (${config.INITIAL_CAPITAL}).")
+
+    except Exception as e:
+        print(f">> ⚠️ Capital Sync Failed: {e}. Using Config Defaults.")
+
     
     # 1. Instantiate Core Agents
     observer = ObserverHolon(exchange_id='kucoin')
@@ -120,7 +172,8 @@ def main_live(status_queue: Queue = None, stop_event: threading.Event = None, in
         db_manager=db
     )
     
-    # 2b. Sync Governor
+    # 2b. Sync Governor & Exchange
+    executor.reconcile_exchange_positions() # Pull Ghost Positions first
     governor.sync_positions(executor.held_assets, executor.position_metadata)
 
     # 2c. Telegram Bot (Robust Instantiation)

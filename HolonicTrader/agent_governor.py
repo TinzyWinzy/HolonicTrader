@@ -275,6 +275,26 @@ class GovernorHolon(Holon):
         # Take minimum of volatility-adjusted and risk-constrained
         final_notional = min(vol_adjusted_notional, max_notional_from_risk)
         
+        # --- PATCH 4: MINIMUM ORDER VALUE (Kraken) ---
+        # If calculated size is too small, check if we can safely floor it to MIN_ORDER_VALUE
+        if final_notional < config.MIN_ORDER_VALUE:
+             # Check if we have enough "House Money" or principal buffer to allow this small deviation
+             # PATCH: Relaxed for Micro-Accounts (< $100). 
+             # Allow if we can structurally afford the margin (Balance * Lev > MinOrder)
+             # We assume max leverage of 5x here for safety check
+             max_buying_power = self.balance * 5.0 
+             
+             if config.MIN_ORDER_VALUE < max_buying_power:
+                 if self.DEBUG:
+                     print(f"[{self.name}] 🤏 Scaling up {final_notional:.2f} to Min Order {config.MIN_ORDER_VALUE}")
+                 final_notional = config.MIN_ORDER_VALUE
+             else:
+                 # Too poor to afford minimum bet
+                 if self.DEBUG:
+                     print(f"[{self.name}] ❌ Account too small for Min Order: ${config.MIN_ORDER_VALUE} > MaxPower ${max_buying_power:.2f}")
+                 return False, 0.0, 0.0
+        # ---------------------------------------------
+        
         # Convert to quantity
         quantity = final_notional / asset_price
         
