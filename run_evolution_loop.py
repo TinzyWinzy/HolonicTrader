@@ -166,59 +166,81 @@ class ArchipelagoEngine:
                     # (In a real parallel system, these would serve simultaneous processes)
                     self.lab.leverage = island.average_leverage
                     
-                    # B. Portfolio Baskets (Robustness Test)
-                    basket_size = 10
-                    # Ensure we pick valid symbols that match the ISLAND CATEGORY
-                    island_syms = [s for s in self.lab.symbols 
-                                   if self.lab.profiler.classify_category(s) in island.allowed_categories
-                                   and s in self.lab.datasets]
-                    
-                    if not island_syms:
-                        logging.warning(f"⚠️ {island.name} has NO valid symbols for categories {island.allowed_categories}. Skipping.")
-                        continue
+                    try:
+                        # B. Portfolio Baskets (Robustness Test)
+                        # FIX: Reduced from 4 -> 2 to prevent stagnation
+                        basket_size = 2
                         
-                    if len(island_syms) > basket_size:
-                        basket = random.sample(island_syms, basket_size)
-                    else:
-                        basket = island_syms
-                    
-                    # C. Evolve
-                    winner = self.lab.evolve(
-                        generations=3, 
-                        mutation_rate=island.mutation_rate,
-                        basket=basket
-                    )
-                    
-                    # D. Assess & Monitor
-                    current_fitness = winner.get('fitness', 0)
-                    
-                    # Run Health Check (Task 6)
-                    alerts = self.monitor.check_health(island.name, winner)
-                    for alert in alerts:
-                        logging.warning(alert)
-                    
-                    if current_fitness > self.best_global_fitness:
-                        # E. VALIDATION GATE (Task 5)
-                        # We pick the first asset in the basket as the primary test subject
-                        primary_asset = basket[0]
-                        
-                        # INJECTION: Pass pre-loaded data to avoid disk read errors
-                        primary_dataset = self.lab.datasets.get(primary_asset)
-                        primary_df = primary_dataset.df if primary_dataset else None
-                        
-                        is_promoted, reason, result = self.gate.validate_genome(winner['genome'], primary_asset, external_df=primary_df)
-                        
-                        if is_promoted:
-                            logging.info(f"🚀 {island.name} produced a NEW GLOBAL CHAMPION! (Fit {current_fitness:.2f}) - PROMOTED")
-                            self.best_global_fitness = current_fitness
-                            island.champion = winner
-                            self.hall_of_fame.append(winner)
-                            self.save_apex(winner, island.name)
+                        # Ensure we pick valid symbols that match the ISLAND CATEGORY
+                        island_syms = []
+                        for s in self.lab.symbols:
+                            if s not in self.lab.datasets: continue
+                            
+                            try:
+                                cat = self.lab.profiler.classify_category(s)
+                            except:
+                                cat = 'unknown'
+                                
+                            if cat in island.allowed_categories:
+                                island_syms.append(s)
+
+                        if not island_syms:
+                            logging.warning(f"⚠️ {island.name} has NO valid symbols for categories {island.allowed_categories}. Skipping.")
+                            continue
+                            
+                        if len(island_syms) > basket_size:
+                            basket = random.sample(island_syms, basket_size)
                         else:
-                            logging.warning(f"🚫 {island.name} Champion REJECTED by Gate: {reason}")
-                    else:
-                        # Local Improvement check?
-                        pass
+                            basket = island_syms
+                        
+                        # C. Evolve
+                        winner = self.lab.evolve(
+                            generations=3, 
+                            mutation_rate=island.mutation_rate,
+                            basket=basket
+                        )
+                        
+                        # D. Assess & Monitor
+                        current_fitness = winner.get('fitness', 0)
+                        
+                        # Run Health Check (Task 6)
+                        alerts = self.monitor.check_health(island.name, winner)
+                        for alert in alerts:
+                            logging.warning(alert)
+                        
+                        if current_fitness > self.best_global_fitness:
+                            # E. VALIDATION GATE (Task 5)
+                            # We pick the first asset in the basket as the primary test subject
+                            primary_asset = basket[0] if basket else config.BTC_SYMBOL
+                            
+                            # INJECTION: Pass pre-loaded data to avoid disk read errors
+                            # FIX: Prevent Data Leakage - Only pass the VALIDATION portion (last 30%)
+                            primary_dataset = self.lab.datasets.get(primary_asset)
+                            primary_df = None
+                            
+                            if primary_dataset and primary_dataset.df is not None:
+                                full_len = len(primary_dataset.df)
+                                split_idx = int(full_len * 0.7)
+                                if full_len > 100:
+                                    primary_df = primary_dataset.df.iloc[split_idx:]
+                            
+                            is_promoted, reason, result = self.gate.validate_genome(winner['genome'], primary_asset, external_df=primary_df)
+                            
+                            if is_promoted:
+                                logging.info(f"🚀 {island.name} produced a NEW GLOBAL CHAMPION! (Fit {current_fitness:.2f}) - PROMOTED")
+                                self.best_global_fitness = current_fitness
+                                island.champion = winner
+                                self.hall_of_fame.append(winner)
+                                self.save_apex(winner, island.name)
+                            else:
+                                logging.warning(f"🚫 {island.name} Champion REJECTED by Gate: {reason}")
+                        else:
+                            # Local Improvement check?
+                            pass
+                            
+                    except Exception as island_error:
+                         logging.error(f"⚠️ Error Processing Island {island.name}: {island_error}")
+                         continue
                         
                 # 2. Migration Phase (Mixing)
                 if self.total_cycles % self.migration_interval == 0:

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: holonic-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./logs:/app/logs
+      - ./holonic_trader.db:/app/holonic_trader.db
+      - ./user_config.json:/app/user_config.json
+      - ./hall_of_fame.json:/app/hall_of_fame.json
+    restart: unless-stopped
+    # If the system needs GPU, uncomment the following:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  frontend:
+    build:
+      context: ./dashboard-ui
+      dockerfile: Dockerfile
+    container_name: holonic-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

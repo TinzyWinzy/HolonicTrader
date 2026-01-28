@@ -13,8 +13,9 @@ export const SocketProvider = ({ children }) => {
     const [systemState, setSystemState] = useState(null);
 
     useEffect(() => {
-        // Connect to Flask Backend on Port 5000
-        const newSocket = io('http://localhost:5000', {
+        // Connect to Flask Backend
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const newSocket = io(API_URL, {
             transports: ['websocket'],
             reconnectionAttempts: 5,
         });
@@ -42,7 +43,8 @@ export const SocketProvider = ({ children }) => {
     }, []);
 
     const sendCommand = (cmd, payload = {}) => {
-        return fetch('http://localhost:5000/api/control', {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        return fetch(`${API_URL}/api/control`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ command: cmd, data: payload })

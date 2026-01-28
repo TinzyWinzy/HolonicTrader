@@ -207,12 +207,14 @@ class EntryOracleHolon(Holon):
                 if self.current_metabolism == 'PREDATOR' and signal.conviction > 0.65:
                     flex += 15.0 # Total 40.0 Flex (e.g. 23 + 40 = 63 RSI allowed)
                 
-                if rsi > (optimal + flex):
-                     if is_resonance and rsi < 60.0: # Also relaxed resonance limit
-                          # Bypass! 
+                # --- RSI FIX (CRITICAL) ---
+                # User Request: "Only block if RSI > 70"
+                # Removed complex optimal+flex logic which was blocking at 50.0
+                if rsi > 70.0:
+                     if is_resonance and rsi < 75.0: # Allow slightly higher for Resonance
                           pass 
                      else:
-                          print(f"[{self.name}] 🧬 {symbol} FILTER: Overextended (RSI {rsi:.1f} > Opt {optimal:.1f}+{flex}). IGNORED.")
+                          print(f"[{self.name}] 🧬 {symbol} FILTER: Overbought (RSI {rsi:.1f} > 70.0). IGNORED.")
                           return None
                 
         # 4. XRP: Whole Number Front-running
@@ -392,11 +394,64 @@ class EntryOracleHolon(Holon):
         
         return signal
 
-    def verify_holding_physics(self, symbol: str, direction: str, current_price: float = None) -> bool:
+    def predict_position_health(self, symbol: str, current_price: float, entry_price: float, direction: str) -> Dict[str, Any]:
+        """
+        Oracle Diagnosis: Check if a held position is growing or decaying.
+        Uses: Price Action, Ensemble Vote (if avail), and Global Bias.
+        """
+        health = {
+            'status': 'STABLE',
+            'decay_score': 0.0, # 0.0 = Healthy, 1.0 = Critical
+            'action': 'HOLD'
+        }
+        
+        # 1. Price Momentum Check
+        if direction == 'BUY':
+            pnl = (current_price - entry_price) / entry_price
+        else:
+            pnl = (entry_price - current_price) / entry_price
+            
+        # 2. Ensemble AI Check (Forecast)
+        # If we have ensemble loaded, ask it: "Is the trend still valid?"
+        ensemble_vote = 0.5 # Neutral
+        if self.ensemble:
+            # We would need recent data frame here. Assuming we can fetch or it's cached.
+            # Simplified: Use Global Bias as proxy if deep ensemble check is expensive.
+            pass
+            
+        gmb = self.get_market_bias()
+        
+        # 3. Decay Logic
+        # A. Early Profit Decay
+        # If we are in profit (>1%) but Global Bias turning against us?
+        if pnl > 0.01:
+            if direction == 'BUY' and gmb < 0.4:
+                health['status'] = 'DECAYING'
+                health['decay_score'] = 0.7
+                health['action'] = 'TIGHTEN_SL'
+            elif direction == 'SELL' and gmb > 0.6:
+                health['status'] = 'DECAYING'
+                health['decay_score'] = 0.7
+                health['action'] = 'TIGHTEN_SL'
+                
+        # B. Growth (Let it Run)
+        # If trend is super strong, relax TP
+        if direction == 'BUY' and gmb > 0.65:
+            health['status'] = 'GROWTH'
+            health['action'] = 'RELAX_TP'
+        elif direction == 'SELL' and gmb < 0.35:
+            health['status'] = 'GROWTH'
+            health['action'] = 'RELAX_TP'
+            
+        return health
+
+    def verify_holding_physics(self, symbol: str, direction: str, current_price: float = None, entry_price: float = None) -> Dict[str, Any]:
         """
         Proof of Holding: Re-verify the thesis for an open position.
-        Returns check_result (True = KEEP HOLDING, False = THESIS INVALID / EXIT).
+        Returns detailed health dict (replacing simple boolean).
         """
+        result = {'valid': True, 'reason': '', 'recommendation': 'HOLD'}
+        
         # 1. ENTROPY CHECK (Chaos Veto)
         #Ideally we query Entropy Agent, but assuming we have access or use a proxy
         # For now, we return True as placeholder or implement local check if needed.
@@ -412,15 +467,23 @@ class EntryOracleHolon(Holon):
              
              if gmb < (threshold - buffer): # Buffered Exit
                  print(f"[{self.name}] 📉 THESIS FAILED: {symbol} Long held but Global Bias collapsed to {gmb:.2f} (Threshold {threshold - buffer:.2f})")
-                 return False
+                 result['valid'] = False
+                 result['reason'] = 'BIAS_COLLAPSE'
+                 result['recommendation'] = 'EXIT_MARKET'
+                 return result
 
-        # 3. FALLING KNIFE CHECK (Structure)
-        # If we have a cached structure context or price > support?
-        # This requires price data.
-        # For Phase 5b, we rely on PREDATOR STOP LOSS for "price" exits.
-        # But we can add a logical exit if "Market Personality" changes.
+        # 3. AI HEALTH CHECK (New)
+        if current_price and entry_price:
+            health = self.predict_position_health(symbol, current_price, entry_price, direction)
+            if health['action'] != 'HOLD':
+                result['recommendation'] = health['action']
+                result['reason'] = f"AI_{health['status']}"
+                if health['status'] == 'DECAYING':
+                     print(f"[{self.name}] 🤒 POS DECAY: {symbol} {direction} (GMB mismatch). Rec: {health['action']}")
+                elif health['status'] == 'GROWTH':
+                     print(f"[{self.name}] 🌱 POS GROWTH: {symbol} {direction} (Trend Strong). Rec: {health['action']}")
                  
-        return True
+        return result
 
     def audit_asset_profile(self, symbol: str, data: Any) -> Dict[str, Any]:
         """
@@ -1177,6 +1240,7 @@ class EntryOracleHolon(Holon):
         rsi = 50.0
         rvol = 1.0
         is_whale = False
+        whale_reason = []
 
         # 🔑 KEY 0: SCAVENGER TRAP (Pattern Override)
         # Does this asset look like it just trapped bears at support?
@@ -1232,6 +1296,7 @@ class EntryOracleHolon(Holon):
                             self._safe_print(f"[{self.name}] 🌊 FLOW REVERSAL: Catching Knife on {symbol}! (Buy Ratio {flow['buy_ratio']:.2f})")
                             can_recover = True
                             is_whale = True # Treat as Whale Signal
+                            whale_reason.append("FLOW_REVERSAL")
                     
                     if not can_recover:
                         # self._safe_print(f"[{self.name}] 🧱 STRUCTURAL VETO {symbol}: Price < Support ({dist_sup*100:.2f}%). (Falling Knife)")
@@ -1266,6 +1331,8 @@ class EntryOracleHolon(Holon):
              if rvol_chk > config.MEMECOIN_PUMP_RVOL:
                  self._safe_print(f"[{self.name}] 🚀 SECTOR PHYSICS: {symbol} Decoupling from Macro (RVOL {rvol_chk:.1f})")
                  sector_override = True
+                 is_whale = True
+                 whale_reason.append(f"SECTOR_FORCE_RVOL_{rvol_chk:.1f}")
         
         if not sector_override:
             last_state = self.last_macro_state.get(symbol, 'UNKNOWN')
@@ -1574,8 +1641,9 @@ class EntryOracleHolon(Holon):
              if current_price < kalman_price or high_conv_bullish or trigger_panic_buy or trigger_quantum_buy:
                  reason = "TREND" if trigger_trend_buy else ("DIP" if trigger_dip_buy else "PANIC")
                  if is_whale:
-                     reason = f"WHALE_{whale_reason[0]}" # Override reason with primary whale driver
-                     self._safe_print(f"[{self.name}] 🐋 WHALE SIGHTING: {symbol} - {', '.join(whale_reason)}")
+                     main_whale_reason = whale_reason[0] if whale_reason else "FORCE_OVERRIDE"
+                     reason = f"WHALE_{main_whale_reason}" # Override reason with primary whale driver
+                     self._safe_print(f"[{self.name}] 🐋 WHALE SIGHTING: {symbol} - {', '.join(whale_reason) if whale_reason else 'Manual/Sector Force'}")
 
                  self._safe_print(f"[{self.name}] 🚀 {symbol} BUY SIGNAL ({reason}) | XGB:{xgb_prob:.2f} GMB:{market_bias:.2f}")
                  

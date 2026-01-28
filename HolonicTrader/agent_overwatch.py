@@ -166,6 +166,8 @@ class OverwatchHolon(Holon):
             self.app.add_handler(CommandHandler("status", self._cmd_status))
             self.app.add_handler(CommandHandler("report", self._cmd_report)) # Verbose SitRep
             self.app.add_handler(CommandHandler("panic", self._cmd_panic))
+            self.app.add_handler(CommandHandler("stop", self._cmd_stop))
+            self.app.add_handler(CommandHandler("config", self._cmd_config))
             
             print(f"[{self.name}] ✅ Telegram Bot Ready (Overwatch Mode)")
             
@@ -229,11 +231,44 @@ class OverwatchHolon(Holon):
         pnl_val = perf.get('total_pnl', 0.0)
         metrics['pnl_str'] = f"${pnl_val:+.2f}" 
 
+        # --- SESSION 3b: MARGIN LEVEL MONITOR ---
+        # Calculate Real-Time Margin Level (Liquidation Proximity)
+        # Maintenance Margin Rate = 10% (Conservative assumption for 5x/10x)
+        # Used Margin = Total Position Value * MaintRate
+        total_pos_value = 0.0
+        if len(gov.positions) > 0:
+            for sym, pos in gov.positions.items():
+                qty = pos.get('quantity', 0.0)
+                # Use current price from Executor if avail, else entry
+                curr_price = exec_agent.latest_prices.get(sym, pos.get('entry_price', 0.0))
+                total_pos_value += (qty * curr_price)
+        
+        used_margin = total_pos_value * 0.10
+        margin_level = 999.0 # Infinity
+        if used_margin > 0:
+            margin_level = current_equity / used_margin
+            
+        metrics['margin_level'] = margin_level
+        metrics['effective_leverage'] = total_pos_value / current_equity if current_equity > 0 else 0.0
+        # ----------------------------------------
+
         # State Logic
         state = SystemState.NOMINAL
         reason = ""
         
-        if metrics['drawdown_pct'] > 0.05 or metrics['crisis_score'] > 0.8:
+        # Priority Logic: Solvency First
+        if margin_level < 1.5:
+             state = SystemState.CRITICAL
+             reason = f"LIQUIDATION RISK (Margin Lvl {margin_level*100:.0f}%)"
+             # Trigger Panic? Maybe too aggressive for auto-trigger without testing.
+             # User said "Alert < 200%, Panic < 150%".
+             # For now, CRITICAL state halts entries.
+             
+        elif margin_level < 2.0:
+             state = SystemState.CAUTION
+             reason = f"Low Margin Level ({margin_level*100:.0f}%)"
+             
+        elif metrics['drawdown_pct'] > 0.05 or metrics['crisis_score'] > 0.8:
             state = SystemState.CRITICAL
             reason = "High Drawdown" if metrics['drawdown_pct'] > 0.05 else "Geopolitical Crisis"
         elif metrics['sentiment_score'] < -0.4 or metrics['drawdown_pct'] > 0.02:
@@ -294,6 +329,43 @@ class OverwatchHolon(Holon):
             if executor:
                 res = executor.panic_close_all(executor.latest_prices)
                 await update.message.reply_text(f"🛑 Result:\n{res}")
+
+    async def _cmd_stop(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Gracefully stop the trading bot."""
+        if self.trader and hasattr(self.trader, 'gui_stop_event') and self.trader.gui_stop_event:
+            self.trader.gui_stop_event.set()
+            await update.message.reply_text("🛑 **STOP SIGNAL RECEIVED**. Initiating graceful shutdown sequence...")
+        else:
+            await update.message.reply_text("⚠️ Error: Cannot stop. Control link missing.")
+
+    async def _cmd_config(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Update configuration dynamically. Usage: /config <alloc|lev|micro> <value>"""
+        try:
+            if not context.args or len(context.args) != 2:
+                await update.message.reply_text("Usage: `/config <alloc|lev|micro> <value>`\nEx: `/config alloc 0.5`")
+                return
+
+            param, val = context.args[0].lower(), context.args[1]
+            cfg_update = {}
+            
+            if param in ['alloc', 'allocation']:
+                cfg_update['max_allocation'] = float(val)
+            elif param in ['lev', 'leverage']:
+                cfg_update['leverage_cap'] = float(val)
+            elif param == 'micro':
+                cfg_update['micro_mode'] = (val.lower() in ['true', '1', 'yes', 'on'])
+            else:
+                await update.message.reply_text(f"❌ Unknown parameter: {param}")
+                return
+
+            if self.trader and hasattr(self.trader, 'command_queue') and self.trader.command_queue:
+                self.trader.command_queue.put({'type': 'update_config', 'data': cfg_update})
+                await update.message.reply_text(f"⚙️ **Config Update Queued**:\n`{cfg_update}`", parse_mode='Markdown')
+            else:
+                 await update.message.reply_text("⚠️ Error: Command Queue not linked.")
+                 
+        except Exception as e:
+             await update.message.reply_text(f"❌ Config Error: {e}")
 
     def send_telegram_alert(self, msg: str):
         """Thread-safe send."""

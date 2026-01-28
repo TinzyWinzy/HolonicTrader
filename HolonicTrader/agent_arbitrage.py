@@ -78,26 +78,41 @@ class ArbitrageHolon(Holon):
         if abs(funding_rate) > 0.01: # > 1% per 8h is extreme for most pairs
              corrected_rate = funding_rate / 100.0
              
-        # FIX: Effective APY Calculation (Compound)
-        # Annualized = (1 + rate)^1095 - 1 (compounded 3 times/day * 365 days)
-        # OLD (Wrong): rate * 3 * 365 = -273.8%
-        # NEW (Correct): (1 + rate)^1095 - 1 = ~-93.5% for -0.25% per 8h
-        try:
-            apy = ((1 + corrected_rate) ** 1095 - 1) * 100
-        except OverflowError:
-            # Fallback for extreme rates
-            apy = 500.0 if corrected_rate > 0 else -500.0
+        # FIX: Effective APR Calculation (Simple Interest)
+        # User request: "APY = FundingRate (4h) * 6 * 365 * 100"
+        # Adjusted to avoid exponential decay/growth confusion.
+        apy = corrected_rate * 6 * 365 * 100
         
         # SANITY FILTER: APY > 500% is likely a data error or extreme anomaly
+        # Special Case: Kraken API returning -0.25 (interpreted as -0.25% -> -547% APY)
+        # This seems to be a default/error value for some datasets.
         if abs(apy) > 500.0:
-            apy = 500.0 if apy > 0 else -500.0
+            if abs(apy + 547.5) < 1.0: # Matches the specific -547.5% signature
+                pass # Silently discard known bad data
+            else:
+                print(f"[{self.name}] ⚠️ FUNDING POISON: APY {apy:.1f}% discarded (>500% Limit). Rate: {corrected_rate:.6f}")
+            apy = 0.0
+            corrected_rate = 0.0
             
         self.funding_yields[symbol] = apy
         
         threshold = getattr(config, 'ARB_FUNDING_THRESHOLD', 0.0001) # Default 0.01% per 8h
-        if abs(corrected_rate) >= threshold:
-             status = "YIELD" if corrected_rate > 0 else "SHORTING_COST"
-             print(f"[{self.name}] 💰 FUNDING {status} | {symbol}: {apy:.1f}% APY (Rate: {corrected_rate*100:.4f}% per 8h)")
+        if abs(corrected_rate) >= threshold and apy != 0.0:
+             # FIX: Label Logic
+             # If Rate < 0: Shorts pay Longs. Yield for Longs. Cost for Shorts.
+             # If Rate > 0: Longs pay Shorts. Cost for Longs. Yield for Shorts.
+             
+             # We assume default perspective is "OPPORTUNITY" (Yield)
+             # If Rate is Negative, it is YIELD for a Long position.
+             if corrected_rate < 0:
+                 status = "YIELD (LONG)"
+                 # Invert APY for display (Negative Rate -> Positive Yield)
+                 display_apy = abs(apy)
+             else:
+                 status = "COST (LONG)"
+                 display_apy = -abs(apy) # Cost is negative yield
+                 
+             print(f"[{self.name}] 💰 FUNDING {status} | {symbol}: {display_apy:.1f}% APY (Rate: {corrected_rate*100:.4f}% per 8h)")
              
         return apy
 
@@ -153,8 +168,10 @@ class ArbitrageHolon(Holon):
         # 1. BASIS YIELD TRADE (Long Side)
         # TUNED: Lowered from 100% to 50% APY threshold
         # Tiered confidence: Higher yield = higher conviction
-        if funding_apy > 50.0 and spread < 0.01:  # Was: >100% and <0.5%
-            confidence = min(0.95, 0.6 + (funding_apy / 500.0))  # Scale with yield
+        if funding_apy > 40.0 and spread < 0.015:  # Was: >50% and <1.0%
+            # Boosted mechanic: Base 0.7 + yield contribution
+            # 50% APY -> 0.7 + 0.1 = 0.8 (Nugget)
+            confidence = min(0.95, 0.7 + (funding_apy / 500.0))  
             return {
                 'direction': 'BUY',
                 'confidence': confidence,
@@ -183,6 +200,33 @@ class ArbitrageHolon(Holon):
             }
             
         return None
+
+    def scan_for_nuggets(self) -> List[Dict]:
+        """
+        The Silent Miner ⛏️
+        Scans all monitored assets for 'Gold Nuggets' (High Value Arbitrage).
+        Only returns signals that meet strict criteria to convert silence into action.
+        """
+        nuggets = []
+        for symbol in list(self.funding_yields.keys()):
+            # We need current price, which we might not have stored locally in a clean way.
+            # But get_active_signal assumes we pass it.
+            # For pure arb, spreads are stored. We can imply direction.
+            
+            # Re-evaluate signal
+            sig = self.get_active_signal(symbol, 0.0) # Price unused for direction logic main checks
+            
+            if sig:
+                # FILTER: Only surface HIGH CONFIDENCE nuggets
+                if sig['confidence'] >= 0.8:
+                    # Enrich with metadata
+                    sig['symbol'] = symbol
+                    nuggets.append(sig)
+                    
+        if nuggets:
+            print(f"[{self.name}] ⛏️ GOLD RUSH: Found {len(nuggets)} Nuggets!")
+            
+        return nuggets
 
     def receive_message(self, sender: Any, content: Any) -> None:
         """Process price updates from Observer."""

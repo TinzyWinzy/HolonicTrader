@@ -187,7 +187,7 @@ class TraderHolon(Holon):
             # 2. Fetch Data (Reduced to 50 candles for faster fetch)
             # Using 1h data for stable regime detection
             start_fetch = time.time()
-            tickers_data = observer.fetch_market_data_batch(list(scan_list), timeframe='1h', limit=50)
+            tickers_data = observer.fetch_market_data_batch(list(scan_list), timeframe='1h', limit=100)
             fetch_duration = time.time() - start_fetch
             
             if fetch_duration > 10.0:
@@ -233,7 +233,13 @@ class TraderHolon(Holon):
                         promoted_count += 1
                 else:
                     # CHAOTIC -> Reject
-                    if sym in self.active_session_whitelist and sym not in held_assets:
+                    # FIX: Don't demote if entropy is exactly 0.0 (Likely Data Failure)
+                    if entropy == 0.0:
+                        if sym in self.active_session_whitelist:
+                             # Keep it, assume data glitch
+                             approved_list.append(sym)
+                             print(f"[{self.name}] ⚠️ SCOUT WARNING: {sym} has 0.0 Entropy (Data Gap). Preserving in Whitelist.")
+                    elif sym in self.active_session_whitelist and sym not in held_assets:
                         print(f"[{self.name}] 📉 SCOUT DEMOTION: {sym} entered CHAOS (Ent: {entropy:.2f}). Dropping.")
             
             # 5. Commit
@@ -384,14 +390,108 @@ class TraderHolon(Holon):
         if overwatch:
             overwatch.perform_audit()
             
-        # --- PHASE -0.5: ARBITRAGE SYNC ---
+        # --- PHASE -0.5: ARBITRAGE SYNC (The Silent Miner) ---
         if arbitrage:
             arbitrage.perform_sync(self.active_session_whitelist)
             
-        # Evolution Watcher
-        self._scan_for_genome_updates()
+            # ⛏️ MINER HOOK: Check for Gold Nuggets
+            nuggets = arbitrage.scan_for_nuggets()
+            if nuggets:
+                 print(f"[{self.name}] ⚒️ PROCESSING {len(nuggets)} ARB NUGGETS...")
+                 for nug in nuggets:
+                     # Create TradeSignal from Nugget
+                     # Fetch price proactively
+                     nug_sym = nug['symbol']
+                     curr_price = executor.latest_prices.get(nug_sym, 0.0)
+                     if curr_price <= 0 and observer:
+                         curr_price = observer.get_latest_price(nug_sym)
+                     
+                     if curr_price <= 0:
+                         print(f"[{self.name}] ⚠️ SKIPPING NUGGET {nug_sym}: Price unknown.")
+                         continue
+
+                     # Nugget keys: direction, confidence, reason, symbol
+                     sig = TradeSignal(
+                         symbol=nug_sym,
+                         direction=nug['direction'],
+                         size=1.0, # Sizing handled by Governor/Executor
+                         price=curr_price, # Set valid price
+                         conviction=nug['confidence']
+                     )
+                     sig.metadata = {
+                         'reason': nug['reason'],
+                         'strategy': 'ARBITRAGE_GOLD',
+                         'is_whale': True # Treat as high priority
+                     }
+                     
+                     # Check if we already hold it? (Executor check)
+                     # Or just fire it into decision engine.
+                     # Let's fire it.
+                     if executor:
+                          decision = executor.decide_trade(sig, 'ORDERED', 0.0)
+                          if decision.action != 'HALT':
+                              # Get Price for execution log (Already fetched)
+                              res = executor.execute_transaction(decision, curr_price)
+                              if res:
+                                  print(f"[{self.name}] 💰 NUGGET SECURED: {nug['symbol']} {nug['direction']} ({nug['reason']})")
+            
+        # Evolution Watcher (Conditional)
+        if getattr(config, 'ENABLE_EVOLUTION', False):
+            self._scan_for_genome_updates()
         
         self._run_scout_cycle()
+        
+        # --- PHASE 0.1: EXIT MANAGEMENT SCAN ---
+        # Check all held assets for SL/TP before looking for new entries
+        if executor and governor:
+             for held_sym, held_qty in executor.held_assets.items():
+                 # Skip if closed
+                 if abs(held_qty) < 0.0000001: continue
+                 
+                 curr_p = executor.latest_prices.get(held_sym, 0.0)
+                 pos_data = governor.positions.get(held_sym)
+                 
+                 # --- DYNAMIC AI EXIT CHECK ---
+                 rec = 'HOLD'
+                 if oracle:
+                     entry_p = pos_data.get('entry_price', 0.0)
+                     direction = pos_data.get('direction', 'BUY')
+                     phys_res = oracle.verify_holding_physics(held_sym, direction, curr_p, entry_p)
+                     # If Physics says "EXIT NOW" (Thesis Invalid), we force it.
+                     if not phys_res.get('valid', True):
+                         # Force immediate exit via special type
+                         exit_type = 'THESIS_INVALID'
+                         exit_reason = phys_res.get('reason', 'Physics Veto')
+                     else:
+                         rec = phys_res.get('recommendation', 'HOLD')
+                         exit_type, exit_reason = governor.check_exit_conditions(held_sym, curr_p, pos_data, recommendation=rec)
+                 else:
+                     exit_type, exit_reason = governor.check_exit_conditions(held_sym, curr_p, pos_data)
+                 # -----------------------------
+                 
+                 if exit_type:
+                     print(f"[{self.name}] 🚨 EXIT SIGNAL: {held_sym} -> {exit_type} ({exit_reason})")
+                     
+                     # Force Close
+                     is_long = pos_data.get('direction', 'BUY') == 'BUY'
+                     close_signal = TradeSignal(
+                            symbol=held_sym,
+                            direction='SELL' if is_long else 'BUY',
+                            size=1.0, 
+                            price=curr_p,
+                            conviction=1.0,
+                            metadata={'reason': f"AUTO_{exit_type}", 'reduce_only': True}
+                        )
+                     # Execute Immediately (Bypassing normal queue? No, add to results is safer but might lag)
+                     # Or inject into Executor directly?
+                     # Standard path: Add to analysis_results is standard, but we are in Cycle Prep.
+                     # Better: Execute via sub-holon call or Queue?
+                     # Let's execute via Executor direct override for safety
+                     # Let's execute via Executor direct override for safety
+                     executor.execute_transaction(TradeDecision(
+                         action='EXECUTE', original_signal=close_signal, adjusted_size=1.0, disposition=Disposition(autonomy=1.0, integration=1.0),
+                         block_hash='AUTO_EXIT_OVERRIDE'
+                     ), curr_p)
 
         # --- PHASE 0: PARALLEL PRE-FLIGHT (GMB Sync) ---
         sent_score = 0.0
@@ -484,9 +584,9 @@ class TraderHolon(Holon):
             if print_verbose:
                 print(f"[{self.name}] 🦀 Rust-Accelerating Signals...")
                 
-            batch_prices = {s: d['df_15m']['close'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None}
-            batch_highs = {s: d['df_15m']['high'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None}
-            batch_lows = {s: d['df_15m']['low'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None}
+            batch_prices = {s: d['df_15m']['close'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None and not d['df_15m'].empty and 'close' in d['df_15m'].columns}
+            batch_highs = {s: d['df_15m']['high'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None and not d['df_15m'].empty and 'high' in d['df_15m'].columns}
+            batch_lows = {s: d['df_15m']['low'].values.tolist() for s, d in cycle_data_cache.items() if d.get('df_15m') is not None and not d['df_15m'].empty and 'low' in d['df_15m'].columns}
             
             import holonic_speed
             rust_signals = holonic_speed.calculate_signals_matrix(
@@ -506,9 +606,31 @@ class TraderHolon(Holon):
         analysis_results = []
         with ThreadPoolExecutor(max_workers=config.TRADER_MAX_WORKERS) as t_pool:
             futures = []
+            
+            # Optimization: Get held assets to ensure we never filter them
+            held_syms = []
+            if executor: held_syms = list(executor.held_assets.keys())
+            
             for s in self.active_session_whitelist:
                 cache = cycle_data_cache.get(s, {})
                 df_15m = cache.get('df_15m')
+                # Pre-fetch price for check
+                p_check = 0.0
+                if df_15m is not None and not df_15m.empty:
+                    p_check = df_15m['close'].iloc[-1]
+                
+                # --- UPSTREAM PRE-FILTER (Cooldown Audit) ---
+                # Stop "Boy Who Cried Wolf". If Governor won't allow trade, don't ask Strategy.
+                # Exception: Always analyze if we HOLD the asset (need to check for Exits/Thesis)
+                if governor and s not in held_syms:
+                     # Suppress logs (silent=True) to fix Log Churn
+                     if not governor.is_trade_allowed(s, p_check, silent=True):
+                         # Silent Skip (Verbose only)
+                         if getattr(self, 'verbose_logging', False):
+                             print(f"[{self.name}] ⏳ PRE-FILTER: Skipping {s} (Cooldown/Stack).")
+                         continue
+                # --------------------------------------------
+                
                 df_1h = cache.get('df_1h')
                 book = cache.get('book')
                 funding = cache.get('funding')
@@ -525,9 +647,19 @@ class TraderHolon(Holon):
             except TimeoutError:
                  print(f"[{self.name}] ⚠️ Analysis Cycle Timed Out (proceeding with partial results)")
 
-        analysis_results.sort(key=lambda x: x['symbol'])
+        # FIX: Sort by CONVICTION (Highest First) instead of Symbol
+        # This ensures we take the BEST trades first if capital is limited.
+        def get_conviction(res):
+            sig = res.get('entry_signal')
+            return sig.conviction if sig else 0.0
+            
+        analysis_results.sort(key=get_conviction, reverse=True)
+        # analysis_results.sort(key=lambda x: x['symbol']) # OLD NAIVE SORT
 
         # --- PHASE 2: SEQUENTIAL EXECUTION PASS ---
+        cycle_entries_count = 0
+        limit_entries = getattr(config, 'TRADER_MAX_CYCLE_ENTRIES', 3)
+        
         for res in analysis_results:
             symbol, data, current_price = res['symbol'], res['data'], res['price']
             row_data, indicators = res['row_data'], res['indicators']
@@ -633,6 +765,32 @@ class TraderHolon(Holon):
                 # A. Handle Entry
                 entry_sig = res.get('entry_signal') if not (regime_controller and regime_controller.is_transition_pending()) else None
                 
+                # LIMIT CHECK:
+                if entry_sig and cycle_entries_count >= limit_entries:
+                     if getattr(self, 'verbose_logging', False):
+                         print(f"[{self.name}] 🛑 SKIPPING ENTRY {symbol}: Cycle Limit ({limit_entries}) Reached.")
+                     entry_sig = None
+
+                # --- SESSION 3: SIGNAL DEBOUNCER (Anti-Spam) ---
+                if entry_sig:
+                    if not hasattr(self, 'last_signal_times'): self.last_signal_times = {}
+                    last_trigger = self.last_signal_times.get(symbol, 0)
+                    time_since = time.time() - last_trigger
+                    
+                    # 30 Minute Debounce (unless it's a specific urgent type? No, strict.)
+                    if time_since < 1800:
+                         # Log occasionally (e.g. every 5 mins) to reduce log noise? 
+                         # Just log specific reason
+                         if time_since % 300 < 5: 
+                             print(f"[{self.name}] ⏳ DEBOUNCE: Skipping {symbol} signal (Last: {int(time_since)}s ago < 30m).")
+                         entry_sig = None
+                    else:
+                         # Update time ONLY if we proceed (handled below or tentatively here?)
+                         # If we set it here, we block subsequent signals even if this one fails Governor check.
+                         # This prevents "Hammering" the Governor.
+                         self.last_signal_times[symbol] = time.time()
+                # -----------------------------------------------
+                
                 # --- PATCH: HARD TOPOLOGY VETO ---
                 if tda_status == 'CRITICAL' and entry_sig:
                      print(f"[{self.name}] 🚨 TOPOLOGY HARD VETO: Structure Collapse detected for {symbol}. Blocking Entry.")
@@ -732,7 +890,8 @@ class TraderHolon(Holon):
                             symbol, current_price, indicators['atr'], atr_ref, conviction, 
                             direction=entry_sig.direction, sentiment_score=sent_score,
                             whale_confirmed=is_whale, market_bias=global_bias,
-                            metadata=entry_sig.metadata
+                            metadata=entry_sig.metadata,
+                            latest_prices=executor.latest_prices if executor else {}
                         )
                     else:
                         approved = False
@@ -772,6 +931,22 @@ class TraderHolon(Holon):
                                     row_data['Action'] = f"WHALE BUY 🐋"
                                 else:
                                     row_data['Action'] = f"BUY ({reason_tag})"
+                                    
+                                # --- CYCLE LIMIT CHECK ---
+                                cycle_entries_count += 1
+                                if cycle_entries_count >= limit_entries:
+                                    print(f"[{self.name}] 🛑 CYCLE LIMIT REACHED ({limit_entries} entries). Halting further entries for this cycle.")
+                                    # We break the LOOP? No, we might have exits to process!
+                                    # Actually, this loop processes results. Exits are "Phase 0.1". 
+                                    # Wait, we might have 'thesis_exit' logic INSIDE this loop too?
+                                    # Yes, "B. Handle Exit" is inside this loop.
+                                    # Correct Logic: Disable further *entries* but allow exits/processing.
+                                    entry_sig = None # Clear future signals? No, this is inside loop.
+                                    # We need a flag.
+                                    # But we are inside the "if approved" block for THIS entry.
+                                    # We need to stop NEXT iterations from entering.
+                                    pass
+
                             else:
                                 print(f"[{self.name}] ⚠️ ENTRY ABORTED: {symbol} (Execution Failed/Unconfirmed). Governor NOT updated.")
                                 row_data['Action'] = "BUY (FAILED)"
@@ -788,6 +963,15 @@ class TraderHolon(Holon):
                             print(f"[{self.name}] 🛡️ Governor Vetoed {symbol}: Risk/Exposure Limits.")
                         elif safe_qty <= 0:
                             row_data['Action'] = "BUY (NO QTY)"
+
+                # Enforce Cycle Limit for subsequent assets
+                if cycle_entries_count >= limit_entries and entry_sig:
+                     # If we just hit the limit, or have already hit it, we must ensure we don't process NEW entries.
+                     # But this loop iterates 'res'. If we just filled the 3rd, the 4th will come here.
+                     # We need to verify 'entry_sig' is set. 
+                     # Wait, checking at top of loop is cleaner.
+                     # Let's add a check at start of A. Handle Entry
+                     pass
 
                 else:
                     # Request C: No Signal - Healthy Silence
@@ -1049,10 +1233,9 @@ class TraderHolon(Holon):
         
         # PROFILING LOG (User Request)
         if symbol in ['SOL/USDT', 'XRP/USDT', 'BTC/USDT', 'XTZ/USDT', 'TBTC/USDT']:
-             # Quick peek at Scout personality if available
              scout_res = getattr(self, 'scout_results', {})
              pers = scout_res.get(symbol, "Unknown")
-             print(f"[{self.name}] 🕵️ PROFILING {symbol}: Price ${current_price:.2f} | Personality: {pers} | Rows: {len(data)}")
+             print(f"[{self.name}] 🕵️ PROFILING {symbol}: Price ${current_price:.8f} | Personality: {pers} | Rows: {len(data)}")
         
         # --- PATCH: MULTI-TIMEFRAME & POLYMARKET CONTEXT ---
         # 1. Calculate Minutes into Candle (15m)
@@ -1122,7 +1305,9 @@ class TraderHolon(Holon):
         if structure:
              ctx = structure.get_structural_context(symbol, observer)
              structure_ctx.update(ctx)
-             row_data['Struct'] = f"{ctx.get('sls_zone', 'N')}" # Display Zone
+             # Append, don't overwrite
+             current_struct = row_data.get('Struct', '-')
+             row_data['Struct'] = f"{current_struct} | {ctx.get('sls_zone', 'N')}"
         elif oracle:
              # Fallback (Legacy)
              base_ctx = oracle.get_structural_context(symbol, data, current_price) if hasattr(oracle, 'get_structural_context') else {}
@@ -1272,9 +1457,78 @@ class TraderHolon(Holon):
                 from datetime import datetime, timezone
                 try: age_h = (datetime.now(timezone.utc) - datetime.fromisoformat(executor.entry_timestamps[symbol])).total_seconds() / 3600
                 except: pass
-            guardian_exit = guardian.analyze_for_exit(symbol, current_price, entry_p, bb_vals, atr, metabolism, age_h, direction)
+            # Extract RSI and Meta for Guardian
+            indicators_ctx = {
+                'rsi': float(row_data['RSI']) if row_data['RSI'] != '-' else 50.0,
+                'atr': atr
+            }
+            meta_ctx = executor.position_metadata.get(symbol, {}).copy()
+            
+            guardian_exit = guardian.analyze_for_exit(
+                symbol, current_price, entry_p, bb_vals, atr, metabolism, age_h, direction,
+                indicators=indicators_ctx,
+                meta=meta_ctx
+            )
             pnl_pct = (current_price - entry_p) / entry_p if direction == 'BUY' else (entry_p - current_price) / entry_p
             row_data['PnL'] = f"{pnl_pct*100:+.2f}%"
+
+            # --- STACK PROFIT MANAGEMENT (Phase 2) ---
+            if not guardian_exit and governor:
+                # 1. Timeout Checks (Critical Fix)
+                timeout_qty = governor.check_timeout_actions(symbol)
+                if timeout_qty > 0:
+                     qty_held = abs(executor.held_assets.get(symbol, 1.0))
+                     if qty_held > 0:
+                         red_pct = min(1.0, timeout_qty / qty_held)
+                         print(f"[{self.name}] ⏰ TIMEOUT EXIT: {symbol} Force Reducing {timeout_qty:.4f} ({red_pct*100:.1f}%)")
+                         guardian_exit = TradeSignal(
+                             symbol=symbol,
+                             direction='SELL' if direction == 'BUY' else 'BUY',
+                             size=red_pct,
+                             price=current_price,
+                             metadata={'reason': 'STACK_TIMEOUT', 'is_percent': True}
+                         )
+
+                # 2. Profit Targets
+                if not guardian_exit:
+                    stack_exit_qty = governor.check_stack_targets(symbol, current_price)
+                    if stack_exit_qty > 0:
+                        qty_held = abs(executor.held_assets.get(symbol, 0.0))
+                        if qty_held > 0:
+                            exit_pct = min(1.0, stack_exit_qty / qty_held)
+                            if exit_pct > 0.01: # Min 1% to avoid dust loops
+                                print(f"[{self.name}] 🥞 STACK EXIT TRIGGERED: {symbol} Qty {stack_exit_qty:.4f} ({exit_pct*100:.1f}%)")
+                                guardian_exit = TradeSignal(
+                                    symbol=symbol, 
+                                    direction='SELL' if direction == 'BUY' else 'BUY', 
+                                    size=exit_pct, 
+                                    price=current_price,
+                                    metadata={'reason': 'STACK_TP', 'is_percent': True}
+                                )
+            
+            # --- COMPLIANCE CHECK (Phase 3: Auto-Reduction) ---
+            if not guardian_exit and governor:
+                excess_qty = governor.check_portfolio_compliance(symbol, current_price)
+                if excess_qty > 0:
+                     qty_held = abs(executor.held_assets.get(symbol, 0.0))
+                     if qty_held > 0:
+                         # Calculate pct to reduce
+                         # Calculate exact reduction (Absolute Quantity)
+                         # min(excess vs held) to ensure we don't oversell (rare race condition)
+                         reduce_qty = min(qty_held, excess_qty)
+                         
+                         # Check minimal value to avoid dust spam
+                         if (reduce_qty * current_price) > 1.0: # Min $1 reduction
+                             print(f"[{self.name}] ⚖️ COMPLIANCE REDUCTION: {symbol} Closing {reduce_qty:.4f} (${reduce_qty*current_price:.2f})")
+                             guardian_exit = TradeSignal(
+                                 symbol=symbol,
+                                 direction='SELL' if direction == 'BUY' else 'BUY', 
+                                 size=reduce_qty,
+                                 price=current_price,
+                                 metadata={'reason': 'COMPLIANCE_REDUCE', 'is_percent': False}
+                             )
+            # --------------------------------------------------
+            # -----------------------------------------
 
         # Enrichment for Dashboard
         probes = oracle.last_probes.get(symbol, {'lstm': 0.5, 'xgb': 0.5}) if oracle else {'lstm': 0.5, 'xgb': 0.5}
@@ -1423,7 +1677,14 @@ class TraderHolon(Holon):
                 'promo_progress': self.sub_holons['regime'].get_status_summary().get('promotion_progress', 0.0) if 'regime' in self.sub_holons else 0.0,
                 # === Consolidation Radar ===
                 # === Consolidation Radar ===
-                'scout_data': [{'symbol': s, 'score': 0.95, 'reason': p} for s, p in self.scout_results.items()],
+                'scout_data': [
+                    {
+                        'symbol': s, 
+                        'score': 0.95, 
+                        'reason': 'ROCKET' if p.get('regime') == 'ORDERED' else ('ANCHOR' if p.get('regime') == 'TRANSITION' else 'DEAD')
+                    } 
+                    for s, p in self.scout_results.items()
+                ],
                 'consolidation_data': [
                     {'symbol': r[0], 'score': float(r[1]), 'reason': r[2]} 
                     for r in (oracle.get_consolidation_rankings()[:10] if oracle and hasattr(oracle, 'get_consolidation_rankings') else [])

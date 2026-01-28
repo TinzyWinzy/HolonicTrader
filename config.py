@@ -38,6 +38,11 @@ PAPER_TRADING = True                      # PAPER MODE for test run
 TIMEFRAME = '15m'                         # Default trading timeframe
 DEFAULT_CYCLE_INTERVAL = 30               # Faster Response (User Request)
 
+# === SYSTEM FLAGGING ===
+ENABLE_EVOLUTION = False                  # DANGER: Disable "Brain Transplants" in Live Mode
+DEFAULT_STOP_LOSS_PCT = 0.05              # 5% Hard Stop per position
+DEFAULT_TAKE_PROFIT_PCT = 0.10            # 10% Take Profit target
+
 
 # === TRADING MODE ===
 TRADING_MODE = 'FUTURES'
@@ -125,8 +130,8 @@ REGIME_PERMISSIONS = {
     'NANO': {  # FOR $0-$49 ACCOUNTS (AGGRESSIVE MODE)
         'max_positions': 5,               # Allow Multi-Asset (5 slots)
         'max_stacks': 0,                  # No stacking allowed
-        'max_exposure_ratio': 10.0,       # Max 10x total exposure
-        'max_leverage': 50.0,             # UNLOCKED: 50x (Kraken Futures)
+        'max_exposure_ratio': 1.0,        # Max 1x total exposure (SAFETY CAP)
+        'max_leverage': 1.0,              # HARD CAP: 1x (No Leverage)
         'allowed_pairs': ALLOWED_ASSETS,  # Trade EVERYTHING
         'correlation_check': True,        # Enable correlation check
         'min_order_value': 2.0,           # $2 minimum position
@@ -136,8 +141,8 @@ REGIME_PERMISSIONS = {
     'MICRO': {  # UNLOCKED FOR ACTIVE TRADING
         'max_positions': 5,               # 5 positions allowed (was 2)
         'max_stacks': 0,                  # Still no pyramiding
-        'max_exposure_ratio': 20.0,       # Increased for High Leverage support
-        'max_leverage': 10.0,             # UNLOCKED: 10x (Progressive Tier: Nano 1.5 -> Micro 10)
+        'max_exposure_ratio': 1.0,        # Max 1x total exposure (SAFETY CAP)
+        'max_leverage': 1.0,              # HARD CAP: 1x (No Leverage)
         'allowed_pairs': ALLOWED_ASSETS,  # Trade all assets (was limited)
         'correlation_check': True,        # Keep cluster risk
         'min_order_value': 3.0,           # $3 minimum
@@ -147,8 +152,8 @@ REGIME_PERMISSIONS = {
     'SMALL': {
         'max_positions': 15,              # Increased from 12 for better busket utilization
         'max_stacks': 10,                 # Increased from 6 to capture trending moves (e.g. XMR)
-        'max_exposure_ratio': 20.0,       # Increased for High Leverage support
-        'max_leverage': 25.0,             # UNLOCKED: 25x (Reduced from 50x for Safety)
+        'max_exposure_ratio': 1.0,        # Max 1x total exposure (SAFETY CAP)
+        'max_leverage': 1.0,              # HARD CAP: 1x (No Leverage)
         'allowed_pairs': ALLOWED_ASSETS,
         'correlation_check': True,
         'min_order_value': 10.0,
@@ -158,8 +163,8 @@ REGIME_PERMISSIONS = {
     'MEDIUM': {
         'max_positions': 24,
         'max_stacks': 2,
-        'max_exposure_ratio': 25.0,       # Increased for High Leverage support
-        'max_leverage': 50.0,             # UNLOCKED: 50x (Kraken Futures)
+        'max_exposure_ratio': 1.0,        # Max 1x total exposure (SAFETY CAP)
+        'max_leverage': 1.0,              # HARD CAP: 1x (No Leverage)
         'allowed_pairs': ALLOWED_ASSETS,
         'correlation_check': True,
         'min_order_value': 20.0,
@@ -196,7 +201,7 @@ VOL_WINDOW_MIN_VOLATILITY = 0.40       # Minimum Volatility to activate window
 # Goal: $17.90 -> $100.00 | Achieved in Sim: $40.26 (+125% ROI)
 SATELLITE_ASSETS = ['SOL/USDT', 'DOGE/USDT', 'ADA/USDT'] 
 SATELLITE_MARGIN = 17.0      # Approx All-In on $17 Account (Nano Mode)
-SATELLITE_LEVERAGE = 5.0     # Reduced to 5x for Survival (Winner's setting)
+SATELLITE_LEVERAGE = 1.0     # HARD CAP: 1x (Safety First)
 
 # Tuned for Tighter Stacking
 GOVERNOR_MIN_STACK_DIST = 0.0025 # Reduced to 0.25% (Was 0.5%)
@@ -225,9 +230,9 @@ SATELLITE_STOP_LOSS = 0.026 # Evolved: -2.6% Stop (Tight)
 
 # === LEVERAGE SETTINGS (SAFETY FIRST) ===
 # Global maximums - actual limits set by regime
-SCAVENGER_LEVERAGE = 50                   # Cap at 50x (Unleashed)
-PREDATOR_LEVERAGE = 50                    # Unlocked 50x
-MICRO_HARD_LEVERAGE_LIMIT = 50.0          # Unlocked for NANO Aggression
+SCAVENGER_LEVERAGE = 1.0                  # Cap at 1x
+PREDATOR_LEVERAGE = 1.0                     # Cap at 1x
+MICRO_HARD_LEVERAGE_LIMIT = 1.0             # Cap at 1x
 PREDATOR_TRAILING_STOP_ATR_MULT = 3.5     # 3.5x ATR Trailing Stop (Widened from 2.0 for volatility)
 
 
@@ -239,6 +244,88 @@ SCAVENGER_STOP_LOSS = 0.10                # UNLEASHED: 10% stop loss (Was 5%)
 SCAVENGER_SCALP_TP = 0.06                 # UNLEASHED: 6% take profit (Was 4%) to Capture bigger swings
 PREDATOR_STOP_LOSS = 0.08                 # UNLEASHED: 8% stop loss (Was 5%)
 PREDATOR_TAKE_PROFIT = 0.12               # UNLEASHED: 12% take profit (Was 6%) - Let winners RUN
+
+# === RAPID PROFIT TAKING ("SCALP THE WHALES") ===
+# Enhanced Targets (Phase 3 Optimization)
+PROFIT_TARGETS = {
+    'WHALE_BID_WALL': {
+        'rapid': 0.010,    # 1.0% (Was 0.5%) - Whales move big
+        'normal': 0.025,   # 2.5%
+        'runner': 0.050    # 5.0%
+    },
+    'WHALE_ACCUMULATION': {
+        'rapid': 0.015,    # 1.5%
+        'normal': 0.040,   # 4.0%
+        'runner': 0.080    # 8.0%
+    },
+    'PACK_HUNT': {
+        'rapid': 0.005,    # 0.5% (Was 0.3%) - Increased base
+        'normal': 0.012,   # 1.2%
+        'runner': 0.025    # 2.5%
+    },
+    'DIP': {
+        'rapid': 0.008,    # 0.8% (Was 0.4%)
+        'normal': 0.020,   # 2.0%
+        'runner': 0.040    # 4.0%
+    },
+    'DEFAULT': {           # Fallback
+        'rapid': 0.005,    # 0.5% Base Scalp
+        'normal': 0.015,   # 1.5%
+        'runner': 0.030    # 3.0%
+    }
+}
+
+EXIT_PYRAMID = {
+    'aggressive': [0.3, 0.4, 0.3],  # 30%, 40%, 30%
+    'balanced':   [0.2, 0.5, 0.3],
+    'conservative': [0.1, 0.6, 0.3]
+}
+
+IMMEDIATE_SCALP_CONFIG = {
+    'rsi_overbought': 80.0,
+    'profit_target': 0.003,
+    'position_size_ratio': 0.5
+}
+
+TIME_BASED_PROFIT_TARGETS = {
+    'asian_session': {'rapid': 0.003, 'normal': 0.008, 'runner': 0.015},   # 0-8h: Quiet, tight scalps
+    'london_session': {'rapid': 0.005, 'normal': 0.012, 'runner': 0.025},  # 8-16h: Volatility, wider targets
+    'ny_session': {'rapid': 0.004, 'normal': 0.010, 'runner': 0.020},      # 16-24h: Mixed, medium targets
+    'weekend': {'rapid': 0.002, 'normal': 0.005, 'runner': 0.010}          # Weekend: Very tight
+}
+
+# Adjusted Stacking Targets (Phase 3)
+STACK_PROFIT_TARGETS = {
+    1: {'target': 0.008, 'stop': 0.004},   # 0.8% (Was 0.5%)
+    2: {'target': 0.015, 'stop': 0.008},   # 1.5% (Was 0.8%)
+    3: {'target': 0.025, 'stop': 0.015},   # 2.5%
+    4: {'target': 0.040, 'stop': 0.020}    # 4.0%
+}
+
+# Market Condition Adjustments
+MARKET_ADJUSTMENTS = {
+    'crisis_score': {
+        'critical': 0.8,
+        'reduce_targets': 0.7  # Reduce targets by 30% in crisis
+    },
+    'sentiment': {
+        'bearish': 0.0,
+        'bullish': 0.2
+    }
+}
+
+# Position Management Limits
+POSITION_LIMITS = {
+    'max_positions': 8,
+    'max_correlation': 0.3,
+    'size_limits': {
+        # Using simple symbol checks or generic logic for now
+        'DEFAULT': 0.10,     # Max 10% NV per asset
+        'LARGE_CAP': 0.15,   # BTC/ETH/SOL can be 15%
+        'MEME': 0.05         # PEPE/DOGE max 5%
+    },
+    'daily_turnover_limit': 3.0
+}
 
 # === MICRO-GUARD HARD LIMITS (UNLEASHED) ===
 MICRO_GUARD_PORTFOLIO_NOTIONAL_MULT = 3.0  # Restored to 3.0 (Was 1.5)
@@ -278,8 +365,9 @@ STRATEGY_XGB_THRESHOLD = 0.50         # Slightly raised from 0.48
 STRATEGY_POST_EXIT_COOLDOWN_CANDLES = 2  # Faster re-entry
 
 # === GOVERNANCE / RISK ===
-GOVERNOR_COOLDOWN_SECONDS = 30  # Reduced to 30s for faster paper trading
-GOVERNOR_MIN_STACK_DIST = 0.0015 # Reduced to 0.15% (Dynamic Stacking)
+GOVERNOR_COOLDOWN_SECONDS = 60    # Relaxed from 300s (5m) to 60s (1m) for faster re-entry
+GOVERNOR_MIN_STACK_DIST = 0.001   # 0.1% (Base). Now scaled dynamically by Governor (ATR).
+STACK_TIMEOUT_SECONDS = 900       # 15 minutes (Relaxed from 5m) - Max time to hold before force-reduce check
 GOVERNOR_MAX_MARGIN_PCT = 0.85  # UNLEASHED: 85% Utiliization
 GOVERNOR_STACK_DECAY = 0.8
 GOVERNOR_MAX_TREND_AGE_HOURS = 24.0
@@ -297,15 +385,19 @@ BB_PERIOD = 20
 BB_STD = 2
 
 # === SENTIMENT & NEWS ===
+# === SENTIMENT & NEWS ===
 SENTIMENT_SOURCES = [
     'https://cointelegraph.com/rss',
     'https://www.coindesk.com/arc/outboundfeeds/rss/',
     'https://cryptopanic.com/news/rss/',
     'https://beincrypto.com/feed/',
-    # === MACRO & RETAIL SOURCES === 
-    'https://www.cnbc.com/id/100727362/device/rss/rss.html', 
-    'https://www.investing.com/rss/commodities.rss', 
-    'https://www.reddit.com/r/CryptoCurrency/top/.rss?t=hour'
+    # === REDDIT (THE HIVE MIND) ===
+    'https://www.reddit.com/r/CryptoCurrency/top/.rss?t=hour',  # Breaking & Viral
+    'https://www.reddit.com/r/Bitcoin/hot/.rss',                # King Sentiment
+    'https://www.reddit.com/r/solana/hot/.rss',                 # Degen Sentiment
+    # === MACRO SOURCES ===
+    'https://www.cnbc.com/id/100727362/device/rss/rss.html',
+    'https://www.investing.com/rss/commodities.rss'
 ]
 
 # === PHASE 39: MARKET PHYSICS (VALIDATION LAYER) ===
@@ -355,10 +447,11 @@ CONSOLIDATION_MARGIN_BUFFER = 1.5
 CONSOLIDATION_HARD_BUFFER = 1.2
 
 # === ACCUMULATOR ===
-ACC_RISK_FLOOR = 0.5
-ACC_RISK_CEILING = 2.0
-ACC_DRAWDOWN_LIMIT = 0.25  # Lowered from 0.40 to protect capital better (User Request)
-ACC_SANITY_THRESHOLD = 0.60 # Only reset HWM if drop is > 60% (Glitch protection)
+ACC_RISK_FLOOR = 0.5                      # Min Risk Multiplier (Defensive)
+ACC_RISK_CEILING = 2.0                    # Max Risk Multiplier (Aggressive)
+ACC_DRAWDOWN_LIMIT = 0.25                 # Drawdown limit to stop trading (Hard Stop)
+ACC_HARD_STOP_LIMIT = 0.40                # Catastrophic Stop (Overrides Session Recovery)
+ACC_SANITY_THRESHOLD = 0.30               # >30% instant drop = Likely Data Glitch protection)
 
 # === ARBITRAGE PARAMETERS ===
 ARB_SPATIAL_THRESHOLD = 0.003          # 0.3% spread between exchanges (KuCoin vs Kraken)
@@ -380,6 +473,7 @@ PPO_REWARD_DRAWDOWN_PENALTY = 2.0
 CCXT_RATE_LIMIT = True
 CCXT_POOL_SIZE = 10         # Reduced for NANO accounts
 TRADER_MAX_WORKERS = 8      # Reduced for NANO accounts
+TRADER_MAX_CYCLE_ENTRIES = 3 # Max new positions per 15m cycle (Crisis Prevention)
 
 # === INTEL GPU ACCELERATION ===
 USE_INTEL_GPU = True
@@ -412,7 +506,7 @@ MICRO_STARTUP_MAX_POSITIONS = 2
 # === NANO-MODE CONFIG (REALITY ANCHORED) ===
 NANO_CAPITAL_THRESHOLD = 50.0
 NANO_ALLOCATION_PCT = 0.05           # 5% Max Position Size ($0.77 at $15)
-NANO_MAX_LEVERAGE = 1.5              # 1.5x NANO Safety Leverage
+NANO_MAX_LEVERAGE = 1.0              # 1.0x Safety Cap
 NANO_MAX_POSITIONS = 1               # Max 1 Position
 NANO_COOLDOWN_AFTER_FAILURE = 86400  # 24 Hours (Extreme Punishment)
 
@@ -716,3 +810,52 @@ try:
         # print(f">> [Config] Loaded User Config: Alloc={GOVERNOR_MAX_MARGIN_PCT}, Lev={PREDATOR_LEVERAGE}, Micro={MICRO_CAPITAL_MODE}")
 except Exception as e:
     print(f">> [Config] Warning: Failed to load user_config.json: {e}")
+
+# === SYSTEM RESCUE OVERRIDE (2026-01-26) ===
+# User requested disabling Micro-Mode to prevent nano-transactions.
+MICRO_CAPITAL_MODE = False
+print(">> [Config] SYSTEM RESCUE: Micro-Mode FORCED OFF.")
+
+def calculate_nano_position(balance: float, symbol: str, price: float) -> dict:
+    """
+    Calculates safety-first position size for Nano accounts.
+    Strictly enforces 1.0x max leverage and minimum order sizes.
+    """
+    # 1. Determine Risk-Based Size (5% of Equity)
+    # Reference global constant directly
+    risk_alloc = balance * NANO_ALLOCATION_PCT
+    
+    # 2. Get Minimum Trade Size
+    base_asset = symbol.split('/')[0]
+    min_qty = MIN_TRADE_QTY.get(base_asset, 0.0)
+    min_notional = min_qty * price
+    
+    # 3. Enforce Minimums
+    final_notional = risk_alloc
+    if risk_alloc < min_notional:
+        if min_notional <= (balance * 0.10): # Allow if <= 10% of account
+            final_notional = min_notional
+        else:
+            # Cannot afford minimum size safely
+            return {
+                'quantity': 0.0,
+                'leverage': 1.0,
+                'notional': 0.0,
+                'margin': 0.0,
+                'error': 'Insufficient capital for min order'
+            }
+            
+    # 4. Calculate Quantity
+    quantity = final_notional / price
+    
+    # 5. strict 1x Leverage
+    leverage = 1.0
+    margin = final_notional / leverage
+    
+    return {
+        'quantity': quantity,
+        'leverage': leverage,
+        'notional': final_notional,
+        'margin': margin
+    }
+

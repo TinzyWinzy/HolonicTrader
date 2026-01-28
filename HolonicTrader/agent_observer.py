@@ -224,7 +224,8 @@ class ObserverHolon(Holon):
                 if attempt == 2:
                     print(f"[{self.name}] ⚠️ Ticker Batch Fetch Error after 3 attempts: {e}")
                     return {}
-                time.sleep(1 * (attempt + 1))
+                sleep_time = 2 ** attempt # 1s, 2s, 4s
+                time.sleep(sleep_time)
         return {}
 
     def _get_local_filename(self, symbol: str, timeframe: str) -> str:
@@ -615,14 +616,27 @@ class ObserverHolon(Holon):
             try:
                 # CCXT Unified
                 # Check if exchange supports it
-                if self.exchange.has['fetchFundingRate']:
+                if self.exchange.has['fetchTicker']:
                      exec_symbol = config.KRAKEN_SYMBOL_MAP.get(symbol, symbol)
-                     data = self.exchange.fetch_funding_rate(exec_symbol)
-                     rate = float(data.get('fundingRate', 0.0))
                      
-                     # Update Cache
-                     self._funding_cache[cache_key] = {'rate': rate, 'ts': now}
-                     return rate
+                     # FIX 2026-01-28: Use Ticker 'info' for valid Funding Rate
+                     # Standard fetch_funding_rate returns garbage (-0.25)
+                     ticker = self.exchange.fetch_ticker(exec_symbol)
+                     
+                     # Kraken Futures extracts to 'info' -> 'fundingRate'
+                     if 'info' in ticker and 'fundingRate' in ticker['info']:
+                         rate = float(ticker['info']['fundingRate'])
+                         
+                         # Update Cache
+                         self._funding_cache[cache_key] = {'rate': rate, 'ts': now}
+                         return rate
+                     elif 'info' in ticker and 'lastFundingRate' in ticker['info']:
+                          rate = float(ticker['info']['lastFundingRate'])
+                          self._funding_cache[cache_key] = {'rate': rate, 'ts': now}
+                          return rate
+                     
+                     # Fallback
+                     return 0.0
                 else:
                      return 0.0
                      

@@ -7,7 +7,7 @@ Implements:
 3. Principal Protection (Never risk the $10 base)
 """
 
-from typing import Any, Tuple, Literal, Dict, List
+from typing import Any, Tuple, Literal, Dict, List, Optional
 from HolonicTrader.holon_core import Holon, Disposition
 import config
 from HolonicTrader.agent_ppo import PPOHolon
@@ -50,6 +50,7 @@ class GovernorHolon(Holon):
         
         # Phase 50: Daily Risk Reset
         self.last_hwm_date = datetime.datetime.utcnow().date()
+        self.day_start_equity = initial_balance # Used for Dynamic Drawdown Recovery
         
         # Reference ATR for volatility targeting (set during first cycle)
         self.reference_atr = None
@@ -58,6 +59,7 @@ class GovernorHolon(Holon):
         self.positions = {} # symbol -> {entry_price, quantity, direction}
         self.last_trade_time = {} # symbol -> timestamp
         self.last_specific_entry = {} # symbol -> price (for stacking distance)
+        self.latest_prices = {} # symbol -> price (Last seen market price)
         
         # FIX 3: Stack Timeout Tracker (for 5-minute reduction trigger)
         self.stack_timeout_tracker = {} # symbol -> first_blocked_timestamp
@@ -160,6 +162,34 @@ class GovernorHolon(Holon):
             # FIX: Force Recalculate Risk Budget after Balance Update
             self.manage_iron_bank()
 
+    def register_outcome(self, pnl: float, symbol: str):
+        """
+        Feedback Loop: Adjust metabolic state based on realized outcomes.
+        Called by Executor after a trade closes.
+        """
+        if pnl > 0:
+            # WINNER
+            self.win_streak = getattr(self, 'win_streak', 0) + 1
+            
+            # 1. Immediate Risk Boost (The "Hot Hand" Fallacy - but useful for momenta)
+            # Boost risk multiplier by 0.1 per win, cap at 3.0 or Config Limit
+            old_risk = self.risk_multiplier
+            self.risk_multiplier = min(3.0, self.risk_multiplier + 0.2)
+            
+            print(f"[{self.name}] 💰 WIN DETECTED ({symbol} +${pnl:.2f})! Risk Appetite Charging... 🔋 ({old_risk:.1f}x -> {self.risk_multiplier:.1f}x)")
+            
+            # 2. Unlock Drawdown (Redemption)
+            if self.drawdown_lock and pnl > (self.balance * 0.01):
+                print(f"[{self.name}] 🔓 REDEMPTION: Significant Win unlocked Drawdown mechanism.")
+                self.drawdown_lock = False
+                
+        else:
+            # LOSER
+            self.win_streak = 0
+            # Reset risk slightly (Deflate bubble)
+            self.risk_multiplier = max(1.0, self.risk_multiplier - 0.1)
+            # print(f"[{self.name}] 📉 Loss Realized. Cooling Risk Multiplier -> {self.risk_multiplier:.1f}x")
+
     def update_accumulator(self, current_equity: float):
         """
         The Accumulator Logic: 
@@ -171,6 +201,7 @@ class GovernorHolon(Holon):
         if current_date > self.last_hwm_date:
              print(f"[{self.name}] 🌅 New Day Detected ({current_date}). Resetting High Water Mark to ${current_equity:.2f}")
              self.high_water_mark = current_equity
+             self.day_start_equity = current_equity # Reset Session Baseline
              self.last_hwm_date = current_date
              self.drawdown_lock = False
 
@@ -193,9 +224,30 @@ class GovernorHolon(Holon):
             # --------------------------------
             
             if drawdown > config.ACC_DRAWDOWN_LIMIT:
-                if not self.drawdown_lock:
-                    print(f"[{self.name}] 🛑 ACCUMULATOR HALT: Drawdown {drawdown:.1%} > {config.ACC_DRAWDOWN_LIMIT:.1%}. Trading Locked.")
-                self.drawdown_lock = True
+                # DYNAMIC DRAWDOWN RECOVERY (Session Override)
+                # If we are profitable THIS SESSION (intra-day), ignore the global drawdown lock.
+                # But respect the HARD CAP (Catastrophic Stop)
+                
+                session_pnl = current_equity - self.day_start_equity
+                hard_stop = getattr(config, 'ACC_HARD_STOP_LIMIT', 0.40)
+                
+                if drawdown > hard_stop:
+                    # CATASTROPHIC FAILURE - KILL SWITCH
+                    if not self.drawdown_lock:
+                        print(f"[{self.name}] 💀 CATASTROPHIC HALT: Drawdown {drawdown:.1%} > {hard_stop:.1%}. Override Disabled.")
+                    self.drawdown_lock = True
+                    
+                elif session_pnl > 0:
+                    # SOFT LOCK OVERRIDE
+                    if self.drawdown_lock:
+                        print(f"[{self.name}] 🔓 DYNAMIC OVERRIDE: Session Profitable (+${session_pnl:.2f}). Global Drawdown {drawdown:.1%} Ignored.")
+                    self.drawdown_lock = False
+                    
+                else:
+                    # STANDARD LOCK
+                    if not self.drawdown_lock:
+                        print(f"[{self.name}] 🛑 ACCUMULATOR HALT: Drawdown {drawdown:.1%} > {config.ACC_DRAWDOWN_LIMIT:.1%}. Trading Locked.")
+                    self.drawdown_lock = True
             
         # 3. Calculate Velocity (The Pump)
         self.equity_history.append(current_equity)
@@ -233,6 +285,18 @@ class GovernorHolon(Holon):
             # If we use all allowed margin, util = 1.0
             allowed_exposure = self.balance * config.GOVERNOR_MAX_MARGIN_PCT * config.PREDATOR_LEVERAGE
             self.margin_utilization = total_exposure / allowed_exposure if allowed_exposure > 0 else 0.0
+
+        # --- REAL-TIME MARGIN MONITOR (Phase 5) ---
+        # Calculate true state with haircuts/cross-margin logic
+        p_state = self._calculate_portfolio_state()
+        
+        # Critical Solvency Alert
+        if p_state['margin_level'] < 2.0:
+            print(f"[{self.name}] ⚠️ MARGIN WARNING: Level {p_state['margin_level']:.2f} (Free: ${p_state['free_margin']:.2f})")
+            if p_state['margin_level'] < 1.1:
+                print(f"[{self.name}] 🚨 MARGIN CRITICAL: Approaching Liquidation (<1.1). HIBERNATING.")
+                self.state = 'HIBERNATE'
+        # ------------------------------------------
 
         # IRON BANK CHECK (Every Balance Update)
         self.manage_iron_bank()
@@ -315,7 +379,7 @@ class GovernorHolon(Holon):
             'fortress_balance': self.fortress_balance
         }
 
-    def is_trade_allowed(self, symbol: str, asset_price: float) -> bool:
+    def is_trade_allowed(self, symbol: str, asset_price: float, silent: bool = False) -> bool:
         """
         Lightweight check to see if a trade would be allowed.
         Prevents Strategy from wasting compute on blocked trades.
@@ -323,59 +387,250 @@ class GovernorHolon(Holon):
         # 1. Cooldown Check
         last_time = self.last_trade_time.get(symbol, 0)
         if time.time() - last_time < config.GOVERNOR_COOLDOWN_SECONDS:
-            print(f"[{self.name}] ⏳ Cooldown Active for {symbol} ({int(time.time() - last_time)}s < {config.GOVERNOR_COOLDOWN_SECONDS}s)")
+            if not silent:
+                print(f"[{self.name}] ⏳ Cooldown Active for {symbol} ({int(time.time() - last_time)}s < {config.GOVERNOR_COOLDOWN_SECONDS}s)")
             return False
             
-        # 2. Price Distance Check (with Timeout Reduction Trigger)
+        # 2. Price Distance Check (Dynamic)
         last_entry = self.last_specific_entry.get(symbol, 0)
+        
+        # Need ATR for dynamic threshold. 
+        # is_trade_allowed doesn't receive ATR. We rely on base or a stored ATR?
+        # Or we assume 'base' check here and let calc_position_size refine it?
+        # Let's use base config here for speed, or fetch stored ATR if available.
+        # Simple for now: Use Base Config, but calc_position_size will use Dynamic if we move the check there.
+        # ACTUALLY, checking here saves compute.
+        # Fallback to base.
+        
+        dynamic_dist = config.GOVERNOR_MIN_STACK_DIST # Default fallback logic implemented in calc_position_size properly
+        
         if last_entry > 0 and symbol in self.positions:
             dist = abs(asset_price - last_entry) / last_entry
-            if dist < config.GOVERNOR_MIN_STACK_DIST:
-                # FIX 3: Stack Timeout Tracking
-                now = time.time()
-                if symbol not in self.stack_timeout_tracker:
-                    self.stack_timeout_tracker[symbol] = now
-                    print(f"[{self.name}] 📏 Stack Too Close for {symbol}: Price ${asset_price:.2f} vs Entry ${last_entry:.2f} (Dist {dist*100:.2f}% < {config.GOVERNOR_MIN_STACK_DIST*100:.2f}%)")
-                else:
-                    elapsed = now - self.stack_timeout_tracker[symbol]
-                    timeout_seconds = getattr(config, 'STACK_TIMEOUT_SECONDS', 300)  # Default 5 min
-                    if elapsed > timeout_seconds:
-                        # TIMEOUT TRIGGERED - Recommend 50% reduction
-                        print(f"[{self.name}] ⏰ STACK TIMEOUT ({elapsed/60:.1f}min): {symbol} stuck at entry. RECOMMENDING 50% REDUCTION.")
-                        # Flag for potential auto-reduction in Trader/Executor
+            
+            # CHECK TIMEOUT FIRST (Override Priority)
+            if symbol in self.stack_timeout_tracker:
+                 now = time.time()
+                 elapsed = now - self.stack_timeout_tracker[symbol]
+                 timeout_seconds = getattr(config, 'STACK_TIMEOUT_SECONDS', 300)
+                 
+                 if elapsed > timeout_seconds:
+                     # TIMEOUT TRIGGERED - We MUST allow reduction.
+                     print(f"[{self.name}] ⏰ STACK TIMEOUT ({elapsed/60:.1f}min): {symbol} stuck. Allowing actions to Unstick.")
+                     
+                     # Check if this is a REDUCTION attempt (handled in calc_position_size, but we need to pass here)
+                     # Since we can't see 'intent' here easily, we allow it, 
+                     # but rely on calc_position_size to only permit REDUCTION if locked.
+                     # But wait, this returns boolean. If we return True, Strategy might signal BUY.
+                     # We only want to release the lock for REDUCTION. 
+                     # Strategy needs to know it SHOULD reduce.
+                     
+                     # Flag needs_reduction
+                     if symbol in self.positions:
                         self.positions[symbol]['needs_reduction'] = True
-                        # Reset entry basis to current price to unstick
-                        self.last_specific_entry[symbol] = asset_price
-                        self.stack_timeout_tracker.pop(symbol, None)
+                        
+                     # We return True to let the Strategy GENERATE the signal.
+                     # Ideally Strategy sees 'needs_reduction' flag and generates SELL.
+                     return True
+            
+            # NORMAL DISTANCE CHECK
+            if dist < dynamic_dist:
+                # Track start of block
+                if symbol not in self.stack_timeout_tracker:
+                    self.stack_timeout_tracker[symbol] = time.time()
+                    print(f"[{self.name}] 📏 Stack Too Close for {symbol}: Price ${asset_price:.2f} vs Entry ${last_entry:.2f} (Dist {dist*100:.2f}% < {config.GOVERNOR_MIN_STACK_DIST*100:.2f}%)")
                 return False
             else:
                 # Price moved away - clear the timeout tracker
                 self.stack_timeout_tracker.pop(symbol, None)
-
-        # 3. Solvency Gate (Fail Fast)
-        if self.available_balance < config.MIN_ORDER_VALUE:
-             print(f"[{self.name}] 💸 INSOLVENCY GATE: Available ${self.available_balance:.2f} < Min ${config.MIN_ORDER_VALUE}")
-             return False
-
-        # 4. IRON BANK GATE (Capital Preservation)
-
-        if config.IRON_BANK_ENABLED:
-            # If Risk Budget is zero (or dust), we are at the Floor.
-            # We allow reducing positions (checked in calc_position_size), but this is a pre-check.
-            # Ideally we pass 'direction' to is_trade_allowed to know if it's a reduce?
-            # is_trade_allowed is usually called by Strategy looking for ENTRIES.
-            # So blocking here is correct for ENTRIES.
-            if self.risk_budget < (config.MIN_ORDER_VALUE * 0.10): # Assuming minimal 10% stop
-                 print(f"[{self.name}] 🏰 IRON BANK GATE: Risk Budget ${self.risk_budget:.2f} too low. Protection Mode Active.")
-                 return False
-
+                
         return True
+
+    def check_exit_conditions(self, symbol: str, current_price: float, position_data: dict, recommendation: str = 'HOLD') -> Tuple[Optional[str], Optional[str]]:
+        """
+        Standard Exit Logic: Stop Loss & Take Profit.
+        Now supports DYNAMIC AI OVERRIDES (Relax TP / Tighten SL).
+        Returns: ('EXIT_TYPE', 'Reason') or (None, None)
+        """
+        if not position_data or current_price <= 0:
+            return None, None
+            
+        entry_price = position_data.get('entry_price', 0.0)
+        direction = position_data.get('direction', 'BUY')
+        
+        if entry_price <= 0: return None, None
+        
+        # Calculate PnL %
+        if direction == 'BUY':
+            pnl_pct = (current_price - entry_price) / entry_price
+        else:
+            pnl_pct = (entry_price - current_price) / entry_price
+            
+        # --- DYNAMIC THRESHOLDS ---
+        base_sl = getattr(config, 'DEFAULT_STOP_LOSS_PCT', 0.05)
+        base_tp = getattr(config, 'DEFAULT_TAKE_PROFIT_PCT', 0.10)
+        
+        # Apply AI Recommendations
+        curr_sl = base_sl
+        curr_tp = base_tp
+        
+        if recommendation == 'TIGHTEN_SL':
+            # Cut risk in half (e.g., 5% -> 2.5%) for decaying positions
+            curr_sl = base_sl * 0.5
+        elif recommendation == 'RELAX_TP':
+            # Double the target (Let it run) for strong growers
+            curr_tp = base_tp * 2.0
+            
+        # 1. STOP LOSS (Hard)
+        if pnl_pct <= -curr_sl:
+            return 'STOP_LOSS', f"PnL {pnl_pct:.2%} hit Limit {curr_sl:.0%} (Rec: {recommendation})"
+            
+        # 2. TAKE PROFIT (Target)
+        if pnl_pct >= curr_tp:
+            return 'TAKE_PROFIT', f"PnL {pnl_pct:.2%} hit Target {curr_tp:.0%} (Rec: {recommendation})"
+            
+        return None, None
+
+
+    def calculate_dynamic_stack_threshold(self, symbol: str, current_price: float, atr: float = None) -> float:
+        """
+        Adjust stacking threshold based on volatility (ATR).
+        High Volatility -> Wider Distance (Avoid clustering in noise)
+        Low Volatility -> Tighter Distance (Sniper accumulation)
+        """
+        base_threshold = config.GOVERNOR_MIN_STACK_DIST # 0.001 (0.10%)
+        
+        if not atr or atr <= 0: return base_threshold
+        
+        atr_pct = (atr / current_price) * 100.0
+        
+        if atr_pct > 2.0:   # High volatility (>2%)
+            return base_threshold * 1.5  # 0.15%
+        elif atr_pct > 1.0: # Medium volatility
+            return base_threshold * 1.2  # 0.12%
+        elif atr_pct < 0.5: # Low volatility
+            return base_threshold * 0.8  # 0.08%
+        
+        return base_threshold
+
+        return base_threshold
+
+    def check_solvency(self, trade_metadata: dict) -> bool:
+        """
+        PRE-FLIGHT CHECK: Simulate trade to ensure it doesn't break margin rules.
+        Called by Executor immediately before locking the ledger.
+        """
+        sim_qty = trade_metadata.get('size', 0.0)
+        sim_price = trade_metadata.get('price', 0.0)
+        
+        if sim_qty == 0 or sim_price == 0: return True
+        
+        # Calculate Current State
+        state = self._calculate_portfolio_state()
+        
+        # Simulate Impact
+        # New Initial Margin
+        regime_lev = config.REGIME_PERMISSIONS.get(self.regime_controller.get_current_regime(), {}).get('max_leverage', 1.0)
+        new_im = (sim_qty * sim_price) / regime_lev
+        
+        future_used = state['used_margin'] + new_im
+        future_free = state['equity'] - future_used # Assuming equity doesn't change instantly (no fee deduction here)
+        
+        # 1. Check Hard Margin Limit (80% Util)
+        if future_used > (state['equity'] * 0.80):
+            print(f"[{self.name}] 🛑 SOLVENCY VETO: Future Margin Util {future_used/state['equity']:.1%} > 80%.")
+            return False
+            
+        # 2. Check Margin Level (Safety Buffer)
+        future_level = state['equity'] / future_used if future_used > 0 else 999
+        if future_level < 1.5:
+            print(f"[{self.name}] 🛑 SAFETY VETO: Future Margin Level {future_level:.2f} < 1.5.")
+            return False
+            
+        return True
+
+    def _calculate_portfolio_state(self) -> dict:
+        """
+        CROSS-MARGIN CALCULATOR (Safe Mode):
+        Aggregates portfolio margin usage and available equity.
+        Equity = Balance + Unrealized PnL
+        Used Initial Margin = Sum(Position Value / Leverage)
+        """
+        total_equity = self.balance
+        used_margin = 0.0
+        
+        current_regime = self.regime_controller.get_current_regime() if self.regime_controller else 'MICRO'
+        regime_lev = config.REGIME_PERMISSIONS.get(current_regime, {}).get('max_leverage', 1.0)
+        
+        # Iterate Positions
+        for sym, pos in self.positions.items():
+            qty = pos.get('quantity', 0.0)
+            entry = pos.get('entry_price', 0.0)
+            
+            # Get Mark Price (Reliable)
+            mark_price = self.latest_prices.get(sym, entry)
+            if mark_price <= 0: mark_price = entry
+            
+            # Unrealized PnL
+            if pos.get('direction', 'BUY') == 'BUY':
+                u_pnl = (mark_price - entry) * qty
+            else:
+                u_pnl = (entry - mark_price) * qty
+                
+            total_equity += u_pnl
+            
+            # Margin Usage
+            # For Kraken Cross-Margin, initial margin is based on the leverage tier.
+            # We assume we are using the REGIME LEVERAGE LIMIT as the basis for *Initial* margin.
+            # If we enforce 1x, then Margin = Notional.
+            notional = qty * mark_price
+            used_margin += (notional / regime_lev)
+            
+        free_margin = total_equity - used_margin
+        
+        return {
+            'equity': total_equity,
+            'used_margin': used_margin,
+            'free_margin': free_margin,
+            'margin_level': (total_equity / used_margin) if used_margin > 0 else 999.0
+        }
 
     def _check_unified_protocol(self, symbol: str, asset_price: float, existing_pos: dict, whale_confirmed: bool, market_bias: float) -> bool:
         """
         Helper for Unified Control Protocol Checks (Micro Mode, Stacking, Cluster Risk).
         Returns True if ALLOWED, False if BLOCKED.
         """
+        # --- POSITION SIZE LIMITS (Phase 3) ---
+        # 1. Total Count Limit
+        limit_max_pos = config.POSITION_LIMITS.get('max_positions', 8)
+        if not existing_pos and len(self.positions) >= limit_max_pos:
+             print(f"[{self.name}] 🛑 MAX POSITIONS REACHED ({len(self.positions)} >= {limit_max_pos}). Rejecting New Entry.")
+             return False
+        
+        # 2. Asset Class Size Limit (Approximate)
+        # Using Notional Value Check against Portfolio %
+        # Need Total Equity to check %
+        total_equity = self.balance # Approx
+        if total_equity > 0:
+            tier_key = 'DEFAULT'
+            if symbol in ['BTC/USDT', 'ETH/USDT', 'SOL/USDT']: tier_key = 'LARGE_CAP'
+            elif symbol in ['PEPE/USDT', 'DOGE/USDT', 'SHIB/USDT']: tier_key = 'MEME'
+            
+            max_alloc_pct = config.POSITION_LIMITS['size_limits'].get(tier_key, 0.10)
+            
+            # Current Exposure
+            # If strictly adding, we check resulting size. 
+            # But here we just check if existing exceeds limit? No, is_trade_allowed checks BEFORE sizing.
+            # So actual sizing logic handles the 'How much'. 
+            # But we can BLOCK if already full.
+            
+            current_pos_size = existing_pos['quantity'] * asset_price if existing_pos else 0.0
+            current_alloc_pct = current_pos_size / total_equity
+            
+            if current_alloc_pct >= max_alloc_pct:
+                 print(f"[{self.name}] 🛑 SIZE LIMIT REACHED for {symbol} ({current_alloc_pct*100:.1f}% >= {max_alloc_pct*100:.1f}%). Stacking Blocked.")
+                 return False
+
+        # --------------------------------------
         # 1. MICRO-ACCOUNT MODE (Request F)
         if config.MICRO_CAPITAL_MODE:
             # A. NO STACKING
@@ -427,15 +682,33 @@ class GovernorHolon(Holon):
                   print(f"[{self.name}] 🛑 EXPOSURE CAP REACHED (Pre-Check): Current ${current_exposure:.2f} + MinTrade > Limit ${max_allowed:.2f}")
                   return False
 
-        # 2. LOW NAV FREEZE (Request A - Modified)
+        # 2. LOW NAV & MARGIN FREEZE (Cross-Margin)
         # Even if not in Micro mode, if funds are low, don't stack.
+        
+        # A. Calculate Real State
+        p_state = self._calculate_portfolio_state()
+        
+        # B. Hard Solvency Check
+        # If Margin Level < 1.5 (Buffer for 1.0 liquidation), FREEZE.
+        if p_state['margin_level'] < 1.5:
+             print(f"[{self.name}] 🧊 SOLVENCY FREEZE: Margin Level {p_state['margin_level']:.2f} < 1.5. Reducing Risk only.")
+             return False
+             
+        # C. Required Margin Check for NEW Trade
+        # We estimate the new trade margin based on Min Order Value
+        min_trade_margin = config.MIN_ORDER_VALUE / config.REGIME_PERMISSIONS.get(self.regime_controller.get_current_regime(), {}).get('max_leverage', 1.0)
+        
+        if p_state['free_margin'] < (min_trade_margin * 1.1): # 10% Buffer
+             print(f"[{self.name}] 🧊 INSUFFICIENT MARGIN: Free ${p_state['free_margin']:.2f} < Req ${min_trade_margin:.2f}. Blocked.")
+             return False
+
         if self.balance < config.STACKING_MIN_EQUITY:
             if existing_pos:
                  # Check Free Margin Buffer
                  # We need ~5x the min order value in FREE margin to justify a stack
                  required_buffer = config.MIN_ORDER_VALUE * config.STACKING_BUFFER_MULTIPLIER
-                 if self.available_balance < required_buffer:
-                       print(f"[{self.name}] 🧊 LOW NAV FREEZE: Free Margin ${self.available_balance:.2f} < Buffer ${required_buffer:.2f}. Stacking Blocked.")
+                 if p_state['free_margin'] < required_buffer:
+                       print(f"[{self.name}] 🧊 LOW NAV FREEZE: Free Margin ${p_state['free_margin']:.2f} < Buffer ${required_buffer:.2f}. Stacking Blocked.")
                        return False
 
         # --- PATCH 2: THE STACKING CAP (Stop the Martingale) ---
@@ -496,7 +769,7 @@ class GovernorHolon(Holon):
                 
         return True
 
-    def calc_position_size(self, symbol: str, asset_price: float, current_atr: float = None, atr_ref: float = None, conviction: float = 0.5, direction: str = 'BUY', crisis_score: float = 0.0, sentiment_score: float = 0.0, whale_confirmed: bool = False, market_bias: float = 0.5, metadata: Dict[str, Any] = None) -> Tuple[bool, float, float]:
+    def calc_position_size(self, symbol: str, asset_price: float, current_atr: float = None, atr_ref: float = None, conviction: float = 0.5, direction: str = 'BUY', crisis_score: float = 0.0, sentiment_score: float = 0.0, whale_confirmed: bool = False, market_bias: float = 0.5, metadata: Dict[str, Any] = None, latest_prices: Dict[str, float] = {}) -> Tuple[bool, float, float]:
         """
         Calculate position size with Phase 12 institutional risk management.
         
@@ -515,19 +788,34 @@ class GovernorHolon(Holon):
         final_notional = 0.0
         leverage = config.PREDATOR_LEVERAGE # Default
         
+        # 0. Sync Prices (Phase 5)
+        if latest_prices:
+            self.latest_prices.update(latest_prices)
+        
         # 0. Update Accumulator State
         # ideally this is done in sync loop, but fine to do here for latest check
         self.update_accumulator(self.balance)
         state = self.get_metabolism_state()
         
         # 1. Check Accumulator Lock
+        # 1. Check Accumulator Lock
         if self.drawdown_lock:
              # Check if this is a "Risk Reducing" trade (Closing)
              is_risk_reducing = False
              
+             # --- PATCH: EXPLICIT REASONS BYPASS (CRITICAL FIX) ---
+             bypass_reasons = ['STACK_TIMEOUT', 'COMPLIANCE_REDUCE', 'SHORT_COVER', 'EXIT', 'CLOSE', 'REDUCE', 'TP', 'SL', 'STACK_TP']
+             reason = metadata.get('reason', '') if metadata else ''
+             # Case insensitive check
+             reason_upper = reason.upper()
+             if any(x in reason_upper for x in bypass_reasons):
+                 is_risk_reducing = True
+                 print(f"[{self.name}] 🔓 DRAWDOWN BYPASS: Allowing {reason} trade.")
+             # --------------------------------------
+             
              # Logic to detect reduction:
              # If we hold Long (Pos > 0) and we are Selling -> Reduce
-             # If we hold Short (Pos < 0) and we are Buying -> Reduce
+             # If we hold Short (Only happens if Shorting allowed) and we are Buying -> Reduce (Cover)
              
              pos_data = self.positions.get(symbol, {})
              qty_held = pos_data.get('quantity', 0.0)
@@ -556,6 +844,10 @@ class GovernorHolon(Holon):
                     print(f"[{self.name}] 🔓 ALLOWING Close/Reduce for {symbol} despite Lock.")
              elif symbol == "PAXG/USDT" and crisis_score > 0.5:
                  print(f"[{self.name}] 🚨 CRISIS BYPASS: Allowing PAXG trade (Score {crisis_score:.2f}) despite Lock.")
+             elif whale_confirmed:
+                 # NEW: Allow Whale Signals to break the lock and recover the portfolio
+                 print(f"[{self.name}] 🐋 WHALE OVERRIDE: Bypassing ACCUMULATOR HALT for {symbol} (High Conviction).")
+                 # Proceed with caution - logic continues below
              else:
                  print(f"[{self.name}] 🛑 REJECT {symbol}: Accumulator Lock Active (Drawdown limit hit).")
                  return False, 0.0, 1.0
@@ -636,7 +928,7 @@ class GovernorHolon(Holon):
              leverage = getattr(config, 'SATELLITE_LEVERAGE', 5.0)
              
              final_notional = actual_margin * leverage
-             quantity = final_notional / asset_price
+             quantity = final_notional / asset_price if asset_price > 0 else 0.0
              
              if actual_margin < target_margin:
                   print(f"[{self.name}] 🎯 SATELLITE SNIPER: Capping Margin {target_margin:.2f} -> {actual_margin:.2f} (Solvency)")
@@ -679,7 +971,13 @@ class GovernorHolon(Holon):
                 quantity *= 1.5 # 50% Size Boost for Whale trades
                 print(f"[{self.name}] 🐳 WHALE SIZING: Boosting Position Size by 1.5x")
             
-            print(f"[{self.name}] ⚡ VOL_WINDOW SIZING: Risk ${risk_amt_usd:.2f} (Dist {stop_dist_pct:.1%}) -> Pos ${gross_size_usd:.2f}")
+            # --- ALLOCATION CLAMP (Vol-Window) ---
+            notional = quantity * asset_price
+            if notional > (self.balance * 0.15):
+                quantity = (self.balance * 0.15) / asset_price
+                print(f"[{self.name}] 👮 VOL CLAMP: Capped at 15% Alloc.")
+                
+            print(f"[{self.name}] ⚡ VOL_WINDOW SIZING: Risk ${risk_amt_usd:.2f} (Dist {stop_dist_pct:.1%}) -> Pos ${quantity*asset_price:.2f}")
             return True, quantity, config.VOL_WINDOW_LEVERAGE
         # ----------------------------------
 
@@ -711,10 +1009,17 @@ class GovernorHolon(Holon):
         # WARP SPEED 3.0: Smart Stacking & Cooldowns
         
         # 1. Cooldown Check
+        # 1. Cooldown Check
         last_time = self.last_trade_time.get(symbol, 0)
-        if time.time() - last_time < config.GOVERNOR_COOLDOWN_SECONDS:
+        
+        # --- STACKING BYPASS: Rely on Price Distance, not Time ---
+        is_stacking = (symbol in self.positions and self.positions[symbol]['quantity'] > 0)
+        
+        if not is_stacking and (time.time() - last_time < config.GOVERNOR_COOLDOWN_SECONDS):
             print(f"[{self.name}] REJECTED: Cooldown active for {symbol} ({int(config.GOVERNOR_COOLDOWN_SECONDS - (time.time() - last_time))}s rem).")
             return False, 0.0, 0.0
+        elif is_stacking and (time.time() - last_time < config.GOVERNOR_COOLDOWN_SECONDS):
+             if self.DEBUG: print(f"[{self.name}] 🥞 STACKING OVERRIDE: Bypassing Cooldown for {symbol} (Adding to position)")
             
 
         
@@ -766,7 +1071,16 @@ class GovernorHolon(Holon):
                 leverage = config.PREDATOR_LEVERAGE
             
                 # Use Modified Kelly for PREDATOR
-                kelly_size_usd = self.calculate_kelly_size(self.balance) * self.risk_multiplier
+                raw_kelly = self.calculate_kelly_size(self.balance)
+                
+                # --- FIX: KELLY CLAMP (Session 3) ---
+                # Cap fractional sizing at 2% risk per trade to prevent "Russian Roulette"
+                max_kelly_risk = self.balance * 0.02
+                kelly_size_usd = min(raw_kelly, max_kelly_risk) * self.risk_multiplier
+                
+                if self.DEBUG and raw_kelly > max_kelly_risk:
+                     print(f"[{self.name}] 🔒 KELLY CLAMP: Reduced ${raw_kelly:.2f} -> ${kelly_size_usd:.2f} (Max 2%)")
+                # ------------------------------------
             
                 # Trend Age Decay
                 current_pos = self.positions.get(symbol)
@@ -795,13 +1109,28 @@ class GovernorHolon(Holon):
                 
                 base_notional = kelly_size_usd * leverage * conv_scalar
         
-            # --- PHASE 6c: MICRO MODE HARD LEVERAGE LOCK ---
-            if config.MICRO_CAPITAL_MODE:
-                effective_leverage = min(leverage, config.MICRO_HARD_LEVERAGE_LIMIT)
-                if effective_leverage < leverage:
-                     print(f"[{self.name}] 🔒 MICRO LOCK: Leverage capped {leverage}x -> {effective_leverage}x")
-                     leverage = effective_leverage
-                     base_notional = (base_notional / config.PREDATOR_LEVERAGE) * leverage # Adjust notional to new leverage
+            # --- PHASE 6c: LEVERAGE HARD CAPS (Session 3) ---
+            # Enforce strict leverage limits based on Regime
+            # SMALL = 1.5x (Agility constant), MICRO = 1.0x (Spot safety)
+            regime = self.regime_controller.get_current_regime() if self.regime_controller else 'MICRO'
+            
+            hard_cap = 5.0 # Default
+            if regime == 'MICRO': hard_cap = 1.0
+            elif regime == 'SMALL': hard_cap = 1.5
+            elif regime == 'NANO': hard_cap = 1.2 # Extra safety for Nano
+            
+            if leverage > hard_cap:
+                 print(f"[{self.name}] 🔒 LEVERAGE GATE: Capping {leverage}x -> {hard_cap}x (Regime: {regime})")
+                 leverage = hard_cap
+                 # Recalculate base_notional with new leverage
+                 # Note: Notional = Margin * Lev. If Lev drops, Margin stays same? 
+                 # Usually we size by Risk Amount. 
+                 # Risk = Size * Stop%. Size = Risk/Stop. 
+                 # Leverage allows Size > Balance.
+                 # If we cap Lev, we cap Size = Balance * Lev.
+                 max_size_lev = self.balance * leverage
+                 if base_notional > max_size_lev:
+                      base_notional = max_size_lev
             # -----------------------------------------------
         
             # Apply Volatility/Physics Scalar
@@ -885,7 +1214,39 @@ class GovernorHolon(Holon):
                  final_notional *= 0.8 # Reduce size by 20%
                  if self.DEBUG: 
                      print(f"[{self.name}] 📉 FEAR RESPONSE: Shrinking final size by 20% (Sent: {sentiment_score:.2f})")
-        
+
+            # --- PATCH 6: COMPLIANCE CLAMP (Prevent Oscillation) ---
+            # Ensure the calculated size doesn't immediately trigger a Compliance Reduction.
+            # We check the "Allowed %" for this asset class and cap the notional.
+            
+            # Determine Tier
+            tier_key = 'DEFAULT'
+            if symbol in ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT']: tier_key = 'LARGE_CAP'
+            elif symbol in ['PEPE/USDT', 'DOGE/USDT', 'SHIB/USDT']: tier_key = 'MEME'
+            
+            max_alloc_pct = config.POSITION_LIMITS['size_limits'].get(tier_key, 0.10)
+            
+            # Calculate Hard Cap USD
+            hard_cap_usd = self.balance * max_alloc_pct
+            
+            # Subtract Existing Exposure (if stacking)
+            existing_exposure = 0.0
+            if existing_pos:
+                existing_exposure = existing_pos['quantity'] * existing_pos['entry_price']
+            
+            remaining_cap = hard_cap_usd - existing_exposure
+            
+            # Apply Safety Buffer (95% of limit) to avoid floating point edge cases triggering alerts
+            safe_cap = remaining_cap * 0.95
+            
+            if safe_cap < 0: safe_cap = 0.0
+            
+            if final_notional > safe_cap:
+                if self.DEBUG:
+                     print(f"[{self.name}] 👮 COMPLIANCE CLAMP: Capping ${final_notional:.2f} -> ${safe_cap:.2f} (Limit {max_alloc_pct:.1%})")
+                final_notional = safe_cap
+            # -------------------------------------------------------
+
             # --- PATCH 4: MINIMUM ORDER VALUE (Kraken) ---
             # If calculated size is too small, check if we can safely floor it to MIN_ORDER_VALUE
             if final_notional < config.MIN_ORDER_VALUE:
@@ -1061,7 +1422,62 @@ class GovernorHolon(Holon):
         if not allowed:
              return False, 0.0, 0.0
         # -------------------------------
+
+        # --- SESSION 3b: KRAKEN MECHANICS OVERHAUL ---
+        
+        # 0. Effective Leverage Check (Portfolio Level)
+        # Prevent "Creeping Death" from stacking.
+        # Eff Lev = Total Position Value / Total Equity
+        # We must sum ALL positions (including this proposed one)
+        # Use provided latest_prices, fallback to self.positions' entry_price or current asset_price
+        current_total_notional = 0.0
+        for p_sym, p in self.positions.items():
+            # If p_sym is the current symbol, use asset_price (most current)
+            price = asset_price if p_sym == symbol else latest_prices.get(p_sym, p.get('entry_price', 0.0))
+            current_total_notional += (p['quantity'] * price)
+
+        proposed_notional = quantity * asset_price
+        projected_total_notional = current_total_notional + proposed_notional
+        
+        projected_eff_leverage = projected_total_notional / self.balance
+        
+        # Max Effective Leverage: 0.5x (Safe Buffer)
+        # User requested 0.5x conservative cap.
+        EFF_LEV_LIMIT = 0.5
+        if projected_eff_leverage > EFF_LEV_LIMIT:
+             # Try to downsize to fit
+             available_room = (self.balance * EFF_LEV_LIMIT) - current_total_notional
+             if available_room > 0:
+                 capped_notional = available_room
+                 quantity = capped_notional / asset_price
+                 print(f"[{self.name}] 🛡️ EFF LEV GATE: Project {projected_eff_leverage:.2f}x > {EFF_LEV_LIMIT}x. Capping to fit.")
+             else:
+                 print(f"[{self.name}] 🛑 EFF LEV BREACH: Current {current_total_notional/self.balance:.2f}x + New > {EFF_LEV_LIMIT}x. Blocking.")
+                 return False, 0.0, 0.0
+
+        # 1. Allocation Hard Cap (3% Max - Deep Dive Requirement)
+        # Was 15%, now strict 3% to force diversification and survival.
+        MAX_ALLOC_ALLOWED = 0.03 
+        if self.balance < 50: MAX_ALLOC_ALLOWED = 0.90 # Nano Sniper exception (1 Bullet)
+        
+        final_notional = quantity * asset_price
+        if final_notional > (self.balance * MAX_ALLOC_ALLOWED):
+             capped_notional = self.balance * MAX_ALLOC_ALLOWED
+             quantity = capped_notional / asset_price
+             print(f"[{self.name}] 🛡️ FINAL GATE: Alloc {final_notional/self.balance:.1%} > {MAX_ALLOC_ALLOWED:.1%}. Capped to ${capped_notional:.2f}")
+
+        # 2. Leverage Hard Cap (Strict 1.0x)
+        regime = self.regime_controller.get_current_regime() if self.regime_controller else 'MICRO'
+        final_cap = 5.0
+        if regime in ['MICRO', 'SMALL']: final_cap = 1.0 # STRICT 1.0x (Spot Equivalent)
+        elif regime == 'NANO': final_cap = 1.2
+        
+        if leverage > final_cap:
+             print(f"[{self.name}] 🛡️ FINAL GATE: Lev {leverage}x > {final_cap}x. Clamped.")
+             leverage = final_cap
              
+        # -----------------------------------------------
+
         return True, quantity, leverage
 
     def calculate_stop_loss(self, symbol: str, direction: str, entry_price: float, atr: float = None) -> float:
@@ -1148,12 +1564,43 @@ class GovernorHolon(Holon):
                 avg_price = ((old_qty * old_price) + (quantity * entry_price)) / new_qty if new_qty > 1e-9 else entry_price
                 new_dir = direction
                 stack_inc = 1
+                
+                # --- STACK TRACKING (Additive) ---
+                stacks = existing.get('stacks', [{'price': old_price, 'qty': old_qty, 'id': 1}])
+                stacks.append({'price': entry_price, 'qty': quantity, 'id': len(stacks) + 1, 'time': time.time()})
+                self.positions[symbol]['stacks'] = stacks # Temp storage until full update below
+                # ---------------------------------
             else:
                 # Subtractive (Reduction/Flip)
                 # Assuming quantity passed is Positive (Absolute Size of new order)
                 print(f"[{self.name}] 📉 Netting Position: {symbol} (Old: {old_qty}, New Action: {quantity})")
                 net_qty = old_qty - quantity 
                 
+                # --- STACK TRACKING (FIFO Consumption) ---
+                stacks = existing.get('stacks', [{'price': old_price, 'qty': old_qty, 'id': 1}])
+                qty_to_remove = quantity
+                new_stacks = []
+                
+                if net_qty < -1e-9:
+                     # FLIP: Clear all old stacks, start fresh
+                     new_stacks = [{'price': entry_price, 'qty': abs(net_qty), 'id': 1, 'time': time.time()}]
+                else:
+                     # REDUCE: Eat from front (FIFO)
+                     for s in stacks:
+                         if qty_to_remove <= 0:
+                             new_stacks.append(s)
+                             continue
+                             
+                         if s['qty'] <= qty_to_remove:
+                             qty_to_remove -= s['qty']
+                             # Stack fully eaten
+                         else:
+                             # Partial consumption
+                             s['qty'] -= qty_to_remove
+                             qty_to_remove = 0
+                             new_stacks.append(s)
+                # ----------------------------------------
+
                 if net_qty > 1e-9:
                     # Partial Close (Reduced but same direction)
                     new_qty = net_qty
@@ -1183,8 +1630,9 @@ class GovernorHolon(Holon):
                     'direction': new_dir,
                     'entry_price': avg_price,
                     'quantity': new_qty,
-                    'stack_count': existing.get('stack_count', 1) + stack_inc,
-                    'first_entry_time': existing.get('first_entry_time', time.time())
+                    'stack_count': len(new_stacks) if 'new_stacks' in locals() else existing.get('stack_count', 1) + stack_inc,
+                    'first_entry_time': existing.get('first_entry_time', time.time()),
+                    'stacks': new_stacks if 'new_stacks' in locals() else stacks # Persist Stacks
                 }
                 action_tag = "STACKED" if is_same_dir else "REDUCED"
                 print(f"[{self.name}] Position {action_tag}: {symbol} (New Avg: {avg_price:.8f}, Total Qty: {new_qty:.4f})")
@@ -1203,7 +1651,8 @@ class GovernorHolon(Holon):
                 'entry_price': entry_price,
                 'quantity': quantity,
                 'stack_count': 1,
-                'first_entry_time': time.time()
+                'first_entry_time': time.time(),
+                'stacks': [{'price': entry_price, 'qty': quantity, 'id': 1, 'time': time.time()}]
             }
             print(f"[{self.name}] Position OPENED: {symbol} {direction} @ {entry_price:.8f}")
         
@@ -1212,6 +1661,78 @@ class GovernorHolon(Holon):
         if symbol in self.positions:
             del self.positions[symbol]
             print(f"[{self.name}] Position CLOSED: {symbol}")
+
+    def check_stack_targets(self, symbol: str, current_price: float) -> float:
+        """
+        Stack-by-Stack Profit Management.
+        Checks if individual stacks have hit their targets.
+        Returns total quantity to close.
+        """
+        pos = self.positions.get(symbol)
+        if not pos or not pos.get('stacks'): return 0.0
+        
+        stacks = pos['stacks']
+        direction = pos['direction']
+        total_close = 0.0
+        
+        # Check from newest to oldest? Or oldest to newest?
+        # User implies managing them individually. But since we close FIFO,
+        # if Stack 3 hits target, we close size of Stack 3, which removes Stack 1.
+        # This is acceptable ("First In First Out" profit taking).
+        
+        # We need to track which ones we are closing to avoid double counting?
+        # Actually, we just return a quantity. open_position updates the list.
+        # But we must ensure we don't loop close (close stack 1 because stack 3 hit target, then stack 3 is still there...).
+        # Wait. If Stack 3 hits target, we close SIZE of Stack 3.
+        # open_position removes Stack 1.
+        # Next cycle: Stack 3 is still there (now Stack 2). It hits target again?
+        # YES. This is a problem.
+        # Solution: Mark stacks as 'closing' or track 'real' stacks vs 'virtual'.
+        # Or simplistic: If a stack hits target, we try to close it.
+        # If we assume LIFO for profit (last stack entered is usually the one we want to scalp),
+        # but exchange forces FIFO.
+        # Standard Scalp: LIFO.
+        # Exchange: FIFO.
+        # If we assume we hold a bag (Stack 1) and we add (Stack 2). Stack 2 pops. We sell.
+        # Exchange sells Stack 1 (loss/breakeven). We kept Stack 2.
+        # Effectively we lowered our cost basis? 
+        # No, Average Entry Price changes? No, Exchange FIFO realizes Stack 1 PnL.
+        
+        # For simulation simplicity and robustness:
+        # We just check if ANY stack matches criteria.
+        # We add a 'locked' flag to stacks if we want to hold them?
+        # Or we just rely on PnL.
+        
+        # Simpler: Just rely on the user config.
+        # "Close individual stacks at their targets". 
+        # Iterate all stacks. If Stack N PnL > Target N, close it.
+        
+        for s in stacks:
+            if s.get('exit_triggered'): continue
+            
+            entry = s['price']
+            qty = s['qty']
+            sid = s.get('id', 1) # 1-based index from config
+            
+            # Retrieve Target
+            # Cap at max_stacks (e.g. 4)
+            cfg_id = min(sid, 4)
+            targets = config.STACK_PROFIT_TARGETS.get(cfg_id)
+            if not targets: continue
+            
+            pnl = 0.0
+            if direction == 'BUY':
+                pnl = (current_price - entry) / entry
+            else:
+                pnl = (entry - current_price) / entry
+                
+            if pnl >= targets['target']:
+                print(f"[{self.name}] 🥞 STACK TARGET HIT: Stack #{sid} (+{pnl*100:.2f}%) -> Closing {qty:.4f}")
+                total_close += qty
+                # Mark as triggered to prevent double-count in same tick (though execution will clear it)
+                s['exit_triggered'] = True
+                
+        return total_close
 
     def apply_micro_guard_rail(self, symbol: str, proposed_qty: float, price: float, leverage: float) -> Tuple[bool, float]:
         """
@@ -1247,6 +1768,89 @@ class GovernorHolon(Holon):
                  
              return True, proposed_qty
         # ------------------------------------------------
+        
+    def check_portfolio_compliance(self, symbol: str, current_price: float) -> float:
+        """
+        Phase 3: Auto-Correction for Oversized Positions.
+        Checks if a position exceeds its Asset Class Cap.
+        Returns: Excess Quantity to CLOSE (positive float).
+        """
+        if not config.POSITION_LIMITS: return 0.0
+        
+        pos = self.positions.get(symbol)
+        if not pos: return 0.0
+        
+        qty = abs(pos['quantity'])
+        if qty <= 1e-9: return 0.0
+        
+        total_equity = self.balance
+        if total_equity <= 0: return 0.0
+        
+        # Determine Tier
+        tier_key = 'DEFAULT'
+        if symbol in ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT']: tier_key = 'LARGE_CAP'
+        elif symbol in ['PEPE/USDT', 'DOGE/USDT', 'SHIB/USDT']: tier_key = 'MEME'
+        
+        limit_pct = config.POSITION_LIMITS['size_limits'].get(tier_key, 0.10)
+        
+        # Current Notional
+        current_notional = qty * current_price
+        current_pct = current_notional / total_equity
+        
+        # HYSTERESIS: Only trigger if we exceed limit by 10% relative (e.g. 5.0% -> 5.5%)
+        # This prevents immediate reduction due to minor price fluctuations or spread.
+        hysteresis_buffer = 1.10
+        
+        if current_pct > (limit_pct * hysteresis_buffer):
+            excess_pct_point = current_pct - limit_pct
+            # Calculate Excess Notional
+            # We want to reduce to limit.
+            # Target Notional = Total * limit_pct
+            # Excess = Current - Target
+            target_notional = total_equity * limit_pct
+            excess_notional = current_notional - target_notional
+            
+            excess_qty = excess_notional / current_price
+            
+            print(f"[{self.name}] ⚖️ COMPLIANCE BREACH: {symbol} is {current_pct*100:.1f}% of Portfolio (Limit {limit_pct*100:.1f}%). Excess: ${excess_notional:.2f} ({excess_qty:.4f})")
+            return excess_qty
+            
+        return 0.0
+
+    def check_timeout_actions(self, symbol: str) -> float:
+        """
+        Check if a position has timed out (stuck at entry) and needs reduction.
+        Returns: Quantity to reduce (float).
+        """
+        if symbol not in self.stack_timeout_tracker:
+            return 0.0
+            
+        start_time = self.stack_timeout_tracker[symbol]
+        elapsed = time.time() - start_time
+        timeout_seconds = getattr(config, 'STACK_TIMEOUT_SECONDS', 300) # 5 min default
+        
+        if elapsed > timeout_seconds:
+            # Trigger Force Reduction
+            pos = self.positions.get(symbol)
+            if not pos: 
+                self.stack_timeout_tracker.pop(symbol, None)
+                return 0.0
+                
+            qty_held = pos['quantity']
+            reduce_qty = qty_held * 0.5 # 50% Reduction
+            
+            print(f"[{self.name}] ⏰ TIMEOUT EXECUTION: {symbol} stuck for {elapsed/60:.1f}min. Force Reducing {reduce_qty:.4f} (50%).")
+            # Reset tracker to give breathing room after reduction?
+            # Or keep it until it moves? 
+            # Resetting basically gives it another 5 mins.
+            self.stack_timeout_tracker.pop(symbol, None) 
+            # Also reset entry price reference to unstick the "too close" check?
+            # self.last_specific_entry[symbol] = 0 # No, that might allow stacking immediately.
+            return reduce_qty
+            
+        return 0.0
+            
+        nav = self.balance
             
         nav = self.balance
         proposed_notional = proposed_qty * price

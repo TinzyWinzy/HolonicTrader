@@ -786,6 +786,11 @@ class Playground:
         """
         if self.df is None or self.df.empty: return
 
+        # 0. Complexity Guard
+        # Rust engine (v1) assumes 100% sizing and cannot handle Satellite logic or Trailing Stops correctly.
+        # Fallback to Python for these cases.
+        raise NotImplementedError("Rust Engine v1 lacks Sizing/Satellite logic. Using Python.")
+
         # 1. Vectorize Strategy (Gene Thresholds)
         try:
             import holonic_speed

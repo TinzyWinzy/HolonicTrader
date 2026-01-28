@@ -41,6 +41,11 @@ class LiveValidationGate:
         # Slice for the Trial Period (approx 48h)
         # If 15m candles, 48h = 48 * 4 = 192 candles
         candles_needed = self.paper_period_hours * 4 
+        
+        # --- DATA AVAILABILITY CHECK ---
+        if len(arena.df) < (candles_needed * 0.5): # Require at least 50% (24h)
+             return False, f"Insufficient Data ({len(arena.df)} < {candles_needed*0.5})", {}
+             
         trial_df = arena.df.tail(candles_needed).copy()
         arena.df = trial_df
         

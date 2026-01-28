@@ -643,6 +643,20 @@ class ExecutorHolon(Holon):
             action = 'EXECUTE'
             adjusted_size = signal.size
             
+            # --- SAFETY NET (Phase 5) ---
+            if self.governor and hasattr(self.governor, 'check_solvency'):
+                 trade_meta = {
+                     'symbol': signal.symbol,
+                     'size': signal.size, # Quantity
+                     'price': signal.price,
+                     'direction': signal.direction
+                 }
+                 if not self.governor.check_solvency(trade_meta):
+                     action = 'HALT'
+                     adjusted_size = 0.0
+                     print(f"[{self.name}] 🛡️ SAFETY NET: Governor Vetoed Trade Solvency. Action -> HALT.")
+            # ----------------------------
+            
         elif autonomy < 0.05:  # Very relaxed - only HALT in extreme chaos
             action = 'HALT'
             adjusted_size = 0.0
@@ -1021,17 +1035,23 @@ class ExecutorHolon(Holon):
             # 'EXECUTE' and 'REDUCE' usually come from Kelly/Strategy which are Unit-based.
             # We assume Unit sizing unless explicitly flagged or using special action.
             if action_type in ['BUY', 'SELL', 'EXECUTE', 'REDUCE']:
-                 # Entry Signal acting as Close/Reduce -> Size is UNITS
-                 requested_qty = decision.adjusted_size
+                 # Check for explicit Percentage Flag (Guardian/Strategy)
+                 is_percent = decision.original_signal.metadata.get('is_percent', False)
                  
-                 # --- ZOMBIE JANITOR PATCH ---
-                 # If reason is CONSOLIDATION or Thesis, treat adjusted_size as PERCENTAGE (1.0 = 100%)
+                 # Also treat specific reasons as Percentage
                  reason = decision.original_signal.metadata.get('reason')
                  if reason in ['CONSOLIDATION', 'Thesis']:
+                     is_percent = True
+                 
+                 requested_qty = decision.adjusted_size
+                 
+                 if is_percent:
+                     # Treat adjusted_size as Percentage (1.0 = 100%)
                      exec_qty = abs(current_holding) * requested_qty
-                     print(f"[{self.name}] 🧹 CONSOLIDATION EXIT: {symbol} Closing {exec_qty:.4f} ({requested_qty*100:.0f}%)")
+                     print(f"[{self.name}] 📉 PERCENT EXIT: {symbol} Closing {exec_qty:.4f} ({requested_qty*100:.1f}%)")
                  else:
-                     # Guard: Cannot close more than we hold (unless we implement Flip later)
+                     # Default: Entry Signal acting as Close/Reduce -> Size is UNITS
+                     # Guard: Cannot close more than we hold
                      exec_qty = min(requested_qty, abs(current_holding))
                      print(f"[{self.name}] 📉 REDUCING: {symbol} Holding {abs(current_holding):.4f} - Req {requested_qty:.4f} -> Closing {exec_qty:.4f}")
             else:
@@ -1425,6 +1445,10 @@ class ExecutorHolon(Holon):
             self.held_assets[symbol] -= actual_qty
             pnl_to_return = pnl_pct
             print(f"[{self.name}] LONG EXIT: {symbol} @ {actual_price} (PnL: {pnl_pct*100:+.2f}%, ${pnl_usd:+.2f})")
+            
+            # FEEDBACK LOOP
+            if self.governor:
+                self.governor.register_outcome(pnl_usd, symbol)
 
         elif is_short_cover:
             entry_p = self.entry_prices.get(symbol, actual_price)
@@ -1436,6 +1460,10 @@ class ExecutorHolon(Holon):
             self.held_assets[symbol] += actual_qty
             pnl_to_return = pnl_pct
             print(f"[{self.name}] SHORT COVER: {symbol} @ {actual_price} (PnL: {pnl_pct*100:+.2f}%, ${pnl_usd:+.2f})")
+
+            # FEEDBACK LOOP
+            if self.governor:
+                self.governor.register_outcome(pnl_usd, symbol)
 
         # Cleanup positions that are fully closed
         if abs(self.held_assets.get(symbol, 0.0)) < 0.00000001:

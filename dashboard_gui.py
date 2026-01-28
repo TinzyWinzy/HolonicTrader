@@ -513,32 +513,64 @@ class HolonicDashboard:
             # Card Frame
             score = item.get('sentiment', 0.0)
             is_crisis = item.get('is_crisis', False)
+            is_whale = item.get('is_whale', False)
+            is_hype = item.get('is_hype', False)
             
             border_color = '#2e3b52' # Neutral Grey
-            if is_crisis: border_color = '#d63031' # Red Crisis
-            elif score > 0.2: border_color = '#00b894' # Green Bull
-            elif score < -0.2: border_color = '#ff7675' # Red Bear
+            accent_icon = ""
+            
+            if is_crisis: 
+                border_color = '#d63031' # Red Crisis
+                accent_icon = "☢️ "
+            elif is_whale:
+                border_color = '#a29bfe' # Purple Whale
+                accent_icon = "🐋 "
+            elif is_hype:
+                border_color = '#fdcb6e' # Gold Hype
+                accent_icon = "🚀 "
+            elif score > 0.2: 
+                border_color = '#00b894' # Green Bull
+            elif score < -0.2: 
+                border_color = '#ff7675' # Red Bear
             
             # Use specific styles if possible, else standard Frame with border trick
             # Tkinter Frame border trick: Frame(bg=border) -> Frame (bg=inner, padding=1)
             card_border = tk.Frame(parent, bg=border_color, padx=1, pady=1)
-            card_border.pack(fill='x', pady=5, padx=2)
+            card_border.pack(fill='x', pady=6, padx=4)
             
-            card_inner = tk.Frame(card_border, bg='#1e2742')
+            card_inner = tk.Frame(card_border, bg='#28324e') # Slightly Lighter Card BG
             card_inner.pack(fill='both')
             
             # Content
-            # Source Pill
-            source_lbl = tk.Label(card_inner, text=item.get('source', 'Unknown').upper(), font=('Segoe UI', 8), fg='#a4b1cd', bg='#1e2742', anchor='w')
-            source_lbl.pack(fill='x', padx=10, pady=(8,0))
+            # 1. Header Row (Source + Time if avail)
+            header_frame = tk.Frame(card_inner, bg='#28324e')
+            header_frame.pack(fill='x', padx=10, pady=(8,2))
             
-            # Title
-            title_lbl = tk.Label(card_inner, text=item.get('title', 'No Title'), font=('Segoe UI', 10, 'bold'), fg='white', bg='#1e2742', wraplength=250, justify='left', anchor='w')
+            source_lbl = tk.Label(header_frame, text=item.get('source', 'Unknown').upper(), font=('Segoe UI', 8, 'bold'), fg='#7da3e4', bg='#28324e', anchor='w')
+            source_lbl.pack(side='left')
+            
+            # 2. Title
+            title_text = f"{accent_icon}{item.get('title', 'No Title')}"
+            title_lbl = tk.Label(card_inner, text=title_text, font=('Segoe UI', 11), fg='white', bg='#28324e', wraplength=230, justify='left', anchor='w')
             title_lbl.pack(fill='x', padx=10, pady=5)
             
-            # Sentiment Bar
-            bar_color = border_color
-            sent_bar = tk.Frame(card_inner, bg=bar_color, height=3)
+            # 3. Badges / Footer
+            footer_frame = tk.Frame(card_inner, bg='#28324e')
+            footer_frame.pack(fill='x', padx=10, pady=(5,8))
+            
+            # Sentiment Badge
+            sent_text = "NEUTRAL"
+            sent_fg = '#b2bec3'
+            if score > 0.2: sent_text, sent_fg = "BULLISH", '#55efc4'
+            if score < -0.2: sent_text, sent_fg = "BEARISH", '#ff7675'
+            if is_crisis: sent_text, sent_fg = "CRITICAL", '#ff0000'
+            
+            sent_lbl = tk.Label(footer_frame, text=sent_text, font=('Consolas', 8, 'bold'), fg=sent_fg, bg='#2d3436', padx=5, pady=2)
+            sent_lbl.pack(side='left')
+            
+            # Sentiment Bar (Bottom Border)
+            bar_height = 4 if is_crisis or is_whale else 2
+            sent_bar = tk.Frame(card_inner, bg=border_color, height=bar_height)
             sent_bar.pack(fill='x', side='bottom')
             
             # Interaction
@@ -546,7 +578,7 @@ class HolonicDashboard:
                 if link: webbrowser.open(link)
                 
             # Bind Click to everything in card
-            for w in [card_border, card_inner, source_lbl, title_lbl, sent_bar]:
+            for w in [card_border, card_inner, source_lbl, title_lbl, sent_bar, header_frame, footer_frame, sent_lbl]:
                 w.bind("<Button-1>", lambda e, l=item.get('link'): open_url(l))
                 w.bind("<Enter>", lambda e, c=card_border: c.configure(bg='white')) # Hover highlight border
                 w.bind("<Leave>", lambda e, c=card_border, b=border_color: c.configure(bg=b))
@@ -810,10 +842,18 @@ class HolonicDashboard:
             p0 = history[0]['price']
             zs = [((p['price'] - p0) / p0) * 100 for p in history]
             
-            # Color based on latest movement
-            color = COLORS['accent_green'] if zs[-1] > zs[-2] else COLORS['accent_red']
+            # Color based on Entropy Regime (Physics)
+            last_entropy = xs[-1]
+            if last_entropy > 1.2:
+                color = COLORS['accent_red'] # Chaos
+            elif last_entropy < 0.6:
+                color = COLORS['accent_blue'] # Order
+            else:
+                color = COLORS['accent_yellow'] # Transition
+            
+            # Highlight BTC
             if sym == "BTC/USDT":
-                color = COLORS['accent_yellow']
+                color = '#FFFFFF' # White Highlight
             
             # Plot Line
             self.ax_3d.plot(xs, ys, zs, color=color, linewidth=1, alpha=0.6)

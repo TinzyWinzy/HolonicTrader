@@ -19,7 +19,7 @@ class EvolutionLab:
     def __init__(self, 
                  symbols: List[str] = None, # Default to None, load from config if missing
                  initial_capital: float = None,
-                 leverage: float = 20.0, # REDUCED: 50x -> 20x for Stability
+                 leverage: float = 5.0, # REDUCED: 20x -> 5x for Survival
                  population_size: int = 60,
                  fitness_mode: str = 'BALANCED', # 'BALANCED' (Safety) or 'AGGRESSIVE' (Growth)
                  verbose: bool = False):
@@ -65,7 +65,7 @@ class EvolutionLab:
             'sat_bb_expand': random.uniform(0.05, 0.25),
             
             # --- INSTITUTIONAL GENES ---
-            'leverage_cap': round(random.uniform(1.0, 5.0), 2),
+            'leverage_cap': round(random.uniform(1.0, 5.0), 2), # RESTORED: 1-5x (Golden Ratio)
             'trailing_activation': random.uniform(0.1, 1.5), # RECALIBRATED: 10% - 150% gain
             'trailing_distance': random.uniform(0.01, 0.05)  # RECALIBRATED: 1% - 5% trail
         }
@@ -156,12 +156,24 @@ class EvolutionLab:
             if symbol not in self.datasets: continue
             
             arena = copy.copy(self.datasets[symbol])
-            if arena.df is None or arena.df.empty: continue
+            if arena.df is None or arena.df.empty: 
+                continue
+            
+            # --- DATA FIX: Ensure minimum history for valid split ---
+            # Need at least 500 bars for meaningful Training + 200 for Validation
+            if len(arena.df) < 500: # Relaxed from 700 to allow newer coins
+                # logger.warning(f"⚠️ {symbol} skipped: Insufficient Data ({len(arena.df)} rows < 500)")
+                continue
+            # ----------------------------------------------------
             
             # Split Data: 70% Train, 30% Val
             full_df = arena.df
             split_idx = int(len(full_df) * 0.7)
             
+            # Index Logic Protection
+            if split_idx < 100 or split_idx >= len(full_df) - 50:
+                 continue
+
             # --- PHASE A: TRAIN ---
             arena.df = full_df.iloc[:split_idx]
             arena.capital = test_capital
@@ -263,8 +275,16 @@ class EvolutionLab:
         
         # 2. Activity Check (Avoid dead strategies)
         # Relaxed: Only punish if practically zero trades (< 0.5 per arena)
+        # 2. Activity Check (Avoid dead strategies)
+        # Relaxed: Only punish if practically zero trades (< 0.5 per arena)
         if total_trades < (valid_arenas * 0.5): 
-            survival_score *= 0.8 # Less harsh penalty (was 0.5)
+            survival_score *= 0.5 # Stricter again (was 0.8) - Dead bots must die.
+            
+        # --- NEW: EQUITY RELIABILITY (User Request) ---
+        # Penalize Negative AVG ROI heavily.
+        if avg_roi < 0:
+            survival_score *= 0.1 # 90% Penalty for losing money.
+        # ----------------------------------------------
             
         # 3. Core Score: Sharpe + Sortino + ROI
         # Weighting: Reliability (60%), Growth (40%)
@@ -274,7 +294,11 @@ class EvolutionLab:
         
         # AGGRESSIVE BOOST: Scale ROI higher to reward ANY profit in bear markets
         # Add constant 1.0 base to raw_score to prevent multipication to zero if metrics are slightly negative
-        raw_score = 1.0 + (c_sharpe * 2.0) + (c_sortino * 1.0) + (avg_roi * 20.0)
+        # REPAIR: Base 10.0 to allow negative ROI to have a gradient.
+        # If ROI is -0.5 (-50%), score = 10 + (-10) = 0.
+        # If ROI is -0.1 (-10%), score = 10 + (-2) = 8.
+        # If ROI is 0.1 (10%), score = 10 + 2 = 12.
+        raw_score = 10.0 + (c_sharpe * 2.0) + (c_sortino * 1.0) + (avg_roi * 20.0)
         
         # 4. Quadratic Drawdown Penalty (RECALIBRATION)
         # Relaxed Curve: 

@@ -134,9 +134,11 @@ class SentimentHolon(Holon):
         
         for url in self.sources:
             try:
-                # FIX: Use requests with timeout to prevent hanging
-                resp = requests.get(url, timeout=4.0)
+                # FIX: Use requests with timeout & user-agent to prevent hanging/blocking (Reddit)
+                headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+                resp = requests.get(url, timeout=5.0, headers=headers)
                 if resp.status_code != 200:
+                    print(f"[{self.name}] ⚠️ Feed Error {resp.status_code}: {url}")
                     continue
                     
                 feed = feedparser.parse(resp.content)
