@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 /// Signal Direction
 #[derive(Clone, Debug, PartialEq)]
 pub enum SignalDirection {

@@ -1,0 +1,48 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-16 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $91.34
+  End:    $91.39
+  Change: +0.06%  ($+0.05)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: TRANSITION
+    TRANSITION  : 100% of cycles
+  Last inputs: {"structure": "BULLISH", "entropy": 1.0, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ⚠️ [22:04] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in XRP/USDT already exists (entry=1.4280)
+  ⚠️ [22:05] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in XRP/USDT already exists (entry=1.4280)
+  ⚠️ [22:05] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [22:06] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [22:08] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [22:31] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:29] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:30] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:32] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:33] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:34] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:36] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:37] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:38] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:41] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:52] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:53] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:54] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+  ⚠️ [23:56] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in SOL/USDT already exists (entry=90.0500)
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

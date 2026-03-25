@@ -1,77 +1,97 @@
 import unittest
-import pandas as pd
-from HolonicTrader.agent_guardian import ExitGuardianHolon
-from HolonicTrader.agent_executor import ExecutorHolon, TradeDecision, TradeSignal as Signal
-from HolonicTrader.holon_core import Disposition
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from HolonicTrader.agent_executor import TradeSignal as Signal, Position
+
 
 class TestShortingPnL(unittest.TestCase):
-    def setUp(self):
-        self.guardian = ExitGuardianHolon()
-        # Use Fixed Stake for predictable sizing in tests
-        self.executor = ExecutorHolon(use_compounding=False, fixed_stake=500.0)
-        self.executor.balance_usd = 1000.0
-        self.executor.held_assets = {}
-        self.executor.entry_prices = {}
-        self.executor.position_metadata = {}
+    """
+    Tests short position PnL calculations using the current Position API.
+    The executor now uses Position objects instead of raw dicts.
+    """
 
     def test_short_pnl_calculation(self):
         """Verify that price drop results in positive PnL for short."""
+        print("\n[Test] Short PnL Calculation")
         entry_p = 100.0
-        current_p = 90.0 # 10% drop
-        
-        # Guardian Analysis
-        # Create dummy BB and ATR
-        bb = {'upper': 110, 'middle': 100, 'lower': 90}
-        atr = 5.0
-        
-        exit_sig = self.guardian.analyze_for_exit(
+        current_p = 90.0  # 10% drop
+
+        # Create a short position using the Position dataclass
+        pos = Position(
             symbol="BTC/USDT",
-            current_price=current_p,
+            virt_key="BTC/USDT_DIRECTIONAL",
+            direction="SELL",
+            quantity=1.0,
             entry_price=entry_p,
-            bb=bb,
-            atr=atr,
-            metabolism_state="PREDATOR",
-            position_age_hours=1.0,
-            direction="SELL" # Short
+            entry_timestamp="2026-01-01T00:00:00Z",
+            leverage=1.0
         )
-        
-        # Manual PnL check logic (mirrors Guardian)
-        pnl = (entry_p - current_p) / entry_p
-        self.assertEqual(pnl, 0.10) # 10% gain
-        
-    def test_executor_short_accounting(self):
-        """Verify balance updates correctly on short cover."""
-        symbol = "ADA/USDT"
-        entry_p = 0.50
-        qty = 1000.0 # Notional = 500
-        leverage = 1.0
-        
-        # 1. Open Short
-        sig = Signal(symbol=symbol, direction='SELL', price=entry_p, size=qty)
-        # Dummy disposition and hash
-        disp = Disposition(0.5, 0.5)
-        dec = TradeDecision(action='EXECUTE', adjusted_size=1.0, original_signal=sig, disposition=disp, block_hash="abc")
-        
-        self.executor.execute_transaction(dec, entry_p)
-        
-        # Expected quantity: 500 USD / 0.50 = 1000 units
-        actual_qty = self.executor.held_assets.get(symbol, 0)
-        self.assertEqual(actual_qty, -1000.0) 
-        self.assertEqual(self.executor.balance_usd, 500.0) # 1000 - 500 margin
-        
-        # 2. Cover Short at lower price
-        exit_p = 0.40 # 20% drop
-        sig_cover = Signal(symbol=symbol, direction='BUY', price=exit_p, size=qty)
-        dec_cover = TradeDecision(action='EXECUTE', adjusted_size=1.0, original_signal=sig_cover, disposition=disp, block_hash="def")
-        
-        # PnL = (0.50 - 0.40) * 1000 = +$100
-        # Return Margin = 500
-        # New Balance should be 500 + 500 + 100 = 1100
-        
-        self.executor.execute_transaction(dec_cover, exit_p)
-        
-        self.assertEqual(self.executor.held_assets.get(symbol, 0), 0)
-        self.assertEqual(self.executor.balance_usd, 1100.0)
+
+        # Verify PnL calculation via the Position.get_pnl_pct method
+        pnl_pct = pos.get_pnl_pct(current_p)
+
+        print(f"  Entry: ${entry_p}, Current: ${current_p}")
+        print(f"  PnL%: {pnl_pct:.4f} (Expected: 0.10)")
+
+        # Short PnL: (entry - current) / entry = (100 - 90) / 100 = 0.10
+        self.assertAlmostEqual(pnl_pct, 0.10, places=4,
+                               msg="Short PnL should be +10% when price drops 10%")
+
+        # Verify is_short property
+        self.assertTrue(pos.is_short, "Position should be identified as short")
+        self.assertFalse(pos.is_long, "Position should NOT be identified as long")
+
+    def test_short_pnl_negative(self):
+        """Verify that price increase results in negative PnL for short."""
+        print("\n[Test] Short PnL Negative (Price Up)")
+        entry_p = 100.0
+        current_p = 110.0  # 10% rise
+
+        pos = Position(
+            symbol="ETH/USDT",
+            virt_key="ETH/USDT_DIRECTIONAL",
+            direction="SELL",
+            quantity=1.0,
+            entry_price=entry_p,
+            entry_timestamp="2026-01-01T00:00:00Z",
+            leverage=1.0
+        )
+
+        pnl_pct = pos.get_pnl_pct(current_p)
+
+        print(f"  Entry: ${entry_p}, Current: ${current_p}")
+        print(f"  PnL%: {pnl_pct:.4f} (Expected: -0.10)")
+
+        # Short PnL: (entry - current) / entry = (100 - 110) / 100 = -0.10
+        self.assertAlmostEqual(pnl_pct, -0.10, places=4,
+                               msg="Short PnL should be -10% when price rises 10%")
+
+    def test_long_pnl_calculation(self):
+        """Verify that price increase results in positive PnL for long."""
+        print("\n[Test] Long PnL Calculation")
+        entry_p = 100.0
+        current_p = 115.0  # 15% rise
+
+        pos = Position(
+            symbol="BTC/USDT",
+            virt_key="BTC/USDT_DIRECTIONAL",
+            direction="BUY",
+            quantity=1.0,
+            entry_price=entry_p,
+            entry_timestamp="2026-01-01T00:00:00Z",
+            leverage=1.0
+        )
+
+        pnl_pct = pos.get_pnl_pct(current_p)
+
+        print(f"  Entry: ${entry_p}, Current: ${current_p}")
+        print(f"  PnL%: {pnl_pct:.4f} (Expected: 0.15)")
+
+        self.assertAlmostEqual(pnl_pct, 0.15, places=4,
+                               msg="Long PnL should be +15% when price rises 15%")
+        self.assertTrue(pos.is_long, "Position should be identified as long")
 
 if __name__ == '__main__':
     unittest.main()

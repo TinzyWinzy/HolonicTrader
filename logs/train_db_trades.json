@@ -1,0 +1,47 @@
+{
+  "dataset": {
+    "source": "holonic_trader.db",
+    "n_trades": 872,
+    "n_features": 8,
+    "features": [
+      "quantity",
+      "price",
+      "cost_usd",
+      "hour",
+      "day_of_week",
+      "mfe",
+      "mae",
+      "direction_encoded"
+    ],
+    "train_size": 697,
+    "test_size": 175
+  },
+  "regression_model": {
+    "rmse": 156.70258578424313,
+    "best_iteration": 337,
+    "top_features": [
+      "price",
+      "quantity",
+      "cost_usd",
+      "hour",
+      "day_of_week"
+    ]
+  },
+  "classification_model": {
+    "accuracy": 0.7771428571428571,
+    "best_iteration": 57,
+    "top_features": [
+      "cost_usd",
+      "price",
+      "quantity",
+      "hour",
+      "day_of_week"
+    ]
+  },
+  "data_statistics": {
+    "win_rate": 0.5022935779816514,
+    "avg_pnl_percent": 53.8682658550068,
+    "std_pnl_percent": 338.26868050627894
+  },
+  "timestamp": "2026-03-21T23:34:19.425787"
+}

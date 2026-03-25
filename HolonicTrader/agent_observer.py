@@ -3,8 +3,9 @@ import ccxt
 import time
 import pandas as pd
 import numpy as np
-from datetime import datetime
-from typing import Literal, Any, List, Dict
+import logging
+from datetime import datetime, timezone
+from typing import Literal, Any, List, Dict, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from HolonicTrader.holon_core import Holon, Disposition, Message
 
@@ -18,6 +19,14 @@ import threading
 import asyncio
 import ccxt.pro as ccxtpro
 
+from HolonicTrader.network_resilience import with_retry, with_circuit_breaker
+
+# AEGIS QUANTSEC: WebSocket Health Monitoring
+from HolonicTrader.websocket_health import (
+    get_global_health_monitor,
+    WebSocketHealthMonitor
+)
+
 class ObserverHolon(Holon):
     """
     ObserverHolon is responsible for acquiring market data from exchanges
@@ -25,8 +34,34 @@ class ObserverHolon(Holon):
     """
 
     # Class-Level Shared Cache to prevent redundant Disk I/O across instances
-    _shared_cache = {} 
+    _shared_cache = {}
     _shared_cache_lock = threading.Lock() # Ensure thread safety
+    _xstock_bases_cache = None  # Cache for xStock base symbols
+
+    def _is_xstock_symbol(self, symbol: str) -> bool:
+        """
+        FIX 2026-03-02: Check if a symbol is an xStock variant.
+        Handles formats like 'SPYX/USDT', 'SPYX/USD', 'SPYX/USD:USD', etc.
+        """
+        if not hasattr(config, 'XSTOCKS_SYMBOLS'):
+            return False
+        
+        # Build cache of xStock base names on first call
+        if ObserverHolon._xstock_bases_cache is None:
+            with ObserverHolon._shared_cache_lock:
+                if ObserverHolon._xstock_bases_cache is None:
+                    ObserverHolon._xstock_bases_cache = set()
+                    for xs_sym in config.XSTOCKS_SYMBOLS:
+                        base = xs_sym.split('/')[0] if '/' in xs_sym else xs_sym
+                        ObserverHolon._xstock_bases_cache.add(base)
+        
+        # Check exact match first
+        if symbol in config.XSTOCKS_SYMBOLS:
+            return True
+        
+        # Check base symbol match
+        base = symbol.split('/')[0] if '/' in symbol else symbol
+        return base in ObserverHolon._xstock_bases_cache
 
     def __init__(self, exchange_id: str = 'kucoin', symbol: str = 'BTC/USDT'):
         # Initialize with default highly autonomous and integrated disposition for now
@@ -50,6 +85,7 @@ class ObserverHolon(Holon):
 
             self.exchange = getattr(ccxt, exchange_id)({
                 'enableRateLimit': config.CCXT_RATE_LIMIT,
+                'timeout': 30000, # 30s Timeout to prevent sticky threads
                 'session': session
             })
         else:
@@ -72,26 +108,62 @@ class ObserverHolon(Holon):
         self._ws_exchange = None
         self._ws_trades_log = {} # symbol -> [trades]
         
+        # Smart OHLCV Cache (Phase 1 WS Integration)
+        self._smart_ohlcv_cache = {} # symbol_timeframe -> {'df': DataFrame, 'last_fetch': float, 'candle_open_time': float}
+
         # Determine if we should start WS (only for primary exchange if needed)
         # For now, we allow any ObserverHolon to start WS if symbols are provided
         if config.TRADING_MODE == 'FUTURES' or exchange_id == 'krakenfutures':
             self._ws_enabled = True
             # Start in a separate method to avoid blocking init
 
+        # --- WS UPDATE DEBOUNCING (Prevent Kraken subscription spam) ---
+        self._ws_last_update = 0.0
+        self._WS_UPDATE_MIN_INTERVAL = 300  # 5 minutes between WS subscription updates
+
+        # --- SHARED EXECUTOR (Prevent Thread/Socket Leak) ---
+        self.executor = ThreadPoolExecutor(
+            max_workers=config.CCXT_POOL_SIZE,
+            thread_name_prefix=f"{self.name}_Worker"
+        )
+
+        # === AEGIS QUANTSEC: WebSocket Health Monitor ===
+        # CHRONOS FIX: Respect REST-only mode configuration
+        self._ws_health_monitor: Optional[WebSocketHealthMonitor] = None
+        self._ws_health_enabled = not getattr(config, 'WS_FORCE_REST_ONLY', False)
+        self._ws_fallback_to_rest = getattr(config, 'WS_FORCE_REST_ONLY', False)  # Start in REST mode if configured
+        self._ws_last_rest_fetch = 0.0
+        self._ws_rest_cooldown = 5.0  # Seconds between REST fallback fetches
+        self._ws_unhealthy_threshold = getattr(config, 'WS_UNHEALTHY_THRESHOLD', 0.5)
+
     def start_ws(self, symbols: List[str] = None):
         """Starts the background WebSocket thread."""
         if not self._ws_enabled or self._ws_thread is not None:
             return
-            
+
         # Use provided symbols or default university
         watch_list = symbols if symbols else [self.symbol]
         # Map symbols for Kraken Futures if needed
         if self.exchange_id == 'krakenfutures':
             watch_list = [config.KRAKEN_SYMBOL_MAP.get(s, s) for s in watch_list]
-            
+
         self._ws_symbols = watch_list
         print(f"[{self.name}] 📡 Starting WebSocket Stream for {len(self._ws_symbols)} assets...")
-        
+
+        # === AEGIS QUANTSEC: Initialize Health Monitor ===
+        if self._ws_health_enabled:
+            self._ws_health_monitor = get_global_health_monitor()
+
+            # Register all symbols for health monitoring
+            for sym in self._ws_symbols:
+                self._ws_health_monitor.register_connection('tickers', sym)
+
+            # Register callbacks for health status changes
+            self._ws_health_monitor.register_unhealthy_callback(self._on_ws_unhealthy)
+            self._ws_health_monitor.register_recovered_callback(self._on_ws_recovered)
+
+            print(f"[{self.name}] 🛡️ AEGIS WebSocket Health Monitor enabled")
+
         self._ws_thread = threading.Thread(target=self._run_ws_loop, daemon=True)
         self._ws_thread.start()
 
@@ -105,17 +177,44 @@ class ObserverHolon(Holon):
             print(f"[{self.name}] ❌ WebSocket Thread Crashed: {e}")
 
     async def _ws_main_loop(self):
-        """The actual async loop using ccxt.pro."""
-        ws_config = {'enableRateLimit': True}
-        
+        """The actual async loop using ccxt.pro with enhanced keepalive."""
+        # === FIX 2026-03-15: Aggressive WebSocket Keepalive ===
+        # Previous 15s ping was insufficient for unstable networks
+        # New config: 5s ping interval, 3s timeout tolerance
+        ws_config = {
+            'enableRateLimit': True,
+            'pingInterval': 5000,  # 5s ping interval (was 10s/15s)
+            'pingTimeout': 3000,   # 3s timeout before reconnect
+            # Enhanced keepalive settings to prevent timeout issues
+            'options': {
+                'defaultType': 'future',  # For Kraken Futures
+                'keepAlive': True,
+                'heartbeat': True,
+                'heartbeatDelay': 5000,  # 5s heartbeat (was 15s)
+            }
+        }
+
+        # Exchange-specific tuning
+        if self.exchange_id == 'krakenfutures':
+            # Kraken Futures needs more aggressive keepalive
+            ws_config['pingInterval'] = 3000  # 3s ping
+            ws_config['pingTimeout'] = 2000   # 2s timeout
+            ws_config['options']['heartbeatDelay'] = 3000
+        elif self.exchange_id == 'kucoin':
+            # Kucoin has strict rate limits but needs frequent pings
+            ws_config['pingInterval'] = 5000
+            ws_config['options']['heartbeatDelay'] = 5000
+
         # Add API keys if available for private streams (though we mostly use public here)
         if self.exchange_id == 'krakenfutures':
             if config.KRAKEN_FUTURES_API_KEY:
                 ws_config['apiKey'] = config.KRAKEN_FUTURES_API_KEY
                 ws_config['secret'] = config.KRAKEN_FUTURES_PRIVATE_KEY
-        
+
         self._ws_exchange = getattr(ccxtpro, self.exchange_id)(ws_config)
-        
+
+        print(f"[{self.name}] 🛡️ WebSocket configured with AGGRESSIVE keepalive ({ws_config['pingInterval']}ms ping, {ws_config['pingTimeout']}ms timeout)")
+
         try:
             tasks = [
                 self._watch_tickers_loop(),
@@ -126,52 +225,186 @@ class ObserverHolon(Holon):
             await self._ws_exchange.close()
 
     async def _watch_tickers_loop(self):
-        """Background loop to update ticker cache via WS."""
+        """Background loop to update ticker cache via WS with health monitoring."""
         while True:
             try:
+                # === AEGIS QUANTSEC: Check if fallback to REST needed ===
+                if self._ws_fallback_to_rest:
+                    await asyncio.sleep(5)
+                    # Try to recover WS after cooldown
+                    if self._ws_health_monitor:
+                        all_healthy = all(
+                            self._ws_health_monitor.get_health_status('tickers', sym).status == 'HEALTHY'
+                            for sym in self._ws_symbols[:5]  # Check first 5
+                        )
+                        if all_healthy:
+                            print(f"[{self.name}] ✅ WebSocket health recovered, switching from REST fallback")
+                            self._ws_fallback_to_rest = False
+                    continue
+
                 # CCXT.pro unified watch_tickers
                 # If we have a lot of symbols, some exchanges prefer a list
                 tickers = await self._ws_exchange.watch_tickers(self._ws_symbols)
-                
+
                 # Update synchronous cache
                 self._ticker_cache.update(tickers)
                 self._last_ticker_fetch = time.time()
-                
+
+                # === AEGIS QUANTSEC: Record successful message for health tracking ===
+                if self._ws_health_monitor:
+                    now_ms = time.time() * 1000.0
+                    for symbol in self._ws_symbols:
+                        if symbol in tickers:
+                            # Calculate proper latency from CCXT ticker timestamp (in ms)
+                            ticker_ts = tickers[symbol].get('timestamp')
+                            latency = 0.0
+                            if ticker_ts:
+                                latency = now_ms - float(ticker_ts)
+                            self._ws_health_monitor.record_message('tickers', symbol, latency_ms=max(0.0, latency))
+
             except Exception as e:
-                # print(f"[{self.name}] WS Ticker Loop Error: {e}")
+                error_msg = str(e)
+
+                # === AEGIS QUANTSEC: Record errors for health tracking ===
+                if self._ws_health_monitor:
+                    for symbol in self._ws_symbols:
+                        self._ws_health_monitor.record_error('tickers', symbol, error_type=str(type(e).__name__))
+
+                # FIX 2026-03-14: Suppress harmless "Already subscribed" errors from Kraken Futures
+                # These occur when WS tries to re-subscribe to already-active feeds
+                if 'Already subscribed' in error_msg or 're-requesting' in error_msg:
+                    # Silent skip - this is normal behavior for Kraken Futures
+                    pass
+                elif 'timed out' in error_msg.lower() or 'timeout' in error_msg.lower():
+                    # === AEGIS: Timeout detected - check health ===
+                    print(f"[{self.name}] ⚠️ WebSocket timeout detected")
+
+                    if self._ws_health_monitor:
+                        # Check if we should fallback to REST
+                        unhealthy_count = sum(
+                            1 for sym in self._ws_symbols
+                            if self._ws_health_monitor.get_health_status('tickers', sym).status in ('UNHEALTHY', 'CRITICAL')
+                        )
+
+                        if unhealthy_count > len(self._ws_symbols) * self._ws_unhealthy_threshold:  # Configurable threshold
+                            print(f"[{self.name}] 🚨 Fallback to REST API (>{unhealthy_count} unhealthy connections)")
+                            self._ws_fallback_to_rest = True
+
+                            # Fetch via REST as fallback
+                            await self._fetch_tickers_fallback()
+
+                    await asyncio.sleep(5)
+                else:
+                    # Log other errors
+                    print(f"[{self.name}] WS Ticker Loop Error: {e}")
+
                 await asyncio.sleep(5)
 
+    async def _fetch_tickers_fallback(self):
+        """
+        AEGIS QUANTSEC: REST API fallback during WebSocket outages.
+
+        Fetches tickers via REST when WebSocket is unhealthy.
+        Implements rate limiting and cooldown to prevent API spam.
+        """
+        now = time.time()
+
+        # Check cooldown
+        if now - self._ws_last_rest_fetch < self._ws_rest_cooldown:
+            return
+
+        self._ws_last_rest_fetch = now
+
+        try:
+            print(f"[{self.name}] 🔄 Fetching tickers via REST fallback...")
+
+            # Use resilient fetch with retry
+            tickers = self._fetch_tickers_resilient(self._ws_symbols[:20])  # Cap at 20 for rate limit
+
+            if tickers:
+                self._ticker_cache.update(tickers)
+                self._last_ticker_fetch = time.time()
+                print(f"[{self.name}] ✅ REST fallback successful: {len(tickers)} tickers fetched")
+
+                # Record successful messages for health recovery tracking
+                if self._ws_health_monitor:
+                    for symbol in tickers:
+                        self._ws_health_monitor.record_message('tickers', symbol, latency_ms=0.0)
+            else:
+                print(f"[{self.name}] ⚠️ REST fallback returned no data")
+
+        except Exception as e:
+            print(f"[{self.name}] ❌ REST fallback failed: {e}")
+
+    def _on_ws_unhealthy(self, channel: str, symbol: str, status):
+        """AEGIS: Callback for unhealthy WebSocket connections."""
+        print(f"[{self.name}] 🚨 UNHEALTHY: {channel}/{symbol} (score: {status.health_score:.2f})")
+        print(f"   Issues: {', '.join(status.issues)}")
+
+        if status.recommendations:
+            print(f"   Recommendations: {', '.join(status.recommendations)}")
+
+    def _on_ws_recovered(self, channel: str, symbol: str, status):
+        """AEGIS: Callback for recovered WebSocket connections."""
+        print(f"[{self.name}] ✅ RECOVERED: {channel}/{symbol} (score: {status.health_score:.2f})")
+
+        # Disable REST fallback if all connections recovered
+        if self._ws_fallback_to_rest and self._ws_health_monitor:
+            healthy_count = sum(
+                1 for sym in self._ws_symbols
+                if self._ws_health_monitor.get_health_status('tickers', sym).status == 'HEALTHY'
+            )
+            if healthy_count >= len(self._ws_symbols) * 0.8:  # 80% healthy
+                self._ws_fallback_to_rest = False
+                print(f"[{self.name}] ✅ WebSocket health restored, disabled REST fallback")
+
     def update_ws_symbols(self, symbols: List[str]):
-        """Dynamically updates the symbols being watched by WS."""
+        """
+        Dynamically updates the symbols being watched by WS.
+
+        FIX 2026-03-14: Added debouncing to prevent Kraken Futures subscription spam.
+        - Only updates every 5 minutes (prevents 'Already subscribed' errors)
+        - Only updates if symbol list actually changed
+        """
         if not self._ws_enabled or not symbols:
             return
-            
+
+        # === DEBOUNCING CHECK ===
+        now = time.time()
+        time_since_update = now - self._ws_last_update
+
+        if time_since_update < self._WS_UPDATE_MIN_INTERVAL:
+            # Too soon - skip update (prevents subscription spam)
+            return
+
         new_list = symbols
         if self.exchange_id == 'krakenfutures':
             new_list = [config.KRAKEN_SYMBOL_MAP.get(s, s) for s in symbols]
-            
+
         # Filter duplicates and check if changed
         new_set = set(new_list)
-        if new_set != set(self._ws_symbols):
+        old_set = set(self._ws_symbols)
+
+        # Only update if symbols actually changed
+        if new_set != old_set:
             self._ws_symbols = list(new_set)
+            self._ws_last_update = now  # Update timestamp
             print(f"[{self.name}] 🔄 WebSocket Subscriptions Updated: {len(self._ws_symbols)} assets.")
             # CCXT.pro handles the new symbols on the next watch_tickers call usually,
             # but some exchanges might need a reconnect or specific logic.
             # For Kraken Futures, watch_tickers(symbols) works well.
+        else:
+            # Symbols unchanged - no update needed (silent skip)
+            pass
 
     async def _watch_trades_loop(self):
-        """Background loop to update trade log via WS."""
+        """Background loop to update trade log via WS with health monitoring."""
         while True:
             try:
-                # watch_trades usually returns one symbol at a time or uses a shared stream
-                # In CCXT.pro, watchTrades(symbol) blocks until a trade for THAT symbol arrives.
-                # To watch multiple symbols, we might need a separate task per symbol or use an exchange-specific multi-symbol method.
-                # For now, let's watch the primary symbol and a few others if the list is small.
-                
                 # Optimized approach for multiple symbols in CCXT.pro:
                 # Some exchanges support watchTrades(None) for all. Kraken Futures might not.
                 # Let's just watch the symbols in a loop or concurrently.
-                
+
                 async def watch_single(symbol):
                     while True:
                         try:
@@ -182,51 +415,198 @@ class ObserverHolon(Holon):
                             self._ws_trades_log[symbol].extend(trades)
                             if len(self._ws_trades_log[symbol]) > 100:
                                 self._ws_trades_log[symbol] = self._ws_trades_log[symbol][-100:]
-                        except Exception:
+
+                            # === AEGIS QUANTSEC: Record trade message for health ===
+                            if self._ws_health_monitor:
+                                latency = 0.0
+                                if trades and len(trades) > 0 and trades[-1].get('timestamp'):
+                                    latency = (time.time() * 1000.0) - float(trades[-1]['timestamp'])
+                                self._ws_health_monitor.record_message('trades', symbol, latency_ms=max(0.0, latency))
+
+                        except Exception as e:
+                            # === AEGIS: Record error for health tracking ===
+                            if self._ws_health_monitor:
+                                self._ws_health_monitor.record_error('trades', symbol, error_type=str(type(e).__name__))
                             await asyncio.sleep(1)
 
                 sub_tasks = [watch_single(s) for s in self._ws_symbols[:10]] # Cap at 10 for safety
                 await asyncio.gather(*sub_tasks)
-                
+
             except Exception as e:
+                # === AEGIS: Record error for health tracking ===
+                if self._ws_health_monitor:
+                    for symbol in self._ws_symbols[:10]:
+                        self._ws_health_monitor.record_error('trades', symbol, error_type=str(type(e).__name__))
+
                 # print(f"[{self.name}] WS Trade Loop Error: {e}")
                 await asyncio.sleep(5)
                 break
 
-    import time
+    # ========================================================================
+    # AEGIS QUANTSEC: WebSocket Health Monitoring Methods
+    # ========================================================================
+
+    def get_ws_health_status(self, symbol: str = None) -> Dict[str, Any]:
+        """
+        Get WebSocket health status for dashboard monitoring.
+
+        Args:
+            symbol: Optional specific symbol to check. If None, returns all.
+
+        Returns:
+            Dictionary with health status information
+        """
+        if not self._ws_health_monitor:
+            return {
+                'enabled': False,
+                'status': 'NOT_INITIALIZED',
+                'message': 'WebSocket health monitor not initialized'
+            }
+
+        if symbol:
+            status = self._ws_health_monitor.get_health_status('tickers', symbol)
+            return {
+                'enabled': True,
+                'symbol': symbol,
+                'status': status.status,
+                'health_score': status.health_score,
+                'issues': status.issues,
+                'recommendations': status.recommendations
+            }
+        else:
+            report = self._ws_health_monitor.get_summary_report()
+            return {
+                'enabled': True,
+                'exchange': self.exchange_id,
+                'total_connections': report['total_connections'],
+                'healthy': report['healthy'],
+                'degraded': report['degraded'],
+                'unhealthy': report['unhealthy'],
+                'fallback_active': self._ws_fallback_to_rest,
+                'connections': report['connections']
+            }
+
+    def is_ws_healthy(self, symbol: str = None) -> bool:
+        """
+        Check if WebSocket connection is healthy.
+
+        Args:
+            symbol: Optional specific symbol. If None, checks all.
+
+        Returns:
+            True if healthy, False otherwise
+        """
+        if not self._ws_health_monitor:
+            return True  # Assume healthy if monitoring disabled
+
+        if symbol:
+            status = self._ws_health_monitor.get_health_status('tickers', symbol)
+            return status.status == 'HEALTHY'
+        else:
+            # Check if any connection is unhealthy
+            statuses = self._ws_health_monitor.get_all_health_statuses()
+            return all(s.status == 'HEALTHY' for s in statuses.values())
+
+    # time imported at module level
+
+    @with_circuit_breaker("observer_fetch_tickers", failure_threshold=5, recovery_timeout=60.0, fallback_value={})
+    @with_retry(max_retries=3, base_delay=1.0, max_delay=10.0, exceptions=(ccxt.NetworkError, ccxt.ExchangeError))
+    def _fetch_tickers_resilient(self, symbols: List[str]) -> Dict[str, Any]:
+        if self.exchange.has['fetchTickers']:
+            return self.exchange.fetch_tickers(symbols)
+        else:
+            print(f"[{self.name}] ⚠️ Exchange does not support fetchTickers!")
+            return {}
 
     def fetch_tickers_batch(self, symbols: List[str]) -> Dict[str, Any]:
         """
         Optimized Scout Fetch: Gets 24hr stats for MULTIPLE symbols in ONE API call.
         Implements TTL Cache to prevent rate limit bans.
+        
+        FIX 2026-02-24: Sanitize symbols for exchange compatibility.
+        - KuCoin: USDT pairs only (no xStocks, no PF_*)
+        - Kraken Futures: USD:USD pairs + xStocks
         """
         now = time.time()
+        
+        # === SYMBOL SANITIZATION ===
+        # Filter symbols to only those available on this exchange
+        if self.exchange_id == 'kucoin':
+            # KuCoin doesn't have xStocks or PF_* symbols
+            # Filter to USDT pairs only, and exclude xStocks
+            sanitized = []
+            for s in symbols:
+                # Skip PF_ prefix symbols (Kraken Futures only)
+                if s.startswith('PF_'):
+                    continue
+                # Skip xStocks (any variant: SPYX/USDT, SPYX/USD, etc.)
+                if self._is_xstock_symbol(s):
+                    continue
+                # Keep only USDT pairs
+                if '/USDT' in s:
+                    sanitized.append(s)
+            # Ensure USDT format (convert any /USD:USD to /USDT)
+            sanitized = [s.replace('/USD:USD', '/USDT') for s in sanitized]
+        elif self.exchange_id == 'krakenfutures':
+            # Kraken Futures needs USD:USD format
+            # Map internal symbols to Kraken Futures format
+            sanitized = [config.KRAKEN_SYMBOL_MAP.get(s, s) for s in symbols]
+            # Filter out any that didn't map properly
+            sanitized = [s for s in sanitized if s and 'USD:USD' in s]
+        elif self.exchange_id == 'kraken':
+            # FIX 2026-03-02: Kraken Spot doesn't have xStocks
+            # Just pass symbols through (they should be in Spot format already)
+            sanitized = symbols
+        else:
+            sanitized = symbols
+        # ===========================
+        
         # 1. Check Cache
         if self._ticker_cache and (now - self._last_ticker_fetch < config.SCOUT_CACHE_TTL):
             return self._ticker_cache
 
+        # 2. Fetch Live with Resilience
+        if sanitized:
+            tickers = self._fetch_tickers_resilient(sanitized)
+        else:
+            tickers = {}
+            print(f"[{self.name}] ⚠️ No valid symbols for {self.exchange_id} (filtered from {len(symbols)})")
+
+        # 3. Update Cache
+        if tickers:
+            self._ticker_cache = tickers
+            self._last_ticker_fetch = now
+
+        return tickers
+
+    def fetch_ticker(self, symbol: str) -> dict:
+        """
+        Fetches the current ticker for a given symbol.
+        Used by ArbitrageHolon for real-time price discovery.
+        """
+        # FIX 2026-03-02: KuCoin should not fetch xStock tickers
+        if self.exchange_id == 'kucoin' and self._is_xstock_symbol(symbol):
+            return {}
+
+        target_symbol = symbol
+        if self.exchange_id == 'krakenfutures':
+            target_symbol = config.KRAKEN_SYMBOL_MAP.get(symbol, symbol)
+        # FIX 2026-03-02: Removed XSTOCKS_SPOT_MAP - Kraken Spot doesn't have xStocks
+            
+        # 1. Check Cache
+        if target_symbol in self._ticker_cache:
+            return self._ticker_cache[target_symbol]
+            
         # 2. Fetch Live
-        # 2. Fetch Live with Retry
-        for attempt in range(3):
-            try:
-                if self.exchange.has['fetchTickers']:
-                    # Filter strictly for requested symbols to save bandwidth (if exchange supports partial)
-                    tickers = self.exchange.fetch_tickers(symbols)
-                    
-                    # 3. Update Cache
-                    self._ticker_cache = tickers
-                    self._last_ticker_fetch = now
-                    return tickers
-                else:
-                    print(f"[{self.name}] ⚠️ Exchange does not support fetchTickers!")
-                    return {}
-            except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-                if attempt == 2:
-                    print(f"[{self.name}] ⚠️ Ticker Batch Fetch Error after 3 attempts: {e}")
-                    return {}
-                sleep_time = 2 ** attempt # 1s, 2s, 4s
-                time.sleep(sleep_time)
-        return {}
+        try:
+            ticker = self.exchange.fetch_ticker(target_symbol)
+            # Update Cache
+            self._ticker_cache[target_symbol] = ticker
+            self._last_ticker_fetch = time.time()
+            return ticker
+        except Exception as e:
+            # print(f"[{self.name}] ⚠️ Ticker Fetch Failed for {target_symbol}: {e}")
+            return {}
 
     def _get_local_filename(self, symbol: str, timeframe: str) -> str:
         """Constructs the standard filename for local data."""
@@ -289,72 +669,101 @@ class ObserverHolon(Holon):
         
         return df
 
+    @with_circuit_breaker("observer_fetch_ohlcv", failure_threshold=5, recovery_timeout=60.0, fallback_value=[])
+    @with_retry(max_retries=3, base_delay=1.0, max_delay=10.0, exceptions=(ccxt.NetworkError, ccxt.ExchangeError))
+    def _fetch_ohlcv_resilient(self, target_symbol: str, target_timeframe: str, since: Optional[int], limit: int):
+        if since is not None:
+            return self.exchange.fetch_ohlcv(target_symbol, target_timeframe, since=since, limit=limit)
+        return self.exchange.fetch_ohlcv(target_symbol, target_timeframe, limit=limit)
+
     def fetch_market_data(self, timeframe: str = None, limit: int = 500, symbol: str = None) -> pd.DataFrame:
         """
-        Fetches Hybrid Market Data: Local History + CCXT Live Sync.
+        Fetches Hybrid Market Data: Local History + Smart WS Cache + CCXT Live Sync.
+        Uses WS Ticker Feed to synthesize the live candle, bypassing REST latency.
         """
         target_timeframe = timeframe if timeframe else config.TIMEFRAME
         target_symbol = symbol if symbol else self.symbol
 
-        # PATCH: Apply Kraken Symbol Map for Futures/Spot
-        if config.TRADING_MODE == 'FUTURES' and 'kucoin' not in self.exchange.id:
-             target_symbol = config.KRAKEN_SYMBOL_MAP.get(target_symbol, target_symbol)
+        # PATCH: Apply Kraken Symbol Map for Futures
+        if config.TRADING_MODE in ['FUTURES', 'DUAL'] and 'kucoin' not in self.exchange.id:
+             if self.exchange_id == 'krakenfutures':
+                 target_symbol = config.KRAKEN_SYMBOL_MAP.get(target_symbol, target_symbol)
+             # FIX 2026-03-02: Removed XSTOCKS_SPOT_MAP - Kraken Spot doesn't have xStocks
         
+        # --- PHASE 1: SMART OHLCV CACHE (ZERO LATENCY) ---
+        cache_key = f"{target_symbol}_{target_timeframe}"
+        now_ts = time.time()
+        
+        # Determine the current candle boundary (e.g., 15m = 900 seconds)
+        tf_mins = 15
+        if 'm' in target_timeframe: tf_mins = int(target_timeframe.replace('m', ''))
+        elif 'h' in target_timeframe: tf_mins = int(target_timeframe.replace('h', '')) * 60
+        tf_secs = tf_mins * 60
+        
+        current_candle_open = (int(now_ts) // tf_secs) * tf_secs
+        
+        has_valid_cache = False
+        df_cached = pd.DataFrame()
+        
+        if cache_key in self._smart_ohlcv_cache:
+            entry = self._smart_ohlcv_cache[cache_key]
+            # Must be from the current candle epoch, AND we must actively have WS connection
+            if entry['candle_open_time'] == current_candle_open and getattr(config, 'USE_WEBSOCKETS', False):
+                has_valid_cache = True
+                df_cached = entry['df'].copy()
+        
+        if has_valid_cache and not df_cached.empty:
+            # FAST PATH: 0ms execution
+            # Synthesize the live active candle using the WS Ticker Cache
+            live_price = self.get_latest_price(target_symbol)
+            if live_price > 0:
+                # Update the very last row (the active, unclosed candle)
+                last_idx = df_cached.index[-1]
+                df_cached.at[last_idx, 'close'] = live_price
+                if live_price > df_cached.at[last_idx, 'high']:
+                    df_cached.at[last_idx, 'high'] = live_price
+                if live_price < df_cached.at[last_idx, 'low']:
+                    df_cached.at[last_idx, 'low'] = live_price
+                
+                # Update returns quickly
+                df_cached['returns'] = np.log(df_cached['close'] / df_cached['close'].shift(1))
+                return df_cached.dropna()
+
+        # === SLOW PATH: REST API FETCH (ONLY HAPPENS ONCE PER CANDLE EPOCH) ===
         # 1. Load Local History
         df_local = self.load_local_history(target_symbol, target_timeframe)
         
         # 2. Fetch Live Sync (CCXT)
         if not self.exchange.has['fetchOHLCV']:
-             # If no CCXT support, return local or empty
              return df_local
 
         df_live = pd.DataFrame()
+        last_ts = None
+        fetch_limit = limit
         
-        for attempt in range(3):
-            try:
-                # If we have local data, we fetch since last timestamp
-                if not df_local.empty:
-                    last_ts = int(df_local['timestamp'].iloc[-1].timestamp() * 1000)
-                    current_ts = int(time.time() * 1000)
-                    
-                    # Gap Analysis
-                    gap_ms = current_ts - last_ts
-                    gap_hours = gap_ms / (1000 * 3600)
-                    
-                    if gap_ms < 0: # Future data check
-                         # print(f"[{self.name}] Local history is in future. Skipping live sync.")
-                         return df_local
+        if not df_local.empty:
+            last_ts = int(df_local['timestamp'].iloc[-1].timestamp() * 1000)
+            current_ts = int(time.time() * 1000)
+            
+            gap_ms = current_ts - last_ts
+            gap_hours = gap_ms / (1000 * 3600)
+            
+            if gap_ms < 0: return df_local
 
-                    # DELTA FETCHING LOGIC
-                    # If gap is small (< 5 hours), just fetch the tip.
-                    # Otherwise, fetch full history (up to 1000).
-                    fetch_limit = 5 if gap_hours < 5 else 1000
-                    
-                    ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, target_timeframe, since=last_ts, limit=fetch_limit)
-                else:
-                    # Startup / Fresh: Fetch full history
-                    ohlcv_live = self.exchange.fetch_ohlcv(target_symbol, target_timeframe, limit=limit)
-                
-                if ohlcv_live:
-                    df_temp = pd.DataFrame(ohlcv_live, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-                    df_temp['timestamp'] = pd.to_datetime(df_temp['timestamp'], unit='ms')
-                    df_live = df_temp
-                break # Success
-
-            except (ccxt.RateLimitExceeded, ccxt.DDoSProtection) as e:
-                # print(f"[{self.name}] ⏳ RATE LIMIT HIT for {target_symbol}. Cooling down...")
-                cool = getattr(config, 'API_RATE_LIMIT_COOL', 10.0)
-                time.sleep(random.uniform(cool * 0.5, cool)) # Randomized Backoff
-                if attempt == 4: print(f"[{self.name}] ❌ Max Retries (Rate Limit) for {target_symbol}")
-
-            except Exception as e:
-                print(f"[{self.name}] Sync Attempt {attempt+1}/5 failed for {target_symbol}: {e}")
-                j_min = getattr(config, 'API_RETRY_JITTER_MIN', 1.0)
-                j_max = getattr(config, 'API_RETRY_JITTER_MAX', 5.0)
-                time.sleep(random.uniform(j_min, j_max)) # Jittered Backoff
+            fetch_limit = 5 if gap_hours < 5 else 1000
+            
+        try:
+            ohlcv_live = self._fetch_ohlcv_resilient(target_symbol, target_timeframe, since=last_ts, limit=fetch_limit)
+            
+            if ohlcv_live:
+                df_temp = pd.DataFrame(ohlcv_live, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+                df_temp['timestamp'] = pd.to_datetime(df_temp['timestamp'], unit='ms')
+                df_live = df_temp
+        except Exception as e:
+            # print(f"[{self.name}] Sync failed for {target_symbol}: {e}")
+            pass
         
         try:
-            # Combine
             if not df_live.empty:
                 if not df_local.empty:
                     df = pd.concat([df_local, df_live]).drop_duplicates(subset='timestamp').reset_index(drop=True)
@@ -362,13 +771,18 @@ class ObserverHolon(Holon):
                     df = df_live
             else:
                  df = df_local # Fallback
-                
         except Exception as e:
-            print(f"[{self.name}] Data Merge error for {target_symbol}: {e}")
-            df = df_local # Fallback to local only
+            # print(f"[{self.name}] Data Merge error for {target_symbol}: {e}")
+            df = df_local 
 
-        # 3. Process Returns
+        # 3. Cache it back into Memory
         if not df.empty:
+            self._smart_ohlcv_cache[cache_key] = {
+                'df': df.copy(),
+                'last_fetch': now_ts,
+                'candle_open_time': current_candle_open
+            }
+            
             df['returns'] = np.log(df['close'] / df['close'].shift(1))
             df.dropna(inplace=True)
         
@@ -381,12 +795,14 @@ class ObserverHolon(Holon):
         """
         target_timeframe = timeframe if timeframe else config.TIMEFRAME
         results = {}
-        with ThreadPoolExecutor(max_workers=config.CCXT_POOL_SIZE) as executor:
-            future_to_symbol = {}
+        
+        # Use Shared Executor
+        future_to_symbol = {}
+        try:
             for symbol in symbols:
                 # Optimized submissions: Reduced from 0.2s to 0.05s to maximize pool utilization
                 time.sleep(0.05) 
-                future = executor.submit(self.fetch_market_data, target_timeframe, limit, symbol)
+                future = self.executor.submit(self.fetch_market_data, target_timeframe, limit, symbol)
                 future_to_symbol[future] = symbol
             
             for future in as_completed(future_to_symbol):
@@ -397,6 +813,8 @@ class ObserverHolon(Holon):
                         results[symbol] = df
                 except Exception as e:
                     print(f"[{self.name}] ⚠️ Batch Fetch Failed for {symbol}: {e}")
+        except Exception as e:
+            print(f"[{self.name}] ❌ Executor Error in Validating Batch: {e}")
                     
         return results
 
@@ -415,28 +833,32 @@ class ObserverHolon(Holon):
                 # 1. Fetch 15m (Entry/Risk)
                 df_15m = self.fetch_market_data(timeframe=target_15m, limit=100, symbol=symbol)
                 # 2. Fetch 1h (Regime/Structure)
-                df_1h = self.fetch_market_data(timeframe=target_1h, limit=50, symbol=symbol)
+                df_1h = self.fetch_market_data(timeframe=target_1h, limit=100, symbol=symbol)
                 # 3. Order Book
                 book = self.fetch_order_book(symbol, limit=20)
-                # 4. Funding (Futures Only)
-                funding = self.fetch_funding_rate(symbol)
+                # 4. Funding & Open Interest (Futures Only)
+                funding, oi = self.fetch_funding_and_oi(symbol)
                 
                 return symbol, {
                     'df_15m': df_15m,
                     'df_1h': df_1h,
                     'book': book,
-                    'funding': funding
+                    'funding': funding,
+                    'oi': oi
                 }
             except Exception as e:
                 print(f"[{self.name}] ⚠️ Matrix Unit Fetch Failed for {symbol}: {e}")
                 return symbol, None
 
-        with ThreadPoolExecutor(max_workers=config.CCXT_POOL_SIZE) as executor:
-            futures = {executor.submit(fetch_asset_unit, s): s for s in symbols}
+        # Use Shared Executor
+        try:
+            futures = {self.executor.submit(fetch_asset_unit, s): s for s in symbols}
             for future in as_completed(futures):
                 sym, data = future.result()
                 if data:
                     results[sym] = data
+        except Exception as e:
+            print(f"[{self.name}] ❌ Matrix Executor Error: {e}")
         
         return results
 
@@ -452,22 +874,36 @@ class ObserverHolon(Holon):
         # 1. Map for Kraken Futures
         if self.exchange_id == 'krakenfutures':
             target_symbol = config.KRAKEN_SYMBOL_MAP.get(target_symbol, target_symbol)
+        # FIX 2026-03-02: Removed XSTOCKS_SPOT_MAP - Kraken Spot doesn't have xStocks
+        elif self.exchange_id == 'kucoin':
+            # FIX 2026-03-02: KuCoin should not fetch xStock prices
+            if self._is_xstock_symbol(target_symbol):
+                return 0.0
         
         price = 0.0
-        
+
         # 2. Check WS Cache
         if target_symbol in self._ticker_cache:
             ticker = self._ticker_cache[target_symbol]
-            if ticker and 'last' in ticker:
-                price = float(ticker['last'])
-                
+            if ticker:
+                # FIX: Support multiple price sources for futures/xStocks
+                price = float(ticker.get('last', 0) or 
+                             ticker.get('markPrice', 0) or
+                             ticker.get('bid', 0) or
+                             ticker.get('ask', 0) or 0.0)
+
         # 3. Fallback to REST if WS failed
         if price == 0.0:
             for attempt in range(3):
                 try:
                     ticker = self.exchange.fetch_ticker(target_symbol)
-                    price = float(ticker['last'])
-                    break
+                    # FIX: Support multiple price sources for futures/xStocks
+                    price = float(ticker.get('last', 0) or 
+                                 ticker.get('markPrice', 0) or
+                                 ticker.get('bid', 0) or
+                                 ticker.get('ask', 0) or 0.0)
+                    if price > 0:
+                        break
                 except (ccxt.NetworkError, ccxt.ExchangeError) as e:
                     if attempt == 2:
                         print(f"[{self.name}] ⚠️ Price Fetch Error {target_symbol}: {e}")
@@ -589,18 +1025,18 @@ class ObserverHolon(Holon):
                 time.sleep(1 * (attempt + 1))
         return []
 
-    def fetch_funding_rate(self, symbol: str) -> float:
+    def fetch_funding_and_oi(self, symbol: str) -> tuple[float, float]:
         """
-        Fetch Current Funding Rate for a symbol.
-        Used for Short Squeeze detection (Negative Funding = Shorts paying Longs).
-        Returns the funding rate as a decimal (e.g., 0.0001 = 0.01%).
+        Fetch Current Funding Rate and Open Interest for a symbol.
+        Used for Liquidity Stress and Funding Reversion modeling.
+        Returns: (Funding Rate Decimal, Open Interest Notional)
         """
         if config.TRADING_MODE != 'FUTURES':
-            return 0.0
+            return 0.0, 0.0
 
         # Simple Cache (Funding rates strictly change every 1-4-8h depending on exchange)
         # We can cache for ~15 mins safely.
-        cache_key = f"funding_{symbol}"
+        cache_key = f"funding_oi_{symbol}"
         now = time.time()
         
         # Initialize specialized cache if missing
@@ -610,7 +1046,7 @@ class ObserverHolon(Holon):
         if cache_key in self._funding_cache:
              entry = self._funding_cache[cache_key]
              if now - entry['ts'] < 900: # 15 min TTL
-                 return entry['rate']
+                 return entry['rate'], entry.get('oi', 0.0)
 
         for attempt in range(3):
             try:
@@ -620,31 +1056,35 @@ class ObserverHolon(Holon):
                      exec_symbol = config.KRAKEN_SYMBOL_MAP.get(symbol, symbol)
                      
                      # FIX 2026-01-28: Use Ticker 'info' for valid Funding Rate
-                     # Standard fetch_funding_rate returns garbage (-0.25)
                      ticker = self.exchange.fetch_ticker(exec_symbol)
                      
-                     # Kraken Futures extracts to 'info' -> 'fundingRate'
-                     if 'info' in ticker and 'fundingRate' in ticker['info']:
-                         rate = float(ticker['info']['fundingRate'])
+                     rate = 0.0
+                     oi = 0.0
+                     
+                     # Extract OI
+                     if 'info' in ticker and 'openInterest' in ticker['info']:
+                         oi = float(ticker['info']['openInterest'] or 0.0)
                          
-                         # Update Cache
-                         self._funding_cache[cache_key] = {'rate': rate, 'ts': now}
-                         return rate
+                     # Extract Rate
+                     if 'info' in ticker and 'fundingRate' in ticker['info']:
+                         rate = float(ticker['info']['fundingRate'] or 0.0)
                      elif 'info' in ticker and 'lastFundingRate' in ticker['info']:
-                          rate = float(ticker['info']['lastFundingRate'])
-                          self._funding_cache[cache_key] = {'rate': rate, 'ts': now}
-                          return rate
+                          rate = float(ticker['info']['lastFundingRate'] or 0.0)
+                          
+                     if rate != 0.0 or oi != 0.0:
+                          self._funding_cache[cache_key] = {'rate': rate, 'oi': oi, 'ts': now}
+                          return rate, oi
                      
                      # Fallback
-                     return 0.0
+                     return 0.0, 0.0
                 else:
-                     return 0.0
+                     return 0.0, 0.0
                      
             except Exception as e:
-                # print(f"[{self.name}] ⚠️ Funding Rate Fetch Fail: {e}")
+                # print(f"[{self.name}] ⚠️ Funding/OI Fetch Fail: {e}")
                 time.sleep(1)
         
-        return 0.0
+        return 0.0, 0.0
 
     def receive_message(self, sender: Any, content: Any) -> Any:
         """
@@ -740,9 +1180,22 @@ class ObserverHolon(Holon):
             age = (datetime.now() - local_start).total_seconds() / 86400.0
             return age
         except Exception:
-            return 0.0 # Safer to assume brand new? Or old? 
-                       # Strategy needs < 14 days for meme listing.
-                       # If we return 0.0, we might falsely trigger "New Listing".
-                       # Let's return 999.0 (Old) on failure to be safe.
+            # Return 999.0 (Old) on failure to avoid falsely triggering "New Listing" logic
             return 999.0
+
+    def shutdown(self):
+        """
+        Gracefully shut down the Observer, closing threads and connections.
+        """
+        print(f"[{self.name}] 🛑 Shutting down Observer...")
+        
+        # 1. Stop WS Loop
+        if self._ws_loop and self._ws_loop.is_running():
+            self._ws_loop.stop()
+        
+        # 2. Shutdown Executor (Wait=False to force kill pending if needed, but best to let finish)
+        if self.executor:
+            self.executor.shutdown(wait=False)
+            print(f"[{self.name}] 🛑 Shared Executor Shutdown.")
+
 

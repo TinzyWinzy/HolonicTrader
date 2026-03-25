@@ -7,16 +7,29 @@ export default {
     theme: {
         extend: {
             colors: {
-                'holon-bg': '#0f172a',    // Slate 900
-                'holon-card': '#1e293b',  // Slate 800
-                'holon-accent': '#10b981', // Emerald 500
-                'holon-text': '#e2e8f0',   // Slate 200
-                'holon-dim': '#64748b',    // Slate 500
+                'bb-bg': '#0a0a0a',
+                'bb-card': '#111111',
+                'bb-elevated': '#1a1a1a',
+                'bb-hover': '#1e1e1e',
+                'bb-border': '#222222',
+                'bb-accent': '#ffb300',
+                'bb-positive': '#00e676',
+                'bb-negative': '#ff1744',
+                'bb-info': '#2979ff',
+                'bb-warning': '#ff9100',
+                'bb-arb': '#ab47bc',
             },
             fontFamily: {
-                'mono': ['"JetBrains Mono"', 'monospace'],
-                'sans': ['Inter', 'sans-serif'],
-            }
+                'mono': ['"JetBrains Mono"', '"Fira Code"', '"Cascadia Code"', 'monospace'],
+                'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            },
+            fontSize: {
+                'xxs': '0.625rem',  // 10px
+            },
+            spacing: {
+                '0.25': '1px',
+                '0.75': '3px',
+            },
         },
     },
     plugins: [],

@@ -1,0 +1,28 @@
+{
+    "genome": {
+        "rsi_buy": 34.46220067302963,
+        "rsi_sell": 75.64051812380677,
+        "stop_loss": 0.024121368782990996,
+        "take_profit": 0.11510842318483741,
+        "use_satellite": true,
+        "sat_rvol": 4.642501805171094,
+        "sat_bb_expand": 0.03444630677733246,
+        "leverage_cap": 10.0,
+        "trailing_activation": 1.1719364343029748,
+        "trailing_distance": 0.03284522970937455
+    },
+    "final_equity": 137.4942284196614,
+    "roi": 0.37494228419661385,
+    "win_rate": 1.0,
+    "trades": 1,
+    "max_dd": 0.08130489819145835,
+    "sharpe": 0.44482716018389057,
+    "sortino": 4.611558375163234,
+    "fitness": 19.738097686926874,
+    "validation_roi": 0.0,
+    "validation_trades": 0,
+    "test_score": 1.0,
+    "violation": false,
+    "timestamp": 1772405807.5120873,
+    "source_island": "\ud83c\udf0b Volcano Peak"
+}

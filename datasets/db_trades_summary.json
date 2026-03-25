@@ -1,0 +1,71 @@
+{
+  "total_trades": 872,
+  "date_range": {
+    "start": "2026-02-21 09:16:36.007861+00:00",
+    "end": "2026-03-21 21:18:58.345509+00:00"
+  },
+  "symbols": [
+    "SOL/USDT",
+    "BTC/USDT",
+    "ADA/USDT",
+    "XMR/USDT",
+    "TAO/USDT",
+    "BNB/USDT",
+    "AAVE/USDT",
+    "PAXG/USDT",
+    "XAUT/USDT",
+    "ETH/USDT",
+    "MSTRX/USDT",
+    "CRCLX/USDT",
+    "XRP/USDT",
+    "TIA/USDT",
+    "PEPE/USDT",
+    "SHIB/USDT",
+    "NEAR/USDT",
+    "WIF/USDT",
+    "DOT/USDT",
+    "LDO/USDT",
+    "SUI/USDT",
+    "DOGE/USDT",
+    "LTC/USDT",
+    "INJ/USDT",
+    "AVAX/USDT",
+    "UNI/USDT",
+    "LINK/USDT",
+    "STX/USDT",
+    "IMX/USDT",
+    "PYTH/USDT",
+    "XTZ/USDT",
+    "ARB/USDT",
+    "APT/USDT",
+    "BONK/USDT",
+    "JTO/USDT",
+    "ORDI/USDT",
+    "SEI/USDT",
+    "WLD/USDT"
+  ],
+  "pnl_stats": {
+    "total": 420.4730171790891,
+    "mean": 0.4821938270402398,
+    "std": 15.487334095177102,
+    "win_rate": 0.5022935779816514
+  },
+  "pnl_percent_stats": {
+    "mean": 53.8682658550068,
+    "std": 338.26868050627894,
+    "min": -1518.5085136734756,
+    "max": 2994.8083076636317
+  },
+  "wins": 438,
+  "losses": 434,
+  "avg_win_pct": 148.11978475619355,
+  "avg_loss_pct": -41.25193063973931,
+  "timestamp": "2026-03-21T23:33:03.220323",
+  "exit_reasons": {
+    "COMPLIANCE_REDUCE": 1,
+    "TREND_EXPIRY": 1
+  },
+  "strategy_types": {
+    "RECOVERED": 2
+  }
+}

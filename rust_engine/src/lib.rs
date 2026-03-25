@@ -5,8 +5,12 @@ mod math;
 mod agents;
 mod trading_loop;
 mod parallel_wfo;
-// mod onnx_inference;  // BLOCKED: Requires pre-built ONNX Runtime
+#[cfg(feature = "onnx")]
+mod onnx_inference;  // RESTORED: Phase 2 Intelligence & Adaptation
 mod core;
+mod execution_algorithms;  // PHASE 3: TWAP/VWAP Execution
+mod arbitrage;  // PHASE 3: Spatial & Triangular Arbitrage
+mod trader_nexus;  // PHASE 4: Rust Core Orchestration
 
 // --- DOMAIN MODELS ---
 
@@ -89,9 +93,9 @@ impl Backtester {
         // ---------------------------------------------------
         if let Some(pos) = &self.position {
             let current_val = pos.quantity * candle.open; // Check at Open first (Gap risk)
-            let margin_used = (pos.quantity * pos.entry_price) / self.leverage;
+            let _margin_used = (pos.quantity * pos.entry_price) / self.leverage;
             let pnl = (current_val - (pos.quantity * pos.entry_price)) * pos.direction as f64;
-            let equity = self.balance + pnl; // Balance is cash + unrealized pnl ?? No, balance is cash-margin. 
+            let _equity = self.balance + pnl; // Balance is cash + unrealized pnl ?? No, balance is cash-margin. 
             // Simplified Model: Balance tracks CASH. Margin is checking constraint.
             // Correct Model: 
             // Equity = Balance + Unrealized PnL.
@@ -106,8 +110,8 @@ impl Backtester {
             // MM = IM * 0.5.
             
             let mark_price = candle.low; // Worst case for Long
-            let notional = pos.quantity * mark_price;
-            let unrealized_pnl = (mark_price - pos.entry_price) * pos.quantity * pos.direction as f64;
+            let _notional = pos.quantity * mark_price;
+            let _unrealized_pnl = (mark_price - pos.entry_price) * pos.quantity * pos.direction as f64;
             
             // Total Account Equity (Cash + MarginLocked + PnL)
             // My struct stores 'balance' as Free Cash? 
@@ -125,7 +129,7 @@ impl Backtester {
         // 2. STOP LOSS & TRAILING STOP
         // ---------------------------------------------------
         if let Some(pos) = &mut self.position {
-            let mut exit_price = 0.0;
+            let mut _exit_price = 0.0;
             let mut close_type = 0; // 0=None, 1=SL, 2=TP, 3=Trail, 4=Liq
 
             // A. Update High Water Mark for Longs
@@ -148,13 +152,13 @@ impl Backtester {
             // 1. Hard Stop
             let sl_price = pos.entry_price * (1.0 - self.stop_loss_pct);
             if candle.low <= sl_price {
-                exit_price = sl_price; // Assume fill at SL (Slippage ignored for speed, or add penalty)
+                _exit_price = sl_price; // Assume fill at SL (Slippage ignored for speed, or add penalty)
                 close_type = 1;
             }
             // 2. Trailing Stop
             else if let Some(trail) = self.trailing_stop {
                 if candle.low <= trail {
-                    exit_price = trail;
+                    _exit_price = trail;
                     close_type = 3;
                 }
             }
@@ -162,14 +166,14 @@ impl Backtester {
             else if self.take_profit_pct > 0.0 {
                 let tp_price = pos.entry_price * (1.0 + self.take_profit_pct);
                 if candle.high >= tp_price {
-                    exit_price = tp_price;
+                    _exit_price = tp_price;
                     close_type = 2;
                 }
             }
             
             // D. Signal Exit
             if close_type == 0 && signal == -1 {
-                exit_price = candle.close;
+                _exit_price = candle.close;
                 close_type = 5; // Signal
             }
 
@@ -177,7 +181,7 @@ impl Backtester {
                 // Apply Slippage based on Volatility/Stop type?
                 // For simplified engine: 0.1% slip on stops
                 if close_type == 1 || close_type == 3 {
-                    exit_price *= 0.999;
+                    _exit_price *= 0.999;
                 }
                 
                 // Need to call close_position, but we are inside a mutable borrow of position.
@@ -355,6 +359,11 @@ fn run_backtest_fast(
 #[pymodule]
 fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Trade>()?;
+    
+    // === PHASE 4: TRADER NEXUS CLASSES ===
+    m.add_class::<trader_nexus::NexusConfig>()?;
+    m.add_class::<trader_nexus::TraderNexus>()?;
+    
     m.add_function(wrap_pyfunction!(run_backtest_fast, m)?)?;
     
     // Entropy Functions
@@ -592,9 +601,20 @@ fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     m.add_function(wrap_pyfunction!(run_parallel_wfo, m)?)?;
 
-    // ONNX Inference - BLOCKED: Requires pre-built ONNX Runtime on Windows
-    // Uncomment when ONNX Runtime is installed:
-    // m.add_function(wrap_pyfunction!(onnx_predict_trend, m)?)?;
+    // ONNX Inference - RESTORED (Phase 2 Intelligence & Adaptation)
+    #[cfg(feature = "onnx")]
+    {
+        #[pyfunction]
+        fn onnx_predict_trend(model_path: &str, prices: Vec<f32>) -> PyResult<f32> {
+            use crate::onnx_inference::OnnxPredictor;
+            let mut predictor = OnnxPredictor::new(model_path)
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(e))?;
+            let prob = predictor.predict(&prices)
+                .map_err(|e| pyo3::exceptions::PyRuntimeError::new_err(e))?;
+            Ok(prob)
+        }
+        m.add_function(wrap_pyfunction!(onnx_predict_trend, m)?)?;
+    }
 
     // Kalman Filter
     #[pyfunction]
@@ -644,13 +664,13 @@ fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // SDE Physics Functions
     #[pyfunction]
-    fn sde_estimate_ou(prices: Vec<f64>) -> HashMap<String, f64> {
-        math::sde::estimate_ou_parameters(&prices)
+    fn sde_estimate_ou(prices: Vec<f64>, dt: f64) -> HashMap<String, f64> {
+        math::sde::estimate_ou_parameters(&prices, dt)
     }
 
     #[pyfunction]
-    fn sde_estimate_gbm(prices: Vec<f64>) -> HashMap<String, f64> {
-        math::sde::estimate_gbm_parameters(&prices)
+    fn sde_estimate_gbm(prices: Vec<f64>, dt: f64) -> HashMap<String, f64> {
+        math::sde::estimate_gbm_parameters(&prices, dt)
     }
 
     #[pyfunction]
@@ -660,8 +680,9 @@ fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
         start_price: f64,
         horizon: usize,
         num_paths: usize,
+        dt: f64,
     ) -> Vec<Vec<f64>> {
-        math::sde::simulate_paths(&model, params, start_price, horizon, num_paths)
+        math::sde::simulate_paths(&model, params, start_price, horizon, num_paths, dt)
     }
 
     #[pyfunction]
@@ -673,12 +694,13 @@ fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
         tp_price: f64,
         horizon: usize,
         num_paths: usize,
+        dt: f64,
     ) -> f64 {
-        math::sde::calculate_ruin_probability(&model, params, start_price, sl_price, tp_price, horizon, num_paths)
+        math::sde::calculate_ruin_probability(&model, params, start_price, sl_price, tp_price, horizon, num_paths, dt)
     }
 
     m.add_function(wrap_pyfunction!(sde_calculate_ruin_probability, m)?)?;
-    
+
     // Batch Signal Analysis
     #[pyfunction]
     fn calculate_signals_matrix(
@@ -689,8 +711,226 @@ fn holonic_speed(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ) -> HashMap<String, HashMap<String, f64>> {
         math::batch_analysis::calculate_signals_matrix(symbols, prices, highs, lows)
     }
-    
+
     m.add_function(wrap_pyfunction!(calculate_signals_matrix, m)?)?;
+
+    // === PHASE 3: EXECUTION ALGORITHMS ===
+    
+    /// Create TWAP executor state
+    #[pyfunction]
+    fn twap_create(
+        symbol: &str,
+        side: &str,
+        total_qty: f64,
+        duration_minutes: u64,
+        num_slices: usize,
+    ) -> HashMap<String, f64> {
+        use execution_algorithms::TwapExecutor;
+        
+        let executor = TwapExecutor::new(symbol, side, total_qty, duration_minutes, num_slices);
+        
+        let mut state = HashMap::new();
+        state.insert("total_quantity".to_string(), executor.total_quantity);
+        state.insert("num_slices".to_string(), executor.num_slices as f64);
+        state.insert("interval_seconds".to_string(), executor.interval_seconds as f64);
+        state.insert("executed_quantity".to_string(), 0.0);
+        state
+    }
+
+    /// Get next TWAP slice quantity
+    #[pyfunction]
+    fn twap_next_slice(
+        total_qty: f64,
+        num_slices: f64,
+        executed: f64,
+    ) -> Option<f64> {
+        let remaining = total_qty - executed;
+        let executed_slices = executed / (total_qty / num_slices);
+        let remaining_slices = num_slices - executed_slices;
+        
+        if remaining_slices > 0.0 && remaining > 0.0 {
+            Some((remaining / remaining_slices).max(0.0001))
+        } else {
+            None
+        }
+    }
+
+    /// Generate VWAP volume profile
+    #[pyfunction]
+    fn vwap_generate_volume_profile(num_slices: usize) -> Vec<f64> {
+        execution_algorithms::generate_volume_profile(num_slices)
+    }
+
+    /// Calculate order book imbalance
+    #[pyfunction]
+    fn calculate_order_imbalance(
+        bids: Vec<(f64, f64)>,
+        asks: Vec<(f64, f64)>,
+    ) -> f64 {
+        execution_algorithms::calculate_order_imbalance(&bids, &asks)
+    }
+
+    // === PHASE 3: ARBITRAGE DETECTION ===
+
+    /// Calculate optimal arbitrage position size
+    #[pyfunction]
+    fn arb_calculate_position_size(
+        profit_pct: f64,
+        total_capital: f64,
+        risk_per_trade: f64,
+        confidence: f64,
+    ) -> f64 {
+        arbitrage::calculate_arb_position_size(profit_pct, total_capital, risk_per_trade, confidence)
+    }
+
+    m.add_function(wrap_pyfunction!(twap_create, m)?)?;
+    m.add_function(wrap_pyfunction!(twap_next_slice, m)?)?;
+    m.add_function(wrap_pyfunction!(vwap_generate_volume_profile, m)?)?;
+    m.add_function(wrap_pyfunction!(calculate_order_imbalance, m)?)?;
+    m.add_function(wrap_pyfunction!(arb_calculate_position_size, m)?)?;
+
+    // === PHASE 4: TRADER NEXUS (RUST CORE) ===
+    // Note: Global instance managed from Python for simplicity
+
+    use trader_nexus::{TraderNexus, NexusConfig};
+
+    /// Create and initialize TraderNexus
+    #[pyfunction]
+    fn nexus_create(
+        initial_capital: f64,
+        fee_rate: f64,
+        leverage: f64,
+        stop_loss_pct: f64,
+        take_profit_pct: f64,
+        max_positions: usize,
+    ) -> PyResult<Py<PyAny>> {
+        use pyo3::types::PyDict;
+
+        let config = NexusConfig {
+            initial_capital,
+            fee_rate,
+            leverage,
+            stop_loss_pct,
+            take_profit_pct,
+            max_positions,
+            ..Default::default()
+        };
+
+        let nexus = TraderNexus::new(config);
+        
+        // Return as Python object (managed by Python)
+        Python::with_gil(|py| {
+            // Create a simple handle
+            let dict = PyDict::new(py);
+            dict.set_item("status", "initialized")?;
+            dict.set_item("initial_capital", initial_capital)?;
+            dict.set_item("equity", nexus.get_equity())?;
+            
+            Ok(dict.into())
+        })
+    }
+
+    /// Run single trading cycle (stateless version - Python manages state)
+    #[pyfunction]
+    fn nexus_run_cycle(
+        symbols: Vec<String>,
+        closes: Vec<Vec<f64>>,
+        rsi: Vec<Vec<f64>>,
+        bb_lower: Vec<Vec<f64>>,
+        bb_upper: Vec<Vec<f64>>,
+        obv: Vec<f64>,
+        entropy: Vec<f64>,
+        initial_capital: f64,
+    ) -> PyResult<Vec<String>> {
+        // Create temporary nexus for this cycle
+        let config = NexusConfig {
+            initial_capital,
+            ..Default::default()
+        };
+        let mut nexus = TraderNexus::new(config);
+
+        // Build market data structure
+        let mut market_data: HashMap<String, Vec<f64>> = HashMap::new();
+        let mut indicators: HashMap<String, Vec<f64>> = HashMap::new();
+
+        for (i, symbol) in symbols.iter().enumerate() {
+            if i < closes.len() {
+                market_data.insert(symbol.clone(), closes[i].clone());
+            }
+            if i < rsi.len() {
+                indicators.insert(format!("{}_rsi", symbol), rsi[i].clone());
+            }
+            if i < bb_lower.len() {
+                indicators.insert(format!("{}_bb_lower", symbol), bb_lower[i].clone());
+            }
+            if i < bb_upper.len() {
+                indicators.insert(format!("{}_bb_upper", symbol), bb_upper[i].clone());
+            }
+            if i < obv.len() {
+                indicators.insert(format!("{}_obv", symbol), vec![obv[i]]);
+            }
+            if i < entropy.len() {
+                indicators.insert(format!("{}_entropy", symbol), vec![entropy[i]]);
+            }
+        }
+
+        // Run cycle
+        let signals = nexus.run_cycle(&market_data, &indicators);
+
+        // Convert to simple string format
+        let results: Vec<String> = signals.iter()
+            .map(|s| format!("{}:{}:{:.2}", s.symbol, s.action, s.confidence))
+            .collect();
+
+        Ok(results)
+    }
+
+    /// Calculate position PnL (utility function)
+    #[pyfunction]
+    fn nexus_calculate_pnl(
+        entry_price: f64,
+        current_price: f64,
+        quantity: f64,
+        side: &str,
+    ) -> PyResult<f64> {
+        let pnl = if side == "BUY" {
+            (current_price - entry_price) * quantity
+        } else {
+            (entry_price - current_price) * quantity
+        };
+        Ok(pnl)
+    }
+
+    /// Calculate position PnL percentage
+    #[pyfunction]
+    fn nexus_calculate_pnl_pct(
+        entry_price: f64,
+        current_price: f64,
+        side: &str,
+    ) -> PyResult<f64> {
+        let pnl_pct = if side == "BUY" {
+            (current_price - entry_price) / entry_price
+        } else {
+            (entry_price - current_price) / entry_price
+        };
+        Ok(pnl_pct)
+    }
+
+    /// Scan for arbitrage (stateless)
+    #[pyfunction]
+    fn nexus_scan_arbitrage(
+        _min_profit_pct: f64,
+    ) -> PyResult<Vec<String>> {
+        // Simplified version - returns empty array
+        // Full implementation would require proper price feed integration
+        Ok(vec![])
+    }
+
+    m.add_function(wrap_pyfunction!(nexus_create, m)?)?;
+    m.add_function(wrap_pyfunction!(nexus_run_cycle, m)?)?;
+    m.add_function(wrap_pyfunction!(nexus_calculate_pnl, m)?)?;
+    m.add_function(wrap_pyfunction!(nexus_calculate_pnl_pct, m)?)?;
+    m.add_function(wrap_pyfunction!(nexus_scan_arbitrage, m)?)?;
 
     Ok(())
 }

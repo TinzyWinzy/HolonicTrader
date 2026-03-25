@@ -54,5 +54,8 @@ node_modules/
 dashboard-ui/node_modules/
 dashboard-ui/dist/
 
+# Quant ops cycle reports (generated at runtime)
+quant_ops_reports/
+
 # Junk
 *.crdownload

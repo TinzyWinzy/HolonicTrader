@@ -12,9 +12,17 @@ Action (1): Conviction Scale [0, 1]
 import numpy as np
 from typing import Any
 import os
-import tensorflow
-import tensorflow as tf
-from tensorflow.keras import layers, models, optimizers
+try:
+    import tensorflow as tf
+    from tensorflow.keras import layers, models, optimizers
+    TF_AVAILABLE = True
+except ImportError:
+    tf = None
+    layers = None
+    models = None
+    optimizers = None
+    TF_AVAILABLE = False
+    print("[PPO] WARNING: TensorFlow not found. PPO Monolith will be disabled.")
 from HolonicTrader.holon_core import Holon, Disposition
 import config
 try:
@@ -46,20 +54,16 @@ class PPOHolon(Holon):
         self.action_size = 1 # Continuous [0, 1]
         
         # Networks
-        self.actor = self._build_actor()
-        self.critic = self._build_critic()
+        if TF_AVAILABLE:
+            self.actor = self._build_actor()
+            self.critic = self._build_critic()
+            self.load_knowledge()
+        else:
+            self.actor = None
+            self.critic = None
+            
         self.ov_actor = None
         self.ov_critic = None
-        
-        # Buffer for PPO updates
-        self.states = []
-        self.actions = []
-        self.rewards = []
-        self.old_probs = []
-        self.values = []
-        self.dones = []
-        
-        self.load_knowledge()
 
     def _build_actor(self):
         """Actor network: state -> mean of action distribution."""
@@ -82,14 +86,29 @@ class PPOHolon(Holon):
         model.compile(optimizer=optimizers.Adam(learning_rate=self.lr), loss='mse')
         return model
 
-    def get_conviction(self, state: np.ndarray, training: bool = False) -> float:
+        return mu
+
+    def get_conviction(self, state, training=False):
         """
-        Predict conviction factor using the Actor.
-        State: [Regime_ID, Entropy, WinRate, ATR_Ratio, Drawdown, Margin]
-        Returns: float in [0.0, 1.0]
+        Public API to get conviction from the Actor network.
+        Returns a float in [0.0, 1.0].
         """
-        state_tensor = np.expand_dims(state, axis=0)
+        # Ensure state is correct shape (1, 8)
+        if state.ndim == 1:
+            state = state.reshape(1, -1)
+            
+        return self._get_action(state, training=training)
+
+    def _get_action(self, state: np.ndarray, training: bool = False) -> float:
+        """Internal method to get action/conviction."""
+        state_tensor = state 
+        # If not 2D, make it 2D
+        if len(state_tensor.shape) == 1:
+             state_tensor = np.expand_dims(state_tensor, axis=0)
         
+        if not TF_AVAILABLE and not self.ov_actor:
+            return 0.5 # Default conviction if no brain available
+            
         # High-Performance OpenVINO Inference
         if self.ov_actor:
              # state_tensor is (1, state_size)

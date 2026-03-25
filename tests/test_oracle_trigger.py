@@ -42,6 +42,9 @@ config.PERSONALITY_DOGE_RVOL = 2.0
 config.PERSONALITY_SOL_RSI_LONG = 40
 config.PERSONALITY_SOL_RSI_SHORT = 60
 config.PHYSICS_MIN_RVOL = 1.0
+config.PHYSICS_OU_STRETCH_THRESHOLD = 2.0
+config.MACRO_STACK_WEIGHT = 0.15
+config.STRUCTURE_DRIVES_TARGETS = True
 
 # Mock PPO Agent and Monitors that might be imported
 sys.modules['HolonicTrader.agent_ppo'] = MagicMock()
@@ -61,6 +64,13 @@ class TestOracleTriggerD(unittest.TestCase):
         self.oracle.xgb_model = None
         self.oracle.ensemble = None
         self.oracle.DEBUG = True
+        
+        self.oracle.provider = MagicMock()
+        mock_signal = TradeSignal("BTC/USDT", "BUY", 1.0, 0.5, {})
+        self.oracle.provider.generate_signal_from_trigger.return_value = mock_signal
+        
+        self.oracle.macro_oracle = MagicMock()
+        self.oracle.macro_oracle.fetch_macro_context.return_value = {'bias_score': 0.5}
 
     def test_trigger_d_bullish_support(self):
         """

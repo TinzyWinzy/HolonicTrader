@@ -10,7 +10,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
 sys.path.append(os.path.dirname(__file__)) # Add self to path for sibling imports
 
-from gui_components.holospace import HolospaceProjection
 # from main_live_phase4 import run_bot # (Import inside method to avoid circular deps)
 
 # ==============================================================================
@@ -53,11 +52,7 @@ class HolonicDashboardDPG:
         self.equity_data_x = []
         self.equity_data_y = []
         self.max_chart_points = 1000
-        
-        # Holospace Engine
-        self.holospace = HolospaceProjection()
-        self.market_points_3d = [] # List of tuples (x,y,z, color)
-        self.needs_redraw_3d = True
+        # (Holospace removed for performance)
         
         # IDs for dynamic updates
         self.id_regime_text = 0
@@ -289,32 +284,6 @@ class HolonicDashboardDPG:
                                 dpg.add_table_column(label="Entropy Score")
                                 dpg.add_table_column(label="Status")
 
-                # === TAB 4: 3D HOLOSPACE ===
-                with dpg.tab(label="  🧊 3D Holospace  "):
-                    dpg.add_text("Hold Left Click to Rotate | Scroll to Zoom")
-                    
-                    # Canvas for 3D Drawing
-                    with dpg.drawlist(width=800, height=600, tag="holospace_canvas"):
-                        # Background (stars?)
-                        dpg.draw_rectangle((0,0), (800,600), color=hex_to_rgba(COLORS['bg_dark']), fill=hex_to_rgba(COLORS['bg_dark']))
-                        
-                    # Mouse Handlers for Rotation
-                    with dpg.handler_registry():
-                        dpg.add_mouse_drag_handler(callback=self.on_mouse_drag)
-                        dpg.add_mouse_wheel_handler(callback=self.on_mouse_wheel)
-
-    def on_mouse_drag(self, sender, app_data):
-        if dpg.is_mouse_button_down(dpg.mvMouseButton_Left):
-            # Mouse Delta is app_data[1], app_data[2]
-            dx = app_data[1]
-            dy = app_data[2]
-            self.holospace.set_rotation(dx, dy)
-            self.needs_redraw_3d = True
-
-    def on_mouse_wheel(self, sender, app_data):
-        self.holospace.fov += app_data * 20
-        self.needs_redraw_3d = True
-
     def process_queue(self):
         """Reads from queues and updates DPG items."""
         try:
@@ -323,35 +292,6 @@ class HolonicDashboardDPG:
                 self.handle_message(msg)
         except queue.Empty:
             pass
-            
-        # Redraw 3D if needed (or if animating)
-        # For prototype, we'll redraw every frame if visible? Or flag based.
-        # Let's check tab visibility or just draw.
-        self.update_holospace_render()
-
-    def update_holospace_render(self):
-        # Only draw if we have data and something changed
-        # For demo, let's create a rotating cube if no data
-        current_time = time.time()
-        
-        # Generator for Demo Data
-        if not self.market_points_3d:
-            # Create a cube of points
-            self.market_points_3d = []
-            for x in [-1, 1]:
-                for y in [-1, 1]:
-                    for z in [-1, 1]:
-                        self.market_points_3d.append((x*2, y*2, z*2, hex_to_rgba(COLORS['accent_secondary'])))
-                        
-        # Render
-        dpg.delete_item("holospace_canvas", children_only=True)
-        
-        # 2D Screen Dimensions
-        w = 800 # Fixed for now or dpg.get_item_width("holospace_canvas")
-        h = 600
-        
-        # Background
-        # dpg.draw_rectangle((0,0), (w,h), color=hex_to_rgba(COLORS['bg_dark']), fill=hex_to_rgba(COLORS['bg_dark']), parent="holospace_canvas")
         
         # Project
         proj = self.holospace.project(self.market_points_3d, w, h)
@@ -505,25 +445,6 @@ class HolonicDashboardDPG:
                         dpg.add_text(row.get('Struct', '-'))
                         dpg.add_text(pnl, color=hex_to_rgba(text_col))
                         dpg.add_text(row.get('Action', '-'))
-                        
-                    # Extract 3D Data
-                    try:
-                        e = float(row.get('_entropy', 0))
-                        t = float(row.get('_tda', 0.5))
-                        l = float(row.get('LSTM', 0.5))
-                        
-                        x = (e - 1.2) * 2.0 
-                        y = (t - 0.5) * 4.0
-                        z = (l - 0.5) * 4.0
-                        
-                        c = hex_to_rgba(COLORS['accent_green']) if 'ORDER' in reg or 'TRAN' in reg else hex_to_rgba(COLORS['accent_red'])
-                        new_3d_points.append({'x': x, 'y': y, 'z': z, 'color': c})
-                    except:
-                        pass
-                        
-                # Update 3D Store
-                self.market_points_3d = [(p['x'], p['y'], p['z'], p['color']) for p in new_3d_points]
-                self.needs_redraw_3d = True
 
     def log(self, text):
         ts = datetime.now().strftime("%H:%M:%S")
@@ -557,14 +478,8 @@ class HolonicDashboardDPG:
         # Start Thread
         self.gui_stop_event.clear()
         
-        # Minimal Config for prototype
-        cfg = {
-            'symbol': 'BTC/USDT',
-            'timeframe': '1h',
-            'max_allocation': 0.1,
-            'leverage_cap': 5.0,
-            'micro_mode': True
-        }
+        # Allow main_live_phase4 to use config.py defaults by passing None
+        cfg = None
         
         def run_wrapper():
             try:

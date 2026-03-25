@@ -1,5 +1,4 @@
 use crate::agents::{governor, oracle, executor};
-use std::collections::HashMap;
 
 /// Market Tick Data
 #[derive(Clone, Debug)]
@@ -160,7 +159,7 @@ impl TradingLoop {
 
         // Final equity
         let mut equity = self.executor.balance_usd;
-        for (symbol, qty) in &self.executor.held_assets {
+        for (_symbol, qty) in &self.executor.held_assets {
             if let Some(&price) = Some(&closes[len-1]) {
                 equity += qty * price;
             }

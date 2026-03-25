@@ -1,0 +1,21 @@
+{
+  "atlas_activated": "2026-03-18T09:12:37.979486",
+  "account_tier": "NANO",
+  "starting_balance": 90.0,
+  "configuration": {
+    "min_trade_size": 25.0,
+    "max_leverage": 5.0,
+    "risk_per_trade_pct": 0.25
+  },
+  "milestones": {
+    "compound_at": 150.0,
+    "graduate_to_micro": 500.0,
+    "current_progress_pct": 18.0
+  },
+  "monitoring": {
+    "trades_since_activation": 0,
+    "total_profit": 0.0,
+    "current_balance": 90.0,
+    "last_trade_time": null
+  }
+}

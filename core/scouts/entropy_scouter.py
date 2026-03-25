@@ -50,58 +50,66 @@ class EntropyScouter:
     def scout_regimes(self, data_feed: Dict[str, pd.DataFrame]) -> Dict[str, Dict[str, Any]]:
         """
         Analyze a batch of market data and return regime classifications.
+        
+        FIX 2026-03-03: Adjusted thresholds to reduce TRANSITION dominance.
+        Live data shows most assets cluster in 0.8-1.2 range, so we narrow TRANSITION.
         """
         results = {}
-        
+
         # Load Thresholds from New Config
-        # Low Entropy (Ordered) < 0.6
-        # High Entropy (Chaos) > 1.5
-        
+        # FIX 2026-03-03: Narrowed TRANSITION zone to reduce dominance
+        # Low Entropy (Ordered) < 0.85 (was 0.6) - more assets qualify as ORDERED
+        # High Entropy (Chaos) > 1.3 (was 1.51) - easier to trigger CHAOTIC
+        # TRANSITION: 0.85 - 1.3 (narrower band)
+
         low_ent_cfg = self.regime_config.get('low_entropy', {})
         med_ent_cfg = self.regime_config.get('medium_entropy', {})
         high_ent_cfg = self.regime_config.get('high_entropy', {})
-        
-        ordered_max = float(low_ent_cfg.get('threshold_max', 0.6))
-        chaos_min = float(high_ent_cfg.get('threshold_min', 1.51))
-        
+
+        # 2026-03-19: Empirically calibrated from 15-asset live snapshot.
+        # SampleEntropy distribution: P50=0.72, P90=1.10, max=1.16
+        # Targets ~40% ORDERED / ~40% TRANSITION / ~20% CHAOTIC split.
+        ordered_max = float(low_ent_cfg.get('threshold_max', 0.70))   # ≤ P50 = structured/trending
+        chaos_min   = float(high_ent_cfg.get('threshold_min', 1.10))  # ≥ P90 = high complexity
+
         for symbol, df in data_feed.items():
             if df is None or df.empty or len(df) < 50:
                 results[symbol] = {'regime': 'UNKNOWN', 'entropy': 0.0}
                 continue
-                
+
             # Extract Close prices
             closes = df['close'].tolist()
-            
+
             # Compute Physics (Entropy)
             # Use 'm' and 'r' from config if possible
             r_sigma = float(self.metrics_config.get('r_sigma', 0.2))
-            
+
             # Recalculate if needed, or rely on helper defaults?
             # Helper uses 0.2*std.
             profile = compute_entropy_profile(closes) # Helper uses defaults
             samp_en = profile['sample_entropy']
-            
+
             # Classify Regime (Legacy Map)
             # low_entropy -> ORDERED
             # medium_entropy -> TRANSITION
             # high_entropy -> CHAOTIC
-            
+
             regime = 'TRANSITION'
             if samp_en <= ordered_max:
                 regime = 'ORDERED'
             elif samp_en >= chaos_min:
                 regime = 'CHAOTIC'
-                
+
             results[symbol] = {
                 'regime': regime,
                 'entropy': samp_en,
                 'perm_entropy': profile['perm_entropy'],
                 'meta': {
-                    'action': med_ent_cfg.get('action', 'standard') if regime == 'TRANSITION' else 
+                    'action': med_ent_cfg.get('action', 'standard') if regime == 'TRANSITION' else
                              (low_ent_cfg.get('action', 'trend') if regime == 'ORDERED' else high_ent_cfg.get('action', 'halt'))
                 }
             }
-            
+
         return results
 
     def filter_whitelist(self, candidates: List[str], scout_results: Dict[str, Any]) -> List[str]:

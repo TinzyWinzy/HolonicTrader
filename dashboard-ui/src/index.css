@@ -1,26 +1,96 @@
+@import './styles/design-tokens.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-holon-bg text-holon-text font-sans antialiased overflow-hidden;
+  html {
+    @apply h-full;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  body {
+    @apply h-full overflow-hidden;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+  }
+
+  #root {
+    @apply h-full;
+  }
+
+  /* Global monospaced number rendering */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: rgba(255, 179, 0, 0.25);
+    color: var(--text-primary);
+  }
+
+  /* Input styling overrides */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg-elevated);
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-crypto);
+    cursor: pointer;
+    border: 2px solid var(--bg-primary);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-crypto);
+    cursor: pointer;
+    border: 2px solid var(--bg-primary);
+  }
+
+  /* Remove number input arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  -moz-appearance: textfield;
+}
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+@layer utilities {
+  .glass-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-/* Custom Scrollbar for Logs */
-.log-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
 
-.log-scrollbar::-webkit-scrollbar-track {
-  @apply bg-holon-card;
-}
+  .border-glow {
+    box-shadow: 0 0 8px var(--border-glow);
+    border-color: var(--color-info);
+  }
 
-.log-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-holon-dim rounded;
+  .animate-pulse-fast {
+    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 }

@@ -1,0 +1,17 @@
+{
+  "recovery_phase": "STABILIZATION",
+  "start_time": "2026-03-17T20:41:42.507139+00:00",
+  "monitoring_interval_minutes": 5,
+  "alert_thresholds": {
+    "expectancy_below": 0.0,
+    "win_rate_below": 0.55,
+    "cost_ratio_above": 0.5
+  },
+  "allowed_strategies": [
+    "LONG_ONLY"
+  ],
+  "capital_limits": {
+    "max_long_exposure": 0.8,
+    "max_short_exposure": 0.0
+  }
+}

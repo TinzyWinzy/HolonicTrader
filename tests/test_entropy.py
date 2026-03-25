@@ -9,7 +9,9 @@ Verifies:
 
 import numpy as np
 import pandas as pd
-from agent_entropy import EntropyHolon
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from HolonicTrader.agent_entropy import EntropyHolon
 
 
 def test_entropy_calculation():
@@ -81,17 +83,17 @@ def test_regime_determination():
 
     holon = EntropyHolon()
 
-    # Test boundary conditions (New Thresholds: 1.96 and 2.10)
+    # Test boundary conditions (Thresholds: 1.20 and 1.85 — 2026-03-19)
     test_cases = [
         (0.0, 'ORDERED'),
-        (1.95, 'ORDERED'),      # Just below 1.96
-        (1.97, 'TRANSITION'),   # Just above 1.96
-        (2.0, 'TRANSITION'),    # Middle of transition
-        (2.09, 'TRANSITION'),   # Just below 2.10
-        (2.11, 'CHAOTIC'),      # Just above 2.10
-        (2.5, 'CHAOTIC'),
-        (3.5, 'CHAOTIC'),
-        (5.0, 'CHAOTIC'),
+        (0.5, 'ORDERED'),       # Low entropy
+        (1.19, 'ORDERED'),      # Just below 1.20
+        (1.21, 'TRANSITION'),   # Just above 1.20
+        (1.50, 'TRANSITION'),   # Middle of transition
+        (1.84, 'TRANSITION'),   # Just below 1.85
+        (1.86, 'CHAOTIC'),      # Just above 1.85
+        (2.0, 'CHAOTIC'),
+        (2.3, 'CHAOTIC'),
     ]
 
     all_passed = True

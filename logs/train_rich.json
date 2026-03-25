@@ -1,0 +1,7 @@
+{
+  "model_path": "c:\\Users\\USER\\Documents\\AEHML\\HolonicTrader\\HolonicTrader\\scripts\\..\\models\\lgbm_return_rich.pkl",
+  "mse": 0.0004630591811888325,
+  "n_train": 104,
+  "n_test": 27,
+  "best_iter": 1
+}

@@ -1,10 +1,11 @@
+import pytest
 import signal
 import time
 from HolonicTrader.holon_core import Disposition, Message
 from HolonicTrader.agent_trader import TraderHolon
 from HolonicTrader.agent_observer import ObserverHolon
 from HolonicTrader.agent_entropy import EntropyHolon
-from HolonicTrader.agent_strategy import StrategyHolon
+pytest.importorskip("HolonicTrader.agent_strategy", reason="agent_strategy module was removed")
 import config
 
 # Mock Observer again to avoid API keys in test

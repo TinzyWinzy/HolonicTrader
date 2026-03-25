@@ -1,5 +1,42 @@
 {
-    "max_allocation": 0.25160714285714286,
-    "leverage_cap": 5.0,
-    "micro_mode": true
+  "max_allocation": 0.3,
+  "leverage_cap": 5.0,
+  "micro_mode": false,
+  "emergency_patch": {
+    "sell_strategy_disabled": true,
+    "disabled_timestamp": "2026-03-17T20:41:42.505251+00:00",
+    "reason": "SELL_STRATEGY_CRITICAL_FAILURE_NEGATIVE_EXPECTANCY",
+    "applied_by": "Helix_Strategy_Surgeon"
+  },
+  "short_strategy_enabled": false,
+  "max_short_exposure": 0.0,
+  "recovery_status": {
+    "phase": "STABILIZATION",
+    "start_time": "2026-03-17T22:58:21.448316",
+    "last_update": "2026-03-17T22:58:21.448321",
+    "components_initialized": true,
+    "sell_strategy_disabled": true,
+    "monitoring_active": true
+  },
+  "atlas_integration": {
+    "enabled": true,
+    "integrated_at": "2026-03-17T23:24:25.472251",
+    "profit_phase": "ISOLATION",
+    "required_modules": [
+      "atlas_profit_filter.py",
+      "atlas_capital_manager.py",
+      "atlas_integration.py"
+    ]
+  },
+  "minimum_trade_size_usd": 100.0,
+  "atlas_profit_settings": {
+    "account_tier": "NANO",
+    "micro_mode_disabled": true,
+    "min_trade_size": 25.0,
+    "cost_aware_trading": true,
+    "profit_to_cost_ratio": 2.0,
+    "enabled": true,
+    "leverage_mode": "CONSERVATIVE_NANO",
+    "updated_timestamp": "2026-03-18T09:12:37.978250"
+  }
 }

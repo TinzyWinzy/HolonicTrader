@@ -1,6 +1,7 @@
 from .base import Strategy, Signal
 import pandas as pd
 import numpy as np
+import config
 
 class EvoStrategy(Strategy):
     """
@@ -107,7 +108,8 @@ class EvoStrategy(Strategy):
             
             # If we survived checks -> BUY
             # If we survived checks -> BUY
-            # NANO MODE: Use size=0.2 (20% of Capital) to survive strings of losses at 50x
-            return Signal('BUY', size=0.2, reason="Evo Entry", stop_loss=self.stop_loss, take_profit=self.take_profit)
+            # If we survived checks -> BUY
+            # UNLEASHED MODE: Use config size (25%) instead of hardcoded 20%
+            return Signal('BUY', size=config.SIZE_MAX_ALLOCATION, reason="Evo Entry", stop_loss=self.stop_loss, take_profit=self.take_profit)
             
         return Signal('HOLD')

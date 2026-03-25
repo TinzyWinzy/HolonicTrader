@@ -1,0 +1,30 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-22 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $96.96
+  End:    $96.98
+  Change: +0.02%  ($+0.02)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: HARVEST
+    HARVEST     : 100% of cycles
+  Last inputs: {"structure": "NEUTRAL", "entropy": 0.6222906479199989, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ✅ Zero violations – all rules respected.
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

@@ -1,0 +1,26 @@
+[
+  {
+    "symbol":"BONK\/USDT",
+    "n_trades":100,
+    "avg_pnl_usd":-0.0502851176,
+    "total_pnl_usd":-5.0285117632,
+    "win_rate":0.09,
+    "expectancy_per_trade_usd":-0.0502851176
+  },
+  {
+    "symbol":"DOT\/USDT",
+    "n_trades":8,
+    "avg_pnl_usd":-0.1369961084,
+    "total_pnl_usd":-1.0959688672,
+    "win_rate":0.375,
+    "expectancy_per_trade_usd":-0.1369961084
+  },
+  {
+    "symbol":"ORDI\/USDT",
+    "n_trades":7,
+    "avg_pnl_usd":-0.1729715331,
+    "total_pnl_usd":-1.2108007316,
+    "win_rate":0.4285714286,
+    "expectancy_per_trade_usd":-0.1729715331
+  }
+]

@@ -1,0 +1,2193 @@
+[
+  {
+    "ccxt_symbol": "BTC/USD:USD",
+    "kraken_symbol": "PF_XBTUSD",
+    "pair": "BTC:USD",
+    "base": "BTC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ETH/USD:USD",
+    "kraken_symbol": "PF_ETHUSD",
+    "pair": "ETH:USD",
+    "base": "ETH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ADA/USD:USD",
+    "kraken_symbol": "PF_ADAUSD",
+    "pair": "ADA:USD",
+    "base": "ADA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XRP/USD:USD",
+    "kraken_symbol": "PF_XRPUSD",
+    "pair": "XRP:USD",
+    "base": "XRP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SOL/USD:USD",
+    "kraken_symbol": "PF_SOLUSD",
+    "pair": "SOL:USD",
+    "base": "SOL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "UNI/USD:USD",
+    "kraken_symbol": "PF_UNIUSD",
+    "pair": "UNI:USD",
+    "base": "UNI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ATOM/USD:USD",
+    "kraken_symbol": "PF_ATOMUSD",
+    "pair": "ATOM:USD",
+    "base": "ATOM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BCH/USD:USD",
+    "kraken_symbol": "PF_BCHUSD",
+    "pair": "BCH:USD",
+    "base": "BCH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DOT/USD:USD",
+    "kraken_symbol": "PF_DOTUSD",
+    "pair": "DOT:USD",
+    "base": "DOT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FIL/USD:USD",
+    "kraken_symbol": "PF_FILUSD",
+    "pair": "FIL:USD",
+    "base": "FIL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LINK/USD:USD",
+    "kraken_symbol": "PF_LINKUSD",
+    "pair": "LINK:USD",
+    "base": "LINK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LTC/USD:USD",
+    "kraken_symbol": "PF_LTCUSD",
+    "pair": "LTC:USD",
+    "base": "LTC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AVAX/USD:USD",
+    "kraken_symbol": "PF_AVAXUSD",
+    "pair": "AVAX:USD",
+    "base": "AVAX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XMR/USD:USD",
+    "kraken_symbol": "PF_XMRUSD",
+    "pair": "XMR:USD",
+    "base": "XMR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GMT/USD:USD",
+    "kraken_symbol": "PF_GMTUSD",
+    "pair": "GMT:USD",
+    "base": "GMT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LUNA2/USD:USD",
+    "kraken_symbol": "PF_LUNA2USD",
+    "pair": "LUNA2:USD",
+    "base": "LUNA2",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "OP/USD:USD",
+    "kraken_symbol": "PF_OPUSD",
+    "pair": "OP:USD",
+    "base": "OP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NEAR/USD:USD",
+    "kraken_symbol": "PF_NEARUSD",
+    "pair": "NEAR:USD",
+    "base": "NEAR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "APE/USD:USD",
+    "kraken_symbol": "PF_APEUSD",
+    "pair": "APE:USD",
+    "base": "APE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DOGE/USD:USD",
+    "kraken_symbol": "PF_DOGEUSD",
+    "pair": "DOGE:USD",
+    "base": "DOGE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TRX/USD:USD",
+    "kraken_symbol": "PF_TRXUSD",
+    "pair": "TRX:USD",
+    "base": "TRX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MANA/USD:USD",
+    "kraken_symbol": "PF_MANAUSD",
+    "pair": "MANA:USD",
+    "base": "MANA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CRV/USD:USD",
+    "kraken_symbol": "PF_CRVUSD",
+    "pair": "CRV:USD",
+    "base": "CRV",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AAVE/USD:USD",
+    "kraken_symbol": "PF_AAVEUSD",
+    "pair": "AAVE:USD",
+    "base": "AAVE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SNX/USD:USD",
+    "kraken_symbol": "PF_SNXUSD",
+    "pair": "SNX:USD",
+    "base": "SNX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XTZ/USD:USD",
+    "kraken_symbol": "PF_XTZUSD",
+    "pair": "XTZ:USD",
+    "base": "XTZ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XLM/USD:USD",
+    "kraken_symbol": "PF_XLMUSD",
+    "pair": "XLM:USD",
+    "base": "XLM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ALGO/USD:USD",
+    "kraken_symbol": "PF_ALGOUSD",
+    "pair": "ALGO:USD",
+    "base": "ALGO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SAND/USD:USD",
+    "kraken_symbol": "PF_SANDUSD",
+    "pair": "SAND:USD",
+    "base": "SAND",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ENJ/USD:USD",
+    "kraken_symbol": "PF_ENJUSD",
+    "pair": "ENJ:USD",
+    "base": "ENJ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "COMP/USD:USD",
+    "kraken_symbol": "PF_COMPUSD",
+    "pair": "COMP:USD",
+    "base": "COMP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "YFI/USD:USD",
+    "kraken_symbol": "PF_YFIUSD",
+    "pair": "YFI:USD",
+    "base": "YFI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CHZ/USD:USD",
+    "kraken_symbol": "PF_CHZUSD",
+    "pair": "CHZ:USD",
+    "base": "CHZ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LPT/USD:USD",
+    "kraken_symbol": "PF_LPTUSD",
+    "pair": "LPT:USD",
+    "base": "LPT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BAT/USD:USD",
+    "kraken_symbol": "PF_BATUSD",
+    "pair": "BAT:USD",
+    "base": "BAT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AXS/USD:USD",
+    "kraken_symbol": "PF_AXSUSD",
+    "pair": "AXS:USD",
+    "base": "AXS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GALA/USD:USD",
+    "kraken_symbol": "PF_GALAUSD",
+    "pair": "GALA:USD",
+    "base": "GALA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ETC/USD:USD",
+    "kraken_symbol": "PF_ETCUSD",
+    "pair": "ETC:USD",
+    "base": "ETC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KAVA/USD:USD",
+    "kraken_symbol": "PF_KAVAUSD",
+    "pair": "KAVA:USD",
+    "base": "KAVA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LRC/USD:USD",
+    "kraken_symbol": "PF_LRCUSD",
+    "pair": "LRC:USD",
+    "base": "LRC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KSM/USD:USD",
+    "kraken_symbol": "PF_KSMUSD",
+    "pair": "KSM:USD",
+    "base": "KSM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GRT/USD:USD",
+    "kraken_symbol": "PF_GRTUSD",
+    "pair": "GRT:USD",
+    "base": "GRT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FLOW/USD:USD",
+    "kraken_symbol": "PF_FLOWUSD",
+    "pair": "FLOW:USD",
+    "base": "FLOW",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZEC/USD:USD",
+    "kraken_symbol": "PF_ZECUSD",
+    "pair": "ZEC:USD",
+    "base": "ZEC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "QTUM/USD:USD",
+    "kraken_symbol": "PF_QTUMUSD",
+    "pair": "QTUM:USD",
+    "base": "QTUM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DASH/USD:USD",
+    "kraken_symbol": "PF_DASHUSD",
+    "pair": "DASH:USD",
+    "base": "DASH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "1INCH/USD:USD",
+    "kraken_symbol": "PF_1INCHUSD",
+    "pair": "1INCH:USD",
+    "base": "1INCH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "OGN/USD:USD",
+    "kraken_symbol": "PF_OGNUSD",
+    "pair": "OGN:USD",
+    "base": "OGN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SUSHI/USD:USD",
+    "kraken_symbol": "PF_SUSHIUSD",
+    "pair": "SUSHI:USD",
+    "base": "SUSHI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STORJ/USD:USD",
+    "kraken_symbol": "PF_STORJUSD",
+    "pair": "STORJ:USD",
+    "base": "STORJ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RUNE/USD:USD",
+    "kraken_symbol": "PF_RUNEUSD",
+    "pair": "RUNE:USD",
+    "base": "RUNE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "EGLD/USD:USD",
+    "kraken_symbol": "PF_EGLDUSD",
+    "pair": "EGLD:USD",
+    "base": "EGLD",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DYDX/USD:USD",
+    "kraken_symbol": "PF_DYDXUSD",
+    "pair": "DYDX:USD",
+    "base": "DYDX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ANKR/USD:USD",
+    "kraken_symbol": "PF_ANKRUSD",
+    "pair": "ANKR:USD",
+    "base": "ANKR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ICP/USD:USD",
+    "kraken_symbol": "PF_ICPUSD",
+    "pair": "ICP:USD",
+    "base": "ICP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ETHW/USD:USD",
+    "kraken_symbol": "PF_ETHWUSD",
+    "pair": "ETHW:USD",
+    "base": "ETHW",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BAND/USD:USD",
+    "kraken_symbol": "PF_BANDUSD",
+    "pair": "BAND:USD",
+    "base": "BAND",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ALICE/USD:USD",
+    "kraken_symbol": "PF_ALICEUSD",
+    "pair": "ALICE:USD",
+    "base": "ALICE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ICX/USD:USD",
+    "kraken_symbol": "PF_ICXUSD",
+    "pair": "ICX:USD",
+    "base": "ICX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ENS/USD:USD",
+    "kraken_symbol": "PF_ENSUSD",
+    "pair": "ENS:USD",
+    "base": "ENS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MINA/USD:USD",
+    "kraken_symbol": "PF_MINAUSD",
+    "pair": "MINA:USD",
+    "base": "MINA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "THETA/USD:USD",
+    "kraken_symbol": "PF_THETAUSD",
+    "pair": "THETA:USD",
+    "base": "THETA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "QNT/USD:USD",
+    "kraken_symbol": "PF_QNTUSD",
+    "pair": "QNT:USD",
+    "base": "QNT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IMX/USD:USD",
+    "kraken_symbol": "PF_IMXUSD",
+    "pair": "IMX:USD",
+    "base": "IMX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "APT/USD:USD",
+    "kraken_symbol": "PF_APTUSD",
+    "pair": "APT:USD",
+    "base": "APT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FLR/USD:USD",
+    "kraken_symbol": "PF_FLRUSD",
+    "pair": "FLR:USD",
+    "base": "FLR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BLUR/USD:USD",
+    "kraken_symbol": "PF_BLURUSD",
+    "pair": "BLUR:USD",
+    "base": "BLUR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GMX/USD:USD",
+    "kraken_symbol": "PF_GMXUSD",
+    "pair": "GMX:USD",
+    "base": "GMX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LDO/USD:USD",
+    "kraken_symbol": "PF_LDOUSD",
+    "pair": "LDO:USD",
+    "base": "LDO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "USDC/USD:USD",
+    "kraken_symbol": "PF_USDCUSD",
+    "pair": "USDC:USD",
+    "base": "USDC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "USDT/USD:USD",
+    "kraken_symbol": "PF_USDTUSD",
+    "pair": "USDT:USD",
+    "base": "USDT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ARB/USD:USD",
+    "kraken_symbol": "PF_ARBUSD",
+    "pair": "ARB:USD",
+    "base": "ARB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FET/USD:USD",
+    "kraken_symbol": "PF_FETUSD",
+    "pair": "FET:USD",
+    "base": "FET",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STX/USD:USD",
+    "kraken_symbol": "PF_STXUSD",
+    "pair": "STX:USD",
+    "base": "STX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CVX/USD:USD",
+    "kraken_symbol": "PF_CVXUSD",
+    "pair": "CVX:USD",
+    "base": "CVX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "WOO/USD:USD",
+    "kraken_symbol": "PF_WOOUSD",
+    "pair": "WOO:USD",
+    "base": "WOO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "JASMY/USD:USD",
+    "kraken_symbol": "PF_JASMYUSD",
+    "pair": "JASMY:USD",
+    "base": "JASMY",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "INJ/USD:USD",
+    "kraken_symbol": "PF_INJUSD",
+    "pair": "INJ:USD",
+    "base": "INJ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZRX/USD:USD",
+    "kraken_symbol": "PF_ZRXUSD",
+    "pair": "ZRX:USD",
+    "base": "ZRX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RLC/USD:USD",
+    "kraken_symbol": "PF_RLCUSD",
+    "pair": "RLC:USD",
+    "base": "RLC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SUI/USD:USD",
+    "kraken_symbol": "PF_SUIUSD",
+    "pair": "SUI:USD",
+    "base": "SUI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PEPE/USD:USD",
+    "kraken_symbol": "PF_PEPEUSD",
+    "pair": "PEPE:USD",
+    "base": "PEPE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SHIB/USD:USD",
+    "kraken_symbol": "PF_SHIBUSD",
+    "pair": "SHIB:USD",
+    "base": "SHIB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SXP/USD:USD",
+    "kraken_symbol": "PF_SXPUSD",
+    "pair": "SXP:USD",
+    "base": "SXP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STG/USD:USD",
+    "kraken_symbol": "PF_STGUSD",
+    "pair": "STG:USD",
+    "base": "STG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HFT/USD:USD",
+    "kraken_symbol": "PF_HFTUSD",
+    "pair": "HFT:USD",
+    "base": "HFT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "WLD/USD:USD",
+    "kraken_symbol": "PF_WLDUSD",
+    "pair": "WLD:USD",
+    "base": "WLD",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CFX/USD:USD",
+    "kraken_symbol": "PF_CFXUSD",
+    "pair": "CFX:USD",
+    "base": "CFX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PAXG/USD:USD",
+    "kraken_symbol": "PF_PAXGUSD",
+    "pair": "PAXG:USD",
+    "base": "PAXG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AGLD/USD:USD",
+    "kraken_symbol": "PF_AGLDUSD",
+    "pair": "AGLD:USD",
+    "base": "AGLD",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SEI/USD:USD",
+    "kraken_symbol": "PF_SEIUSD",
+    "pair": "SEI:USD",
+    "base": "SEI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BNB/USD:USD",
+    "kraken_symbol": "PF_BNBUSD",
+    "pair": "BNB:USD",
+    "base": "BNB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PYTH/USD:USD",
+    "kraken_symbol": "PF_PYTHUSD",
+    "pair": "PYTH:USD",
+    "base": "PYTH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TIA/USD:USD",
+    "kraken_symbol": "PF_TIAUSD",
+    "pair": "TIA:USD",
+    "base": "TIA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "JTO/USD:USD",
+    "kraken_symbol": "PF_JTOUSD",
+    "pair": "JTO:USD",
+    "base": "JTO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BONK/USD:USD",
+    "kraken_symbol": "PF_BONKUSD",
+    "pair": "BONK:USD",
+    "base": "BONK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KAS/USD:USD",
+    "kraken_symbol": "PF_KASUSD",
+    "pair": "KAS:USD",
+    "base": "KAS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "WIF/USD:USD",
+    "kraken_symbol": "PF_WIFUSD",
+    "pair": "WIF:USD",
+    "base": "WIF",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ORDI/USD:USD",
+    "kraken_symbol": "PF_ORDIUSD",
+    "pair": "ORDI:USD",
+    "base": "ORDI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "UMA/USD:USD",
+    "kraken_symbol": "PF_UMAUSD",
+    "pair": "UMA:USD",
+    "base": "UMA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LSK/USD:USD",
+    "kraken_symbol": "PF_LSKUSD",
+    "pair": "LSK:USD",
+    "base": "LSK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "API3/USD:USD",
+    "kraken_symbol": "PF_API3USD",
+    "pair": "API3:USD",
+    "base": "API3",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "JUP/USD:USD",
+    "kraken_symbol": "PF_JUPUSD",
+    "pair": "JUP:USD",
+    "base": "JUP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DYM/USD:USD",
+    "kraken_symbol": "PF_DYMUSD",
+    "pair": "DYM:USD",
+    "base": "DYM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STRK/USD:USD",
+    "kraken_symbol": "PF_STRKUSD",
+    "pair": "STRK:USD",
+    "base": "STRK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SPELL/USD:USD",
+    "kraken_symbol": "PF_SPELLUSD",
+    "pair": "SPELL:USD",
+    "base": "SPELL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "W/USD:USD",
+    "kraken_symbol": "PF_WUSD",
+    "pair": "W:USD",
+    "base": "W",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "YGG/USD:USD",
+    "kraken_symbol": "PF_YGGUSD",
+    "pair": "YGG:USD",
+    "base": "YGG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ONDO/USD:USD",
+    "kraken_symbol": "PF_ONDOUSD",
+    "pair": "ONDO:USD",
+    "base": "ONDO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SAGA/USD:USD",
+    "kraken_symbol": "PF_SAGAUSD",
+    "pair": "SAGA:USD",
+    "base": "SAGA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TRU/USD:USD",
+    "kraken_symbol": "PF_TRUUSD",
+    "pair": "TRU:USD",
+    "base": "TRU",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BEAM/USD:USD",
+    "kraken_symbol": "PF_BEAMUSD",
+    "pair": "BEAM:USD",
+    "base": "BEAM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BOME/USD:USD",
+    "kraken_symbol": "PF_BOMEUSD",
+    "pair": "BOME:USD",
+    "base": "BOME",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ENA/USD:USD",
+    "kraken_symbol": "PF_ENAUSD",
+    "pair": "ENA:USD",
+    "base": "ENA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NEO/USD:USD",
+    "kraken_symbol": "PF_NEOUSD",
+    "pair": "NEO:USD",
+    "base": "NEO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SUPER/USD:USD",
+    "kraken_symbol": "PF_SUPERUSD",
+    "pair": "SUPER:USD",
+    "base": "SUPER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TON/USD:USD",
+    "kraken_symbol": "PF_TONUSD",
+    "pair": "TON:USD",
+    "base": "TON",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "COTI/USD:USD",
+    "kraken_symbol": "PF_COTIUSD",
+    "pair": "COTI:USD",
+    "base": "COTI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BICO/USD:USD",
+    "kraken_symbol": "PF_BICOUSD",
+    "pair": "BICO:USD",
+    "base": "BICO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ASTR/USD:USD",
+    "kraken_symbol": "PF_ASTRUSD",
+    "pair": "ASTR:USD",
+    "base": "ASTR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "T/USD:USD",
+    "kraken_symbol": "PF_TUSD",
+    "pair": "T:USD",
+    "base": "T",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CHR/USD:USD",
+    "kraken_symbol": "PF_CHRUSD",
+    "pair": "CHR:USD",
+    "base": "CHR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SATS/USD:USD",
+    "kraken_symbol": "PF_SATSUSD",
+    "pair": "SATS:USD",
+    "base": "SATS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AR/USD:USD",
+    "kraken_symbol": "PF_ARUSD",
+    "pair": "AR:USD",
+    "base": "AR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ETHFI/USD:USD",
+    "kraken_symbol": "PF_ETHFIUSD",
+    "pair": "ETHFI:USD",
+    "base": "ETHFI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZETA/USD:USD",
+    "kraken_symbol": "PF_ZETAUSD",
+    "pair": "ZETA:USD",
+    "base": "ZETA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "POWR/USD:USD",
+    "kraken_symbol": "PF_POWRUSD",
+    "pair": "POWR:USD",
+    "base": "POWR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MOVR/USD:USD",
+    "kraken_symbol": "PF_MOVRUSD",
+    "pair": "MOVR:USD",
+    "base": "MOVR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FLOKI/USD:USD",
+    "kraken_symbol": "PF_FLOKIUSD",
+    "pair": "FLOKI:USD",
+    "base": "FLOKI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ARKM/USD:USD",
+    "kraken_symbol": "PF_ARKMUSD",
+    "pair": "ARKM:USD",
+    "base": "ARKM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AEVO/USD:USD",
+    "kraken_symbol": "PF_AEVOUSD",
+    "pair": "AEVO:USD",
+    "base": "AEVO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "C98/USD:USD",
+    "kraken_symbol": "PF_C98USD",
+    "pair": "C98:USD",
+    "base": "C98",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PERP/USD:USD",
+    "kraken_symbol": "PF_PERPUSD",
+    "pair": "PERP:USD",
+    "base": "PERP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PENDLE/USD:USD",
+    "kraken_symbol": "PF_PENDLEUSD",
+    "pair": "PENDLE:USD",
+    "base": "PENDLE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CTSI/USD:USD",
+    "kraken_symbol": "PF_CTSIUSD",
+    "pair": "CTSI:USD",
+    "base": "CTSI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ALT/USD:USD",
+    "kraken_symbol": "PF_ALTUSD",
+    "pair": "ALT:USD",
+    "base": "ALT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TURBO/USD:USD",
+    "kraken_symbol": "PF_TURBOUSD",
+    "pair": "TURBO:USD",
+    "base": "TURBO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TLM/USD:USD",
+    "kraken_symbol": "PF_TLMUSD",
+    "pair": "TLM:USD",
+    "base": "TLM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TNSR/USD:USD",
+    "kraken_symbol": "PF_TNSRUSD",
+    "pair": "TNSR:USD",
+    "base": "TNSR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PIXEL/USD:USD",
+    "kraken_symbol": "PF_PIXELUSD",
+    "pair": "PIXEL:USD",
+    "base": "PIXEL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PEOPLE/USD:USD",
+    "kraken_symbol": "PF_PEOPLEUSD",
+    "pair": "PEOPLE:USD",
+    "base": "PEOPLE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BRETT/USD:USD",
+    "kraken_symbol": "PF_BRETTUSD",
+    "pair": "BRETT:USD",
+    "base": "BRETT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "POPCAT/USD:USD",
+    "kraken_symbol": "PF_POPCATUSD",
+    "pair": "POPCAT:USD",
+    "base": "POPCAT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BNT/USD:USD",
+    "kraken_symbol": "PF_BNTUSD",
+    "pair": "BNT:USD",
+    "base": "BNT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GTC/USD:USD",
+    "kraken_symbol": "PF_GTCUSD",
+    "pair": "GTC:USD",
+    "base": "GTC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MEW/USD:USD",
+    "kraken_symbol": "PF_MEWUSD",
+    "pair": "MEW:USD",
+    "base": "MEW",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BB/USD:USD",
+    "kraken_symbol": "PF_BBUSD",
+    "pair": "BB:USD",
+    "base": "BB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STEEM/USD:USD",
+    "kraken_symbol": "PF_STEEMUSD",
+    "pair": "STEEM:USD",
+    "base": "STEEM",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TRB/USD:USD",
+    "kraken_symbol": "PF_TRBUSD",
+    "pair": "TRB:USD",
+    "base": "TRB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZRO/USD:USD",
+    "kraken_symbol": "PF_ZROUSD",
+    "pair": "ZRO:USD",
+    "base": "ZRO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PORTAL/USD:USD",
+    "kraken_symbol": "PF_PORTALUSD",
+    "pair": "PORTAL:USD",
+    "base": "PORTAL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HBAR/USD:USD",
+    "kraken_symbol": "PF_HBARUSD",
+    "pair": "HBAR:USD",
+    "base": "HBAR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BIGTIME/USD:USD",
+    "kraken_symbol": "PF_BIGTIMEUSD",
+    "pair": "BIGTIME:USD",
+    "base": "BIGTIME",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TAO/USD:USD",
+    "kraken_symbol": "PF_TAOUSD",
+    "pair": "TAO:USD",
+    "base": "TAO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NMR/USD:USD",
+    "kraken_symbol": "PF_NMRUSD",
+    "pair": "NMR:USD",
+    "base": "NMR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NOT/USD:USD",
+    "kraken_symbol": "PF_NOTUSD",
+    "pair": "NOT:USD",
+    "base": "NOT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HIGH/USD:USD",
+    "kraken_symbol": "PF_HIGHUSD",
+    "pair": "HIGH:USD",
+    "base": "HIGH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DRIFT/USD:USD",
+    "kraken_symbol": "PF_DRIFTUSD",
+    "pair": "DRIFT:USD",
+    "base": "DRIFT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MNT/USD:USD",
+    "kraken_symbol": "PF_MNTUSD",
+    "pair": "MNT:USD",
+    "base": "MNT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "REZ/USD:USD",
+    "kraken_symbol": "PF_REZUSD",
+    "pair": "REZ:USD",
+    "base": "REZ",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MTL/USD:USD",
+    "kraken_symbol": "PF_MTLUSD",
+    "pair": "MTL:USD",
+    "base": "MTL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RENDER/USD:USD",
+    "kraken_symbol": "PF_RENDERUSD",
+    "pair": "RENDER:USD",
+    "base": "RENDER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZK/USD:USD",
+    "kraken_symbol": "PF_ZKUSD",
+    "pair": "ZK:USD",
+    "base": "ZK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MOG/USD:USD",
+    "kraken_symbol": "PF_MOGUSD",
+    "pair": "MOG:USD",
+    "base": "MOG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AUCTION/USD:USD",
+    "kraken_symbol": "PF_AUCTIONUSD",
+    "pair": "AUCTION:USD",
+    "base": "AUCTION",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RARE/USD:USD",
+    "kraken_symbol": "PF_RAREUSD",
+    "pair": "RARE:USD",
+    "base": "RARE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SYN/USD:USD",
+    "kraken_symbol": "PF_SYNUSD",
+    "pair": "SYN:USD",
+    "base": "SYN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CELR/USD:USD",
+    "kraken_symbol": "PF_CELRUSD",
+    "pair": "CELR:USD",
+    "base": "CELR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "POL/USD:USD",
+    "kraken_symbol": "PF_POLUSD",
+    "pair": "POL:USD",
+    "base": "POL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RSR/USD:USD",
+    "kraken_symbol": "PF_RSRUSD",
+    "pair": "RSR:USD",
+    "base": "RSR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BANANA/USD:USD",
+    "kraken_symbol": "PF_BANANAUSD",
+    "pair": "BANANA:USD",
+    "base": "BANANA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "EIGEN/USD:USD",
+    "kraken_symbol": "PF_EIGENUSD",
+    "pair": "EIGEN:USD",
+    "base": "EIGEN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NEIRO/USD:USD",
+    "kraken_symbol": "PF_NEIROUSD",
+    "pair": "NEIRO:USD",
+    "base": "NEIRO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DOGS/USD:USD",
+    "kraken_symbol": "PF_DOGSUSD",
+    "pair": "DOGS:USD",
+    "base": "DOGS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ACE/USD:USD",
+    "kraken_symbol": "PF_ACEUSD",
+    "pair": "ACE:USD",
+    "base": "ACE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CELO/USD:USD",
+    "kraken_symbol": "PF_CELOUSD",
+    "pair": "CELO:USD",
+    "base": "CELO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PONKE/USD:USD",
+    "kraken_symbol": "PF_PONKEUSD",
+    "pair": "PONKE:USD",
+    "base": "PONKE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CATI/USD:USD",
+    "kraken_symbol": "PF_CATIUSD",
+    "pair": "CATI:USD",
+    "base": "CATI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GAS/USD:USD",
+    "kraken_symbol": "PF_GASUSD",
+    "pair": "GAS:USD",
+    "base": "GAS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LQTY/USD:USD",
+    "kraken_symbol": "PF_LQTYUSD",
+    "pair": "LQTY:USD",
+    "base": "LQTY",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SUN/USD:USD",
+    "kraken_symbol": "PF_SUNUSD",
+    "pair": "SUN:USD",
+    "base": "SUN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RAY/USD:USD",
+    "kraken_symbol": "PF_RAYUSD",
+    "pair": "RAY:USD",
+    "base": "RAY",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CYBER/USD:USD",
+    "kraken_symbol": "PF_CYBERUSD",
+    "pair": "CYBER:USD",
+    "base": "CYBER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HMSTR/USD:USD",
+    "kraken_symbol": "PF_HMSTRUSD",
+    "pair": "HMSTR:USD",
+    "base": "HMSTR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ROSE/USD:USD",
+    "kraken_symbol": "PF_ROSEUSD",
+    "pair": "ROSE:USD",
+    "base": "ROSE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GOAT/USD:USD",
+    "kraken_symbol": "PF_GOATUSD",
+    "pair": "GOAT:USD",
+    "base": "GOAT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "OXT/USD:USD",
+    "kraken_symbol": "PF_OXTUSD",
+    "pair": "OXT:USD",
+    "base": "OXT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CKB/USD:USD",
+    "kraken_symbol": "PF_CKBUSD",
+    "pair": "CKB:USD",
+    "base": "CKB",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CETUS/USD:USD",
+    "kraken_symbol": "PF_CETUSUSD",
+    "pair": "CETUS:USD",
+    "base": "CETUS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MOODENG/USD:USD",
+    "kraken_symbol": "PF_MOODENGUSD",
+    "pair": "MOODENG:USD",
+    "base": "MOODENG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CAT/USD:USD",
+    "kraken_symbol": "PF_CATUSD",
+    "pair": "CAT:USD",
+    "base": "CAT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "VET/USD:USD",
+    "kraken_symbol": "PF_VETUSD",
+    "pair": "VET:USD",
+    "base": "VET",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BEL/USD:USD",
+    "kraken_symbol": "PF_BELUSD",
+    "pair": "BEL:USD",
+    "base": "BEL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SSV/USD:USD",
+    "kraken_symbol": "PF_SSVUSD",
+    "pair": "SSV:USD",
+    "base": "SSV",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "METIS/USD:USD",
+    "kraken_symbol": "PF_METISUSD",
+    "pair": "METIS:USD",
+    "base": "METIS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ATH/USD:USD",
+    "kraken_symbol": "PF_ATHUSD",
+    "pair": "ATH:USD",
+    "base": "ATH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DEGEN/USD:USD",
+    "kraken_symbol": "PF_DEGENUSD",
+    "pair": "DEGEN:USD",
+    "base": "DEGEN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DOG/USD:USD",
+    "kraken_symbol": "PF_DOGUSD",
+    "pair": "DOG:USD",
+    "base": "DOG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ONT/USD:USD",
+    "kraken_symbol": "PF_ONTUSD",
+    "pair": "ONT:USD",
+    "base": "ONT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ONG/USD:USD",
+    "kraken_symbol": "PF_ONGUSD",
+    "pair": "ONG:USD",
+    "base": "ONG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KAIA/USD:USD",
+    "kraken_symbol": "PF_KAIAUSD",
+    "pair": "KAIA:USD",
+    "base": "KAIA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DEEP/USD:USD",
+    "kraken_symbol": "PF_DEEPUSD",
+    "pair": "DEEP:USD",
+    "base": "DEEP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GRASS/USD:USD",
+    "kraken_symbol": "PF_GRASSUSD",
+    "pair": "GRASS:USD",
+    "base": "GRASS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SWELL/USD:USD",
+    "kraken_symbol": "PF_SWELLUSD",
+    "pair": "SWELL:USD",
+    "base": "SWELL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AI/USD:USD",
+    "kraken_symbol": "PF_AIUSD",
+    "pair": "AI:USD",
+    "base": "AI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "G/USD:USD",
+    "kraken_symbol": "PF_GUSD",
+    "pair": "G:USD",
+    "base": "G",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CAKE/USD:USD",
+    "kraken_symbol": "PF_CAKEUSD",
+    "pair": "CAKE:USD",
+    "base": "CAKE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AKT/USD:USD",
+    "kraken_symbol": "PF_AKTUSD",
+    "pair": "AKT:USD",
+    "base": "AKT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PNUT/USD:USD",
+    "kraken_symbol": "PF_PNUTUSD",
+    "pair": "PNUT:USD",
+    "base": "PNUT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MORPHO/USD:USD",
+    "kraken_symbol": "PF_MORPHOUSD",
+    "pair": "MORPHO:USD",
+    "base": "MORPHO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TAIKO/USD:USD",
+    "kraken_symbol": "PF_TAIKOUSD",
+    "pair": "TAIKO:USD",
+    "base": "TAIKO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "COW/USD:USD",
+    "kraken_symbol": "PF_COWUSD",
+    "pair": "COW:USD",
+    "base": "COW",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZIL/USD:USD",
+    "kraken_symbol": "PF_ZILUSD",
+    "pair": "ZIL:USD",
+    "base": "ZIL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FLUX/USD:USD",
+    "kraken_symbol": "PF_FLUXUSD",
+    "pair": "FLUX:USD",
+    "base": "FLUX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DENT/USD:USD",
+    "kraken_symbol": "PF_DENTUSD",
+    "pair": "DENT:USD",
+    "base": "DENT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZEN/USD:USD",
+    "kraken_symbol": "PF_ZENUSD",
+    "pair": "ZEN:USD",
+    "base": "ZEN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IOTA/USD:USD",
+    "kraken_symbol": "PF_IOTAUSD",
+    "pair": "IOTA:USD",
+    "base": "IOTA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HIPPO/USD:USD",
+    "kraken_symbol": "PF_HIPPOUSD",
+    "pair": "HIPPO:USD",
+    "base": "HIPPO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GIGA/USD:USD",
+    "kraken_symbol": "PF_GIGAUSD",
+    "pair": "GIGA:USD",
+    "base": "GIGA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IOTX/USD:USD",
+    "kraken_symbol": "PF_IOTXUSD",
+    "pair": "IOTX:USD",
+    "base": "IOTX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IOST/USD:USD",
+    "kraken_symbol": "PF_IOSTUSD",
+    "pair": "IOST:USD",
+    "base": "IOST",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HOOK/USD:USD",
+    "kraken_symbol": "PF_HOOKUSD",
+    "pair": "HOOK:USD",
+    "base": "HOOK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ORCA/USD:USD",
+    "kraken_symbol": "PF_ORCAUSD",
+    "pair": "ORCA:USD",
+    "base": "ORCA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SPX/USD:USD",
+    "kraken_symbol": "PF_SPXUSD",
+    "pair": "SPX:USD",
+    "base": "SPX",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CRO/USD:USD",
+    "kraken_symbol": "PF_CROUSD",
+    "pair": "CRO:USD",
+    "base": "CRO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PENGU/USD:USD",
+    "kraken_symbol": "PF_PENGUUSD",
+    "pair": "PENGU:USD",
+    "base": "PENGU",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MOVE/USD:USD",
+    "kraken_symbol": "PF_MOVEUSD",
+    "pair": "MOVE:USD",
+    "base": "MOVE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KOMA/USD:USD",
+    "kraken_symbol": "PF_KOMAUSD",
+    "pair": "KOMA:USD",
+    "base": "KOMA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ME/USD:USD",
+    "kraken_symbol": "PF_MEUSD",
+    "pair": "ME:USD",
+    "base": "ME",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "USUAL/USD:USD",
+    "kraken_symbol": "PF_USUALUSD",
+    "pair": "USUAL:USD",
+    "base": "USUAL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CHILLGUY/USD:USD",
+    "kraken_symbol": "PF_CHILLGUYUSD",
+    "pair": "CHILLGUY:USD",
+    "base": "CHILLGUY",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TRUMP/USD:USD",
+    "kraken_symbol": "PF_TRUMPUSD",
+    "pair": "TRUMP:USD",
+    "base": "TRUMP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "S/USD:USD",
+    "kraken_symbol": "PF_SUSD",
+    "pair": "S:USD",
+    "base": "S",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MELANIA/USD:USD",
+    "kraken_symbol": "PF_MELANIAUSD",
+    "pair": "MELANIA:USD",
+    "base": "MELANIA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FARTCOIN/USD:USD",
+    "kraken_symbol": "PF_FARTCOINUSD",
+    "pair": "FARTCOIN:USD",
+    "base": "FARTCOIN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "VIRTUAL/USD:USD",
+    "kraken_symbol": "PF_VIRTUALUSD",
+    "pair": "VIRTUAL:USD",
+    "base": "VIRTUAL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AIXBT/USD:USD",
+    "kraken_symbol": "PF_AIXBTUSD",
+    "pair": "AIXBT:USD",
+    "base": "AIXBT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZEREBRO/USD:USD",
+    "kraken_symbol": "PF_ZEREBROUSD",
+    "pair": "ZEREBRO:USD",
+    "base": "ZEREBRO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GRIFFAIN/USD:USD",
+    "kraken_symbol": "PF_GRIFFAINUSD",
+    "pair": "GRIFFAIN:USD",
+    "base": "GRIFFAIN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "VINE/USD:USD",
+    "kraken_symbol": "PF_VINEUSD",
+    "pair": "VINE:USD",
+    "base": "VINE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ANIME/USD:USD",
+    "kraken_symbol": "PF_ANIMEUSD",
+    "pair": "ANIME:USD",
+    "base": "ANIME",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HYPE/USD:USD",
+    "kraken_symbol": "PF_HYPEUSD",
+    "pair": "HYPE:USD",
+    "base": "HYPE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XCN/USD:USD",
+    "kraken_symbol": "PF_XCNUSD",
+    "pair": "XCN:USD",
+    "base": "XCN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IO/USD:USD",
+    "kraken_symbol": "PF_IOUSD",
+    "pair": "IO:USD",
+    "base": "IO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ALCH/USD:USD",
+    "kraken_symbol": "PF_ALCHUSD",
+    "pair": "ALCH:USD",
+    "base": "ALCH",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ARC/USD:USD",
+    "kraken_symbol": "PF_ARCUSD",
+    "pair": "ARC:USD",
+    "base": "ARC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CGPT/USD:USD",
+    "kraken_symbol": "PF_CGPTUSD",
+    "pair": "CGPT:USD",
+    "base": "CGPT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SONIC/USD:USD",
+    "kraken_symbol": "PF_SONICUSD",
+    "pair": "SONIC:USD",
+    "base": "SONIC",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SKL/USD:USD",
+    "kraken_symbol": "PF_SKLUSD",
+    "pair": "SKL:USD",
+    "base": "SKL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BIO/USD:USD",
+    "kraken_symbol": "PF_BIOUSD",
+    "pair": "BIO:USD",
+    "base": "BIO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "COOKIE/USD:USD",
+    "kraken_symbol": "PF_COOKIEUSD",
+    "pair": "COOKIE:USD",
+    "base": "COOKIE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DEXE/USD:USD",
+    "kraken_symbol": "PF_DEXEUSD",
+    "pair": "DEXE:USD",
+    "base": "DEXE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "VELO/USD:USD",
+    "kraken_symbol": "PF_VELOUSD",
+    "pair": "VELO:USD",
+    "base": "VELO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ONE/USD:USD",
+    "kraken_symbol": "PF_ONEUSD",
+    "pair": "ONE:USD",
+    "base": "ONE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SWARMS/USD:USD",
+    "kraken_symbol": "PF_SWARMSUSD",
+    "pair": "SWARMS:USD",
+    "base": "SWARMS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "DF/USD:USD",
+    "kraken_symbol": "PF_DFUSD",
+    "pair": "DF:USD",
+    "base": "DF",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BERA/USD:USD",
+    "kraken_symbol": "PF_BERAUSD",
+    "pair": "BERA:USD",
+    "base": "BERA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TOSHI/USD:USD",
+    "kraken_symbol": "PF_TOSHIUSD",
+    "pair": "TOSHI:USD",
+    "base": "TOSHI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SOLV/USD:USD",
+    "kraken_symbol": "PF_SOLVUSD",
+    "pair": "SOLV:USD",
+    "base": "SOLV",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ID/USD:USD",
+    "kraken_symbol": "PF_IDUSD",
+    "pair": "ID:USD",
+    "base": "ID",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XVS/USD:USD",
+    "kraken_symbol": "PF_XVSUSD",
+    "pair": "XVS:USD",
+    "base": "XVS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LAYER/USD:USD",
+    "kraken_symbol": "PF_LAYERUSD",
+    "pair": "LAYER:USD",
+    "base": "LAYER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "IP/USD:USD",
+    "kraken_symbol": "PF_IPUSD",
+    "pair": "IP:USD",
+    "base": "IP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "KAITO/USD:USD",
+    "kraken_symbol": "PF_KAITOUSD",
+    "pair": "KAITO:USD",
+    "base": "KAITO",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GPS/USD:USD",
+    "kraken_symbol": "PF_GPSUSD",
+    "pair": "GPS:USD",
+    "base": "GPS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SHELL/USD:USD",
+    "kraken_symbol": "PF_SHELLUSD",
+    "pair": "SHELL:USD",
+    "base": "SHELL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "B3/USD:USD",
+    "kraken_symbol": "PF_B3USD",
+    "pair": "B3:USD",
+    "base": "B3",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "EUR/USD:USD",
+    "kraken_symbol": "PF_EURUSD",
+    "pair": "EUR:USD",
+    "base": "EUR",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GBP/USD:USD",
+    "kraken_symbol": "PF_GBPUSD",
+    "pair": "GBP:USD",
+    "base": "GBP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AUD/USD:USD",
+    "kraken_symbol": "PF_AUDUSD",
+    "pair": "AUD:USD",
+    "base": "AUD",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CHF/USD:USD",
+    "kraken_symbol": "PF_CHFUSD",
+    "pair": "CHF:USD",
+    "base": "CHF",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "JPY/USD:USD",
+    "kraken_symbol": "PF_JPYUSD",
+    "pair": "JPY:USD",
+    "base": "JPY",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "INIT/USD:USD",
+    "kraken_symbol": "PF_INITUSD",
+    "pair": "INIT:USD",
+    "base": "INIT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SYRUP/USD:USD",
+    "kraken_symbol": "PF_SYRUPUSD",
+    "pair": "SYRUP:USD",
+    "base": "SYRUP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SXT/USD:USD",
+    "kraken_symbol": "PF_SXTUSD",
+    "pair": "SXT:USD",
+    "base": "SXT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MUBARAK/USD:USD",
+    "kraken_symbol": "PF_MUBARAKUSD",
+    "pair": "MUBARAK:USD",
+    "base": "MUBARAK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HAEDAL/USD:USD",
+    "kraken_symbol": "PF_HAEDALUSD",
+    "pair": "HAEDAL:USD",
+    "base": "HAEDAL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SPK/USD:USD",
+    "kraken_symbol": "PF_SPKUSD",
+    "pair": "SPK:USD",
+    "base": "SPK",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "1MBABYDOGE/USD:USD",
+    "kraken_symbol": "PF_1MBABYDOGEUSD",
+    "pair": "1MBABYDOGE:USD",
+    "base": "1MBABYDOGE",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PUMP/USD:USD",
+    "kraken_symbol": "PF_PUMPUSD",
+    "pair": "PUMP:USD",
+    "base": "PUMP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "WLFI/USD:USD",
+    "kraken_symbol": "PF_WLFIUSD",
+    "pair": "WLFI:USD",
+    "base": "WLFI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XAUT/USD:USD",
+    "kraken_symbol": "PF_XAUTUSD",
+    "pair": "XAUT:USD",
+    "base": "XAUT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SOON/USD:USD",
+    "kraken_symbol": "PF_SOONUSD",
+    "pair": "SOON:USD",
+    "base": "SOON",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ASTER/USD:USD",
+    "kraken_symbol": "PF_ASTERUSD",
+    "pair": "ASTER:USD",
+    "base": "ASTER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "STBL/USD:USD",
+    "kraken_symbol": "PF_STBLUSD",
+    "pair": "STBL:USD",
+    "base": "STBL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "XPL/USD:USD",
+    "kraken_symbol": "PF_XPLUSD",
+    "pair": "XPL:USD",
+    "base": "XPL",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ORDER/USD:USD",
+    "kraken_symbol": "PF_ORDERUSD",
+    "pair": "ORDER:USD",
+    "base": "ORDER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "PROMPT/USD:USD",
+    "kraken_symbol": "PF_PROMPTUSD",
+    "pair": "PROMPT:USD",
+    "base": "PROMPT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MIRA/USD:USD",
+    "kraken_symbol": "PF_MIRAUSD",
+    "pair": "MIRA:USD",
+    "base": "MIRA",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "2Z/USD:USD",
+    "kraken_symbol": "PF_2ZUSD",
+    "pair": "2Z:USD",
+    "base": "2Z",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "OPEN/USD:USD",
+    "kraken_symbol": "PF_OPENUSD",
+    "pair": "OPEN:USD",
+    "base": "OPEN",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RARI/USD:USD",
+    "kraken_symbol": "PF_RARIUSD",
+    "pair": "RARI:USD",
+    "base": "RARI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "RIVER/USD:USD",
+    "kraken_symbol": "PF_RIVERUSD",
+    "pair": "RIVER:USD",
+    "base": "RIVER",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZBT/USD:USD",
+    "kraken_symbol": "PF_ZBTUSD",
+    "pair": "ZBT:USD",
+    "base": "ZBT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NIGHT/USD:USD",
+    "kraken_symbol": "PF_NIGHTUSD",
+    "pair": "NIGHT:USD",
+    "base": "NIGHT",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "LCAP/USD:USD",
+    "kraken_symbol": "PF_LCAPUSD",
+    "pair": "LCAP:USD",
+    "base": "LCAP",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GLDX/USD:USD",
+    "kraken_symbol": "PF_GLDXUSD",
+    "pair": "GLDx:USD",
+    "base": "GLDx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "QQQX/USD:USD",
+    "kraken_symbol": "PF_QQQXUSD",
+    "pair": "QQQx:USD",
+    "base": "QQQx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "SPYX/USD:USD",
+    "kraken_symbol": "PF_SPYXUSD",
+    "pair": "SPYx:USD",
+    "base": "SPYx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ESPORTS/USD:USD",
+    "kraken_symbol": "PF_ESPORTSUSD",
+    "pair": "ESPORTS:USD",
+    "base": "ESPORTS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MON/USD:USD",
+    "kraken_symbol": "PF_MONUSD",
+    "pair": "MON:USD",
+    "base": "MON",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "FOLKS/USD:USD",
+    "kraken_symbol": "PF_FOLKSUSD",
+    "pair": "FOLKS:USD",
+    "base": "FOLKS",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BSU/USD:USD",
+    "kraken_symbol": "PF_BSUUSD",
+    "pair": "BSU:USD",
+    "base": "BSU",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "OMI/USD:USD",
+    "kraken_symbol": "PF_OMIUSD",
+    "pair": "OMI:USD",
+    "base": "OMI",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "ZIG/USD:USD",
+    "kraken_symbol": "PF_ZIGUSD",
+    "pair": "ZIG:USD",
+    "base": "ZIG",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "TSLAX/USD:USD",
+    "kraken_symbol": "PF_TSLAXUSD",
+    "pair": "TSLAx:USD",
+    "base": "TSLAx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "NVDAX/USD:USD",
+    "kraken_symbol": "PF_NVDAXUSD",
+    "pair": "NVDAx:USD",
+    "base": "NVDAx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "MSTRX/USD:USD",
+    "kraken_symbol": "PF_MSTRXUSD",
+    "pair": "MSTRx:USD",
+    "base": "MSTRx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "HOODX/USD:USD",
+    "kraken_symbol": "PF_HOODXUSD",
+    "pair": "HOODx:USD",
+    "base": "HOODx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "GOOGLX/USD:USD",
+    "kraken_symbol": "PF_GOOGLXUSD",
+    "pair": "GOOGLx:USD",
+    "base": "GOOGLx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "CRCLX/USD:USD",
+    "kraken_symbol": "PF_CRCLXUSD",
+    "pair": "CRCLx:USD",
+    "base": "CRCLx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "AAPLX/USD:USD",
+    "kraken_symbol": "PF_AAPLXUSD",
+    "pair": "AAPLx:USD",
+    "base": "AAPLx",
+    "quote": "USD"
+  },
+  {
+    "ccxt_symbol": "BDX/USD:USD",
+    "kraken_symbol": "PF_BDXUSD",
+    "pair": "BDX:USD",
+    "base": "BDX",
+    "quote": "USD"
+  }
+]

@@ -1,5 +1,5 @@
 import config
-import sys
+import pytest
 
 required_attrs = [
     'ACTIVE_WATCHLIST',
@@ -15,19 +15,8 @@ required_attrs = [
     'REGIME_PERMISSIONS'
 ]
 
-missing = []
 
-print("Running Config Integrity Check...")
-for attr in required_attrs:
-    if not hasattr(config, attr):
-        missing.append(attr)
-        print(f"❌ MISSING: {attr}")
-    else:
-        print(f"✅ FOUND: {attr}")
+def test_config_integrity():
+    missing = [attr for attr in required_attrs if not hasattr(config, attr)]
+    assert not missing, f"Missing config attributes: {missing}"
 
-if missing:
-    print(f"\nCRITICAL: {len(missing)} attributes missing from config.py!")
-    sys.exit(1)
-else:
-    print("\n✅ Config Integrity Check PASSED. All critical attributes present.")
-    sys.exit(0)

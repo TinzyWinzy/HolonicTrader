@@ -1,0 +1,31 @@
+{
+  "n_samples": 6,
+  "n_base_features": 7,
+  "n_rich_features": 7,
+  "base_features": [
+    "qty",
+    "price",
+    "ret",
+    "rv_10",
+    "rv_10_ann",
+    "atr",
+    "vol_spike"
+  ],
+  "rich_features": [
+    "qty",
+    "price",
+    "ret",
+    "rv_10",
+    "rv_10_ann",
+    "atr",
+    "vol_spike"
+  ],
+  "baseline_cv_rmse": 0.3555512190425724,
+  "baseline_cv_std": 0.170231074971394,
+  "rich_cv_rmse": 0.3555512190425724,
+  "rich_cv_std": 0.170231074971394,
+  "target_mean": -0.37666666666666665,
+  "target_std": 0.3366105563803171,
+  "win_rate": 0.0,
+  "timestamp": "2026-03-21T23:18:32.021689"
+}

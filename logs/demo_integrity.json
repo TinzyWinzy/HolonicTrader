@@ -1,0 +1,420 @@
+{
+  "entries": [
+    {
+      "sequence_num": 0,
+      "timestamp": "2026-03-15T08:33:11.092689+00:00",
+      "timestamp_ns": 1773563591092684288,
+      "event_type": "TRADE",
+      "symbol": "BTC/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 0.1,
+        "price": 50000,
+        "order_id": "order_001"
+      },
+      "prev_hash": "2dae14582a925377c0ef1050e916da9cc19804c69231fe5e409f41a0a1c2450d",
+      "entry_hash": "5fa0153c50f409b07c83edcbcabbb91762c3ac92bc4b6d8c53347bca929a9e58"
+    },
+    {
+      "sequence_num": 1,
+      "timestamp": "2026-03-15T08:33:11.095111+00:00",
+      "timestamp_ns": 1773563591095106048,
+      "event_type": "TRADE",
+      "symbol": "ETH/USDT",
+      "data": {
+        "action": "SELL",
+        "quantity": 1.0,
+        "price": 3000,
+        "order_id": "order_002"
+      },
+      "prev_hash": "5fa0153c50f409b07c83edcbcabbb91762c3ac92bc4b6d8c53347bca929a9e58",
+      "entry_hash": "c0c9421d5476aa04b5f33afb8a1de7aa7579201327d1186fff39ab53aa93cf72"
+    },
+    {
+      "sequence_num": 2,
+      "timestamp": "2026-03-15T08:33:11.097421+00:00",
+      "timestamp_ns": 1773563591097417728,
+      "event_type": "TRADE",
+      "symbol": "SOL/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 10.0,
+        "price": 100,
+        "order_id": "order_003"
+      },
+      "prev_hash": "c0c9421d5476aa04b5f33afb8a1de7aa7579201327d1186fff39ab53aa93cf72",
+      "entry_hash": "55e84a5614c6a84102c4e84f17fbec6912b2f73012ca8fe1a8df65b630d5a212"
+    },
+    {
+      "sequence_num": 3,
+      "timestamp": "2026-03-15T08:33:11.099512+00:00",
+      "timestamp_ns": 1773563591099508992,
+      "event_type": "SIGNAL",
+      "symbol": "BTC/USDT",
+      "data": {
+        "signal_type": "LONG",
+        "conviction": 0.85,
+        "strategy": "MOMENTUM"
+      },
+      "prev_hash": "55e84a5614c6a84102c4e84f17fbec6912b2f73012ca8fe1a8df65b630d5a212",
+      "entry_hash": "4fcbeb4656dbe43ae99ab48ec191f41f30876f1074ae7777c2dbae960ca0b855"
+    },
+    {
+      "sequence_num": 4,
+      "timestamp": "2026-03-15T08:33:11.101488+00:00",
+      "timestamp_ns": 1773563591101485056,
+      "event_type": "SIGNAL",
+      "symbol": "ETH/USDT",
+      "data": {
+        "signal_type": "SHORT",
+        "conviction": 0.72,
+        "strategy": "MEAN_REVERSION"
+      },
+      "prev_hash": "4fcbeb4656dbe43ae99ab48ec191f41f30876f1074ae7777c2dbae960ca0b855",
+      "entry_hash": "2b19519df60c37e2e044c63fe78a03c989c9546ef65d15e20d2499b1451a4e93"
+    },
+    {
+      "sequence_num": 5,
+      "timestamp": "2026-03-15T08:36:27.544188+00:00",
+      "timestamp_ns": 1773563787544184576,
+      "event_type": "TRADE",
+      "symbol": "BTC/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 0.1,
+        "price": 50000,
+        "order_id": "order_001"
+      },
+      "prev_hash": "2b19519df60c37e2e044c63fe78a03c989c9546ef65d15e20d2499b1451a4e93",
+      "entry_hash": "5c1461c7a031c00286a09c6a315ffa0646b01afa49f51d801b35baf97abfd207"
+    },
+    {
+      "sequence_num": 6,
+      "timestamp": "2026-03-15T08:36:27.546331+00:00",
+      "timestamp_ns": 1773563787546324480,
+      "event_type": "TRADE",
+      "symbol": "ETH/USDT",
+      "data": {
+        "action": "SELL",
+        "quantity": 1.0,
+        "price": 3000,
+        "order_id": "order_002"
+      },
+      "prev_hash": "5c1461c7a031c00286a09c6a315ffa0646b01afa49f51d801b35baf97abfd207",
+      "entry_hash": "11d4cd0c5f39085fb967a86823f5f97feafef5318f86b64b230c202ce67acf95"
+    },
+    {
+      "sequence_num": 7,
+      "timestamp": "2026-03-15T08:36:27.548443+00:00",
+      "timestamp_ns": 1773563787548436992,
+      "event_type": "TRADE",
+      "symbol": "SOL/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 10.0,
+        "price": 100,
+        "order_id": "order_003"
+      },
+      "prev_hash": "11d4cd0c5f39085fb967a86823f5f97feafef5318f86b64b230c202ce67acf95",
+      "entry_hash": "f934ef5b77bffa24568a5ac2e2ab78ba191cd3f52c440802f84e743a52f4124c"
+    },
+    {
+      "sequence_num": 8,
+      "timestamp": "2026-03-15T08:36:27.550034+00:00",
+      "timestamp_ns": 1773563787550030848,
+      "event_type": "SIGNAL",
+      "symbol": "BTC/USDT",
+      "data": {
+        "signal_type": "LONG",
+        "conviction": 0.85,
+        "strategy": "MOMENTUM"
+      },
+      "prev_hash": "f934ef5b77bffa24568a5ac2e2ab78ba191cd3f52c440802f84e743a52f4124c",
+      "entry_hash": "bbdcfbea0201506efd4c96d8fc9f41fb937f159d741204b08681dfc6a7bb9a0e"
+    },
+    {
+      "sequence_num": 9,
+      "timestamp": "2026-03-15T08:36:27.551859+00:00",
+      "timestamp_ns": 1773563787551855104,
+      "event_type": "SIGNAL",
+      "symbol": "ETH/USDT",
+      "data": {
+        "signal_type": "SHORT",
+        "conviction": 0.72,
+        "strategy": "MEAN_REVERSION"
+      },
+      "prev_hash": "bbdcfbea0201506efd4c96d8fc9f41fb937f159d741204b08681dfc6a7bb9a0e",
+      "entry_hash": "0af5dd4521ea226f4d3844f599c08a6922336483830f21f44422d6abe08e3bba"
+    },
+    {
+      "sequence_num": 10,
+      "timestamp": "2026-03-15T08:37:32.759667+00:00",
+      "timestamp_ns": 1773563852759664128,
+      "event_type": "TRADE",
+      "symbol": "BTC/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 0.1,
+        "price": 50000,
+        "order_id": "order_001"
+      },
+      "prev_hash": "0af5dd4521ea226f4d3844f599c08a6922336483830f21f44422d6abe08e3bba",
+      "entry_hash": "c03e123ebbf44a693c58f235cebfd722a4915212b67a6bf765092e9933fefb86"
+    },
+    {
+      "sequence_num": 11,
+      "timestamp": "2026-03-15T08:37:32.762019+00:00",
+      "timestamp_ns": 1773563852762014208,
+      "event_type": "TRADE",
+      "symbol": "ETH/USDT",
+      "data": {
+        "action": "SELL",
+        "quantity": 1.0,
+        "price": 3000,
+        "order_id": "order_002"
+      },
+      "prev_hash": "c03e123ebbf44a693c58f235cebfd722a4915212b67a6bf765092e9933fefb86",
+      "entry_hash": "e3ab114efb959870cc0607ac889f17dbbcdcab2945e466b4d607ae9aa3d56151"
+    },
+    {
+      "sequence_num": 12,
+      "timestamp": "2026-03-15T08:37:32.764003+00:00",
+      "timestamp_ns": 1773563852764000512,
+      "event_type": "TRADE",
+      "symbol": "SOL/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 10.0,
+        "price": 100,
+        "order_id": "order_003"
+      },
+      "prev_hash": "e3ab114efb959870cc0607ac889f17dbbcdcab2945e466b4d607ae9aa3d56151",
+      "entry_hash": "d1f76b3fadb4c3e36bff37987037c5ef046918d9251af5e7b4b87bc6b8d310ab"
+    },
+    {
+      "sequence_num": 13,
+      "timestamp": "2026-03-15T08:37:32.765555+00:00",
+      "timestamp_ns": 1773563852765553664,
+      "event_type": "SIGNAL",
+      "symbol": "BTC/USDT",
+      "data": {
+        "signal_type": "LONG",
+        "conviction": 0.85,
+        "strategy": "MOMENTUM"
+      },
+      "prev_hash": "d1f76b3fadb4c3e36bff37987037c5ef046918d9251af5e7b4b87bc6b8d310ab",
+      "entry_hash": "d87797d8b86a4ae3c41b58f309bce0c76eb095b6cd62b88990780b62c539b8e3"
+    },
+    {
+      "sequence_num": 14,
+      "timestamp": "2026-03-15T08:37:32.766866+00:00",
+      "timestamp_ns": 1773563852766863616,
+      "event_type": "SIGNAL",
+      "symbol": "ETH/USDT",
+      "data": {
+        "signal_type": "SHORT",
+        "conviction": 0.72,
+        "strategy": "MEAN_REVERSION"
+      },
+      "prev_hash": "d87797d8b86a4ae3c41b58f309bce0c76eb095b6cd62b88990780b62c539b8e3",
+      "entry_hash": "655a1345a6c2cbad507d92674e4136e0ad8f754b14c5a1da187304693e6b3b66"
+    },
+    {
+      "sequence_num": 15,
+      "timestamp": "2026-03-15T08:38:51.972382+00:00",
+      "timestamp_ns": 1773563931972379648,
+      "event_type": "TRADE",
+      "symbol": "BTC/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 0.1,
+        "price": 50000,
+        "order_id": "order_001"
+      },
+      "prev_hash": "655a1345a6c2cbad507d92674e4136e0ad8f754b14c5a1da187304693e6b3b66",
+      "entry_hash": "95086f2b326f3ecedab2e517f3628482bbe3a0ce68f8c01d94a1d6d4b128450a"
+    },
+    {
+      "sequence_num": 16,
+      "timestamp": "2026-03-15T08:38:51.974237+00:00",
+      "timestamp_ns": 1773563931974232320,
+      "event_type": "TRADE",
+      "symbol": "ETH/USDT",
+      "data": {
+        "action": "SELL",
+        "quantity": 1.0,
+        "price": 3000,
+        "order_id": "order_002"
+      },
+      "prev_hash": "95086f2b326f3ecedab2e517f3628482bbe3a0ce68f8c01d94a1d6d4b128450a",
+      "entry_hash": "55454dc1db897e85ed40c957ba4a14b632c33e4f4d23363722c4cb51c61d21de"
+    },
+    {
+      "sequence_num": 17,
+      "timestamp": "2026-03-15T08:38:51.976819+00:00",
+      "timestamp_ns": 1773563931976814848,
+      "event_type": "TRADE",
+      "symbol": "SOL/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 10.0,
+        "price": 100,
+        "order_id": "order_003"
+      },
+      "prev_hash": "55454dc1db897e85ed40c957ba4a14b632c33e4f4d23363722c4cb51c61d21de",
+      "entry_hash": "f1f1da267561dc7dec68583b3b9c499c265b4a7f1e56cb0d1440b77e35a83651"
+    },
+    {
+      "sequence_num": 18,
+      "timestamp": "2026-03-15T08:38:51.979395+00:00",
+      "timestamp_ns": 1773563931979392000,
+      "event_type": "SIGNAL",
+      "symbol": "BTC/USDT",
+      "data": {
+        "signal_type": "LONG",
+        "conviction": 0.85,
+        "strategy": "MOMENTUM"
+      },
+      "prev_hash": "f1f1da267561dc7dec68583b3b9c499c265b4a7f1e56cb0d1440b77e35a83651",
+      "entry_hash": "eb383d601e61df2c8b006dade1dfafcd518c473f758d0a9d12d864ff8006b41a"
+    },
+    {
+      "sequence_num": 19,
+      "timestamp": "2026-03-15T08:38:51.981147+00:00",
+      "timestamp_ns": 1773563931981144576,
+      "event_type": "SIGNAL",
+      "symbol": "ETH/USDT",
+      "data": {
+        "signal_type": "SHORT",
+        "conviction": 0.72,
+        "strategy": "MEAN_REVERSION"
+      },
+      "prev_hash": "eb383d601e61df2c8b006dade1dfafcd518c473f758d0a9d12d864ff8006b41a",
+      "entry_hash": "022d3bd23aa864151c2d0b8ca98feb8afa4657c0c2fa0eaa5b123873d2b3b1d8"
+    },
+    {
+      "sequence_num": 20,
+      "timestamp": "2026-03-15T08:40:18.617528+00:00",
+      "timestamp_ns": 1773564018617526016,
+      "event_type": "TRADE",
+      "symbol": "BTC/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 0.1,
+        "price": 50000,
+        "order_id": "order_001"
+      },
+      "prev_hash": "022d3bd23aa864151c2d0b8ca98feb8afa4657c0c2fa0eaa5b123873d2b3b1d8",
+      "entry_hash": "52c165f2aa4009d02341588c15b556f7fcf06cf4372e2cd2ed5ee22067cf5a18"
+    },
+    {
+      "sequence_num": 21,
+      "timestamp": "2026-03-15T08:40:18.619518+00:00",
+      "timestamp_ns": 1773564018619514368,
+      "event_type": "TRADE",
+      "symbol": "ETH/USDT",
+      "data": {
+        "action": "SELL",
+        "quantity": 1.0,
+        "price": 3000,
+        "order_id": "order_002"
+      },
+      "prev_hash": "52c165f2aa4009d02341588c15b556f7fcf06cf4372e2cd2ed5ee22067cf5a18",
+      "entry_hash": "7dcc41fb8c2f9c3f06f81f10ae3a778f749c61b889769955134d50705069c1e0"
+    },
+    {
+      "sequence_num": 22,
+      "timestamp": "2026-03-15T08:40:18.622442+00:00",
+      "timestamp_ns": 1773564018622437888,
+      "event_type": "TRADE",
+      "symbol": "SOL/USDT",
+      "data": {
+        "action": "BUY",
+        "quantity": 10.0,
+        "price": 100,
+        "order_id": "order_003"
+      },
+      "prev_hash": "7dcc41fb8c2f9c3f06f81f10ae3a778f749c61b889769955134d50705069c1e0",
+      "entry_hash": "2c98795a67034a76800f67de4403048788ab43277fc5517a713f36029eeebf61"
+    },
+    {
+      "sequence_num": 23,
+      "timestamp": "2026-03-15T08:40:18.625021+00:00",
+      "timestamp_ns": 1773564018625017088,
+      "event_type": "SIGNAL",
+      "symbol": "BTC/USDT",
+      "data": {
+        "signal_type": "LONG",
+        "conviction": 0.85,
+        "strategy": "MOMENTUM"
+      },
+      "prev_hash": "2c98795a67034a76800f67de4403048788ab43277fc5517a713f36029eeebf61",
+      "entry_hash": "48672ab502e65e1a03d6649e9f746a2e915de8022a142eb38e202d2341951480"
+    },
+    {
+      "sequence_num": 24,
+      "timestamp": "2026-03-15T08:40:18.626786+00:00",
+      "timestamp_ns": 1773564018626782976,
+      "event_type": "SIGNAL",
+      "symbol": "ETH/USDT",
+      "data": {
+        "signal_type": "SHORT",
+        "conviction": 0.72,
+        "strategy": "MEAN_REVERSION"
+      },
+      "prev_hash": "48672ab502e65e1a03d6649e9f746a2e915de8022a142eb38e202d2341951480",
+      "entry_hash": "5ea1c0871abbbbcef1d36c8ecb23c125dc32050b419dd4a95971ab54bdac9bd4"
+    }
+  ],
+  "sequence_counter": 25,
+  "last_anchor_seq": 25,
+  "anchor_history": [
+    {
+      "anchor_timestamp": "2026-03-15T08:33:11.101622+00:00",
+      "log_sequence_num": 4,
+      "log_tail_hash": "2b19519df60c37e2e044c63fe78a03c989c9546ef65d15e20d2499b1451a4e93",
+      "merkle_root": "e4a49a42baffe71f54e13f27cc0e561af3cf192aec73121282fb0d507239c44e",
+      "external_txid": "b8249478a4cc62215c27d884edb0e1b8e5e142b5f91dbd77603910c3b44240b9",
+      "external_chain": "SIMULATED",
+      "block_height": 972605
+    },
+    {
+      "anchor_timestamp": "2026-03-15T08:36:27.552042+00:00",
+      "log_sequence_num": 9,
+      "log_tail_hash": "0af5dd4521ea226f4d3844f599c08a6922336483830f21f44422d6abe08e3bba",
+      "merkle_root": "3fcef283eee1b0c27bf4a889891b93a5fb0b2c71b9fdc7161ec8c61c05bec1a6",
+      "external_txid": "b8a49565150dc4f6cab0b00c038d4aa0256a7441dbf86b234b8bbf89b4a3fc1a",
+      "external_chain": "SIMULATED",
+      "block_height": 972606
+    },
+    {
+      "anchor_timestamp": "2026-03-15T08:37:32.766961+00:00",
+      "log_sequence_num": 14,
+      "log_tail_hash": "655a1345a6c2cbad507d92674e4136e0ad8f754b14c5a1da187304693e6b3b66",
+      "merkle_root": "904b90fea56075e1474961a670c139e2210a1d11114f627c1ce604f77ebf5020",
+      "external_txid": "7a0cb8304b498c1a69c5202b8106f689f1752cb7d3d7315a33304accf9ea5dd2",
+      "external_chain": "SIMULATED",
+      "block_height": 972606
+    },
+    {
+      "anchor_timestamp": "2026-03-15T08:38:51.981240+00:00",
+      "log_sequence_num": 19,
+      "log_tail_hash": "022d3bd23aa864151c2d0b8ca98feb8afa4657c0c2fa0eaa5b123873d2b3b1d8",
+      "merkle_root": "7028829132eac0119f06b8fae3d6521124262698da4ff5187c0e97edb512c22b",
+      "external_txid": "b5b21a58c5607039a77fcdcb922a6093aa018129750aa11c3edf8bebe7772951",
+      "external_chain": "SIMULATED",
+      "block_height": 972606
+    },
+    {
+      "anchor_timestamp": "2026-03-15T08:40:18.626917+00:00",
+      "log_sequence_num": 24,
+      "log_tail_hash": "5ea1c0871abbbbcef1d36c8ecb23c125dc32050b419dd4a95971ab54bdac9bd4",
+      "merkle_root": "de0477bc79f0e499f3a1e0d28e12f4519844588e911daeadf2ffda1cfd8ce7e4",
+      "external_txid": "4cb25298fdaac521eee827d873d9f54f1e2cebba1b0c823c8ee1c8af85257674",
+      "external_chain": "SIMULATED",
+      "block_height": 972606
+    }
+  ],
+  "genesis_hash": "2dae14582a925377c0ef1050e916da9cc19804c69231fe5e409f41a0a1c2450d",
+  "last_updated": "2026-03-15T08:40:18.632182+00:00"
+}

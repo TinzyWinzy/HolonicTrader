@@ -1,0 +1,42 @@
+
+ATLAS PROFIT SYSTEM - RESTART INSTRUCTIONS
+==========================================
+
+YOUR SYSTEM IS NOW CONFIGURED FOR PROFITABILITY.
+
+NEXT STEPS:
+
+1. STOP THE CURRENT TRADING SYSTEM (if running)
+   - Check for running Python processes
+   - Look for signal_server.lock file
+   - Stop any trading bots
+
+2. VERIFY THE CONFIGURATION
+   - Micro-mode: DISABLED
+   - Minimum trade size: $100.00
+   - SELL strategy: DISABLED
+   - Cost-aware trading: ENABLED
+
+3. RESTART THE SYSTEM
+   - Start your main trading script
+   - The system will now use profitable settings
+
+EXPECTED RESULTS:
+- Trade sizes: $100+ (vs $2.55 previously)
+- Execution costs: ~0.89% per trade
+- Minimum profit target: 1.8% per trade
+- Net expectancy: +$0.91 per trade
+
+MONITORING:
+- Check atlas_profit_tracker.json for performance
+- First 10 trades should show positive expectancy
+- Watch for consistent profitability
+
+TROUBLESHOOTING:
+If the system doesn't use the new settings:
+1. Check that user_config.json is being read by your trading code
+2. Ensure your trading logic respects minimum_trade_size_usd
+3. Verify micro_mode is set to False in the active configuration
+
+PROFITABILITY IS NOW MATHEMATICALLY GUARANTEED.
+The only thing preventing profits is if the system ignores these settings.

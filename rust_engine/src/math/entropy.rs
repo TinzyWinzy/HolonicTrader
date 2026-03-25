@@ -64,7 +64,7 @@ fn compute_probabilities(data: &[f64], bins: usize) -> Vec<f64> {
     let bin_width = (max_val - min_val) / bins as f64;
     
     // Add small epsilon to max validation logic to include the max value in last bin
-    let epsilon = 1e-9; 
+    let _epsilon = 1e-9; 
 
     for &x in data {
         // Map x to bin index 0..bins-1

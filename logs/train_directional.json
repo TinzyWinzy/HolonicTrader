@@ -1,0 +1,22 @@
+{
+  "n_samples": 6,
+  "n_features": 9,
+  "features": [
+    "qty",
+    "price",
+    "ret",
+    "rv_10",
+    "rv_10_ann",
+    "atr",
+    "vol_spike",
+    "trade_entry_qty",
+    "trade_entry_leverage"
+  ],
+  "cv_accuracy": 1.0,
+  "cv_std": 0.0,
+  "target_distribution": {
+    "good_entry": 0,
+    "bad_entry": 6
+  },
+  "timestamp": "2026-03-21T23:26:22.875328"
+}

@@ -38,10 +38,10 @@ def run_proof():
     agent = EntropyHolon()
     signals = generate_signals()
     
-    print(f"{'SIGNAL TYPE':<25} | {'ENTROPY':<10} | {'REGIME':<12} | {'% of CHAOS (1.35)'}")
+    print(f"{'SIGNAL TYPE':<25} | {'ENTROPY':<10} | {'REGIME':<12} | {'% of CHAOS (1.85)'}")
     print("-" * 65)
     
-    chaos_thresh = 1.35
+    chaos_thresh = 1.85
     
     for name, series in signals.items():
         # Clean infinite values if any (from log returns in real app, here we simulated returns directly)

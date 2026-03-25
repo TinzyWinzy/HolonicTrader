@@ -1,9 +1,10 @@
+import pytest
 import pandas as pd
 import numpy as np
 from HolonicTrader.holon_core import Message, Holon, Disposition
 from HolonicTrader.agent_trader import TraderHolon
-from agent_strategy import StrategyHolon
-from agent_entropy import EntropyHolon
+pytest.importorskip("HolonicTrader.agent_strategy", reason="agent_strategy module was removed")
+from HolonicTrader.agent_entropy import EntropyHolon
 import config
 
 # Update config for testing

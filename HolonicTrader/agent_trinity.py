@@ -21,7 +21,7 @@ class TrinityStrategy:
         self.predators = getattr(config, 'ASSET_PREF_PREDATOR', ['ETH/USDT', 'SOL/USDT'])
         self.anchor = 'BTC/USDT'
         
-    def get_allocation_target(self, market_regime: str, btc_trend: str = 'BULL', current_capital_regime: str = 'MICRO') -> Dict[str, float]:
+    def get_allocation_target(self, market_regime: str, btc_trend: str = 'BULL', current_capital_regime: str = 'SMALL') -> Dict[str, float]:
         """
         Returns target portfolio weights based on regime.
         Args:
@@ -47,11 +47,21 @@ class TrinityStrategy:
                 basket.append(self.anchor)
             return basket
             
-        # 1. CHAOTIC -> SCAVENGER (Mean Reversion / Hedge)
-        if market_regime == 'CHAOTIC':
-            # Pick a basket of Scavengers (XRP, DOGE, PEPE...)
-            basket = get_valid_basket(self.scavengers, limit=3)
+        # 1. CHAOTIC / BEAR TREND (Crisis or Correction)
+        if market_regime == 'CHAOTIC' or btc_trend == 'BEAR':
+            # USER ANALYSIS: ETH, XMR, XRP perform when BTC is down
+            # Prioritize specific Hedge Assets if allowed
+            hedge_candidates = getattr(config, 'BTC_HEDGE_ASSETS', ['ETH/USDT', 'XMR/USDT', 'XRP/USDT'])
+            basket = get_valid_basket(hedge_candidates, limit=3)
             
+            # If no hedge assets allowed, fallback to Scavengers or Anchor
+            if not basket:
+                if market_regime == 'CHAOTIC':
+                    basket = get_valid_basket(self.scavengers, limit=3)
+                else: 
+                     # Bear Trend but Ordered Regime? Anchor default.
+                     if self.anchor in allowed_assets: basket = [self.anchor]
+
             weight_per_asset = 1.0 / len(basket) if basket else 0
             for a in basket: targets[a] = weight_per_asset
             return targets

@@ -1,0 +1,33 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-25 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $97.78
+  End:    $97.24
+  Change: -0.56%  ($-0.54)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: EXPANSION
+    EXPANSION   : 56% of cycles
+    HARVEST     : 44% of cycles
+  Last inputs: {"structure": "BULLISH", "entropy": 0.6698621714451964, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ⚠️ [15:25] LAYER2_PROB_SCORE: Score 5.0 < threshold 6 for regime EXPANSION
+  ⚠️ [15:28] LAYER2_PROB_SCORE: Score 5.0 < threshold 6 for regime EXPANSION
+  ⚠️ [17:32] LAYER2_PROB_SCORE: Score 4.0 < threshold 6 for regime EXPANSION
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

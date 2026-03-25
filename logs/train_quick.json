@@ -1,0 +1,13 @@
+{
+  "model_path": "c:\\Users\\USER\\Documents\\AEHML\\HolonicTrader\\HolonicTrader\\scripts\\..\\models\\lgbm_return_v1.pkl",
+  "features": [
+    "qty",
+    "price",
+    "price_change",
+    "price_roll3"
+  ],
+  "n_train": 104,
+  "n_test": 27,
+  "mse": 0.0004621942207989074,
+  "best_iteration": 1
+}

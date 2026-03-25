@@ -1,0 +1,22 @@
+{
+  "original_count": 872,
+  "augmented_count": 6976,
+  "augmentation_ratio": 8.0,
+  "by_type": {
+    "original": 872,
+    "opposite_position": 872,
+    "slippage": 3488,
+    "time_shift": 1744
+  },
+  "win_rates": {
+    "ORIGINAL": 0.5022935779816514,
+    "OPPOSITE_POSITION": 0.49770642201834864,
+    "SLIPPAGE_-0.5%": 0.625,
+    "SLIPPAGE_-0.2%": 0.6043577981651376,
+    "SLIPPAGE_+0.2%": 0.4059633027522936,
+    "SLIPPAGE_+0.5%": 0.40940366972477066,
+    "HOUR_SHIFT_-1": 0.5022935779816514,
+    "HOUR_SHIFT_+1": 0.5022935779816514
+  },
+  "timestamp": "2026-03-22T00:26:55.896114"
+}

@@ -1,0 +1,201 @@
+{
+  "last_update": 1774121196.6087046,
+  "total_cycles": 137,
+  "best_global_fitness": 19.738097686926874,
+  "global_champion": {
+    "fitness": 19.738097686926874,
+    "genome": {
+      "rsi_buy": 34.46220067302963,
+      "rsi_sell": 75.64051812380677,
+      "stop_loss": 0.045,
+      "take_profit": 0.025,
+      "use_satellite": true,
+      "sat_rvol": 4.642501805171094,
+      "sat_bb_expand": 0.03444630677733246,
+      "leverage_cap": 10.0,
+      "trailing_activation": 1.1719364343029748,
+      "trailing_distance": 0.03284522970937455
+    },
+    "source_island": "\ud83c\udf0b Volcano Peak"
+  },
+  "islands": [
+    {
+      "name": "\ud83c\udf0b Volcano Peak",
+      "strategy_bias": "AGGRESSIVE",
+      "fitness": 0,
+      "stagnation": 0,
+      "categories": [
+        "meme_coin",
+        "alt_coin"
+      ],
+      "history": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "\ud83c\udff0 Iron Fort",
+      "strategy_bias": "CONSERVATIVE",
+      "fitness": 0,
+      "stagnation": 0,
+      "categories": [
+        "large_cap"
+      ],
+      "history": [
+        0.5946348494192837,
+        0.3411042215694711,
+        0.5278419117292493,
+        0.16960689102668883,
+        0.4355748383833144,
+        0.3680269305118391,
+        0.28815993218905767,
+        0.7246510921804402,
+        0.0,
+        0.7655085778932648,
+        0.3322644632973927,
+        0.3667394107025328,
+        0.3987167692243975,
+        0.4200800903961133,
+        0.3466472845212407,
+        0.42190292550531866,
+        0.42345412969935853,
+        0.5013342418737889,
+        0.36595956970218657,
+        0.4794770195632375
+      ]
+    },
+    {
+      "name": "\ud83c\udfdd\ufe0f Darwin's Rock",
+      "strategy_bias": "BALANCED",
+      "fitness": 0,
+      "stagnation": 0,
+      "categories": [
+        "mid_cap",
+        "large_cap"
+      ],
+      "history": [
+        0.5946348494192837,
+        0.3411042215694711,
+        0.5278419117292493,
+        0.16960689102668883,
+        0.4355748383833144,
+        0.3680269305118391,
+        0.28815993218905767,
+        0.7246510921804402,
+        0.022547178887205796,
+        0.7655085778932648,
+        0.3322644632973927,
+        0.3667394107025328,
+        0.3987167692243975,
+        0.4200800903961133,
+        0.3933906549837756,
+        0.42190292550531866,
+        0.42345412969935853,
+        0.5013342418737889,
+        0.36595956970218657,
+        0.4794770195632375
+      ]
+    }
+  ],
+  "validation_gate": {},
+  "alerts": [
+    {
+      "time": 1774048833.9919765,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774057083.742914,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774057278.0493784,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774067423.3265321,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774069221.8998785,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774073238.4479437,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774074508.873964,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774077565.199299,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774091898.4601753,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774092934.285846,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774098308.3255594,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774098698.918455,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774098910.6522796,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774103562.526375,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774104447.983024,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774104629.6163566,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774106214.237895,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774116953.0029833,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udff0 Iron Fort fitness up, but equity down."
+    },
+    {
+      "time": 1774117128.8477783,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    },
+    {
+      "time": 1774118841.9373271,
+      "msg": "\ud83d\udcc9 DIVERGENCE: \ud83c\udfdd\ufe0f Darwin's Rock fitness up, but equity down."
+    }
+  ]
+}

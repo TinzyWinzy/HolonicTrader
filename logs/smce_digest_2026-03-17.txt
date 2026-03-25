@@ -1,0 +1,30 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-17 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $90.99
+  End:    $91.14
+  Change: +0.17%  ($+0.15)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: TRANSITION
+    TRANSITION  : 100% of cycles
+  Last inputs: {"structure": "BEARISH", "entropy": 1.0, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ⚠️ [19:02] LAYER0_DOCTRINE: [Layer0] MSTRX/USDT margin $48.00 > $27.30 (30% cap)
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

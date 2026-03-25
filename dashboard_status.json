@@ -1,0 +1,796 @@
+{
+  "gov_state": "PREDATOR",
+  "gov_alloc": "25.0%",
+  "gov_lev": "10.0x",
+  "gov_trends": "0",
+  "evo_fitness": "13.85",
+  "evo_kings": "8",
+  "gov_micro": "ACTIVE",
+  "risk_budget": "$57.06",
+  "fortress_balance": "$50.00",
+  "solvency_status": "SOLVENT",
+  "regime": "CHAOTIC",
+  "entropy": "1.9928",
+  "strat_model": "Warp-V4 (Hybrid)",
+  "kalman_active": "True",
+  "ppo_conv": "0.50",
+  "ppo_reward": "0.00",
+  "sentiment_score": "-0.03",
+  "lstm_prob": "0.52",
+  "xgb_prob": "0.51",
+  "last_order": "NONE",
+  "win_rate": "0.0%",
+  "pnl": "$0.00",
+  "omega": "0.00",
+  "exposure": "$0.00",
+  "margin": "$0.00",
+  "actual_lev": "0.00x",
+  "holdings": {
+    "CASH": 107.0573690641388
+  },
+  "balance": 107.0573690641388,
+  "equity": 107.0573690641388,
+  "entry_prices": {},
+  "current_prices": {
+    "ADA/USDT": 0.27589,
+    "BNB/USDT": 662.46,
+    "ETH/USDT": 2048.0,
+    "XRP/USDT": 1.45396,
+    "AVAX/USDT": 9.162,
+    "NEAR/USDT": 1.0795,
+    "SOL/USDT": 87.66,
+    "SUI/USDT": 1.0064,
+    "XMR/USDT": 318.69,
+    "SHIB/USDT": 6.267e-06,
+    "BTC/USDT": 70185.0,
+    "DOGE/USDT": 0.098589,
+    "LTC/USDT": 54.97,
+    "LINK/USDT": 8.842,
+    "PAXG/USDT": 4951.9
+  },
+  "pending_count": 0,
+  "news_feed": [
+    {
+      "title": "Republic Europe offers retail investors indirect stake in Kraken ahead of exchange\u2019s IPO",
+      "link": "https://cryptopanic.com/news/29170996/Republic-Europe-offers-retail-investors-indirect-stake-in-Kraken-ahead-of-exchanges-IPO",
+      "source": "News",
+      "sentiment": 0.1,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "VanEck Introduces Avalanche Exchange-Traded Fund",
+      "link": "https://cryptopanic.com/news/29170980/VanEck-Introduces-Avalanche-Exchange-Traded-Fund",
+      "source": "News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "AVAX tipped for price recovery as VanEck\u2019s ETF (VAVX) debuts on Nasdaq",
+      "link": "https://cryptopanic.com/news/29170991/AVAX-tipped-for-price-recovery-as-VanEcks-ETF-VAVX-debuts-on-Nasdaq",
+      "source": "News",
+      "sentiment": 0.3,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "XRP price \u2018liftoff\u2019 to $10 will take time, traders say",
+      "link": "https://cryptopanic.com/news/29170786/XRP-price-liftoff-to-10-will-take-time-traders-say",
+      "source": "News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Analyst who predicted 2021 crypto crash sends chilling warning",
+      "link": "https://cryptopanic.com/news/29170999/Analyst-who-predicted-2021-crypto-crash-sends-chilling-warning",
+      "source": "News",
+      "sentiment": -1.0,
+      "is_crisis": true,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Amazon leads Big Tech\u2019s $1 trillion wipeout as AI bubble fears ignite sell-off",
+      "link": "https://www.cnbc.com/2026/02/06/ai-sell-off-stocks-amazon-oracle.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Bitcoin rallies to $71.5K after historic sell-off, but derivatives metrics remain soft",
+      "link": "https://cointelegraph.com/news/bitcoin-rallies-to-71-5k-after-historic-sell-off-but-derivatives-metrics-remain-soft?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": 0.05,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Is the HYPE Fading? Hyperliquid\u2019s 25% Rally Faces a Reality Check",
+      "link": "https://beincrypto.com/hyperliquid-price-rally-cooldown-analysis/",
+      "source": "BeInCrypto",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Why have so many attempts to scale Bitcoin\u2019s blockchain failed?",
+      "link": "https://www.reddit.com/r/CryptoCurrency/comments/1qxu6zf/why_have_so_many_attempts_to_scale_bitcoins/",
+      "source": "top scoring links : CryptoCurrency",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Crypto\u2019s stress test hits balance sheets as Bitcoin, Ether collapse",
+      "link": "https://cointelegraph.com/news/crypto-stress-test-hits-balance-sheets-bitcoin-ether-collapse?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "AI platform founded by Crypto.com's Kris Marszalek launches AI agents",
+      "link": "https://cointelegraph.com/news/kris-marszalek-ai-launches-ai-agents?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Here\u2019s what happened in crypto today",
+      "link": "https://cointelegraph.com/news/what-happened-in-crypto-today?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Bithumb confirms reward payout error after abnormal Bitcoin trades",
+      "link": "https://cointelegraph.com/news/bithumb-confirms-reward-payout-error-after-abnormal-bitcoin-trades?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": -0.5,
+      "is_crisis": true,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Bitcoin dips to $60K, TRM Labs becomes crypto unicorn: Finance Redefined",
+      "link": "https://cointelegraph.com/news/bitcoin-dips-to-60k-trm-labs-becomes-crypto-unicorn-finance-redefined?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "source": "Cointelegraph.com News",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Galaxy Digital shares jump 18% after company approves $200 million buyback",
+      "link": "https://www.coindesk.com/markets/2026/02/06/galaxy-digital-shares-jump-18-after-company-approves-usd200-million-buyback",
+      "source": "CoinDesk: Bitcoin, Ethereum, Crypto News and Price Data",
+      "sentiment": 0.6,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Crypto's eligibility for 401k retirement funds is under fire after brutal market rout wipes out $2 trillion",
+      "link": "https://www.coindesk.com/business/2026/02/06/crypto-s-eligibility-for-401k-retirement-is-under-fire-after-brutal-market-rout-wipes-out-usd2-trillion",
+      "source": "CoinDesk: Bitcoin, Ethereum, Crypto News and Price Data",
+      "sentiment": -0.875,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Ondo wants to rebuild prime brokerage on-chain \u2014 and perps are the first step",
+      "link": "https://www.coindesk.com/coindesk-news/2026/02/06/ondo-wants-to-rebuild-prime-brokerage-on-chain-and-perps-are-the-first-step",
+      "source": "CoinDesk: Bitcoin, Ethereum, Crypto News and Price Data",
+      "sentiment": 0.225,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Russia\u2019s largest bank, Sberbank, prepares to issue crypto-backed loans",
+      "link": "https://www.coindesk.com/business/2026/02/06/russia-s-largest-bank-sberbank-prepares-to-issue-crypto-backed-loans",
+      "source": "CoinDesk: Bitcoin, Ethereum, Crypto News and Price Data",
+      "sentiment": -0.3,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "XRP price rockets 18%, staging wildest recovery among major tokens",
+      "link": "https://www.coindesk.com/markets/2026/02/06/xrp-price-rockets-18-staging-wildest-recovery-among-major-tokens",
+      "source": "CoinDesk: Bitcoin, Ethereum, Crypto News and Price Data",
+      "sentiment": 0.0625,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "US Consumer Data Sparks Relief Rally in Bitcoin, Gold, and Stocks",
+      "link": "https://beincrypto.com/bitcoin-gold-stocks-relief-rally-us-consumer-data/",
+      "source": "BeInCrypto",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Ethereum Crashes 29% in a Week, but Reversal Signals Start to Appear",
+      "link": "https://beincrypto.com/ethereum-price-crash-could-be-reversed/",
+      "source": "BeInCrypto",
+      "sentiment": -0.3,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Cardano Price Bounce Meets $40 Million in Whale Support \u2014 But Can It Beat The Risks?",
+      "link": "https://beincrypto.com/cardano-price-prediction-buyers-defend-bounce/",
+      "source": "BeInCrypto",
+      "sentiment": -0.2,
+      "is_crisis": false,
+      "is_whale": true,
+      "is_hype": false
+    },
+    {
+      "title": "Bithumb Explains Accidental 2000 Bitcoin Payout: What Really Happened?",
+      "link": "https://beincrypto.com/bithumb-explains-accidential-2000-btc-payout/",
+      "source": "BeInCrypto",
+      "sentiment": 0.2,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "3 Altcoins to Watch This Weekend | February 7 \u2013 8",
+      "link": "https://beincrypto.com/altcoins-to-watch-this-weekend-february-7-8/",
+      "source": "BeInCrypto",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "How widespread is MPC-TSS as a solution for retail investors to prevent crypto loss? What's your experience with these services?",
+      "link": "https://www.reddit.com/r/CryptoCurrency/comments/1qxtccf/how_widespread_is_mpctss_as_a_solution_for_retail/",
+      "source": "top scoring links : CryptoCurrency",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "To everyone doing victory laps about how obvious this crash was, or how predictable it was, show your short positions.",
+      "link": "https://www.reddit.com/r/CryptoCurrency/comments/1qxt9oa/to_everyone_doing_victory_laps_about_how_obvious/",
+      "source": "top scoring links : CryptoCurrency",
+      "sentiment": -0.36666666666666664,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Changing consensus and more - Bitcoin Optech Newsletter #391",
+      "link": "https://www.reddit.com/r/Bitcoin/comments/1qxf93v/changing_consensus_and_more_bitcoin_optech/",
+      "source": "Bitcoin - The Currency of the Internet",
+      "sentiment": 0.5,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Daily Discussion, February 06, 2026",
+      "link": "https://www.reddit.com/r/Bitcoin/comments/1qx9rf5/daily_discussion_february_06_2026/",
+      "source": "Bitcoin - The Currency of the Internet",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "$69,420",
+      "link": "https://www.reddit.com/r/Bitcoin/comments/1qxpmac/69420/",
+      "source": "Bitcoin - The Currency of the Internet",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Thats the spirit",
+      "link": "https://www.reddit.com/r/Bitcoin/comments/1qxfq4n/thats_the_spirit/",
+      "source": "Bitcoin - The Currency of the Internet",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "We are so back",
+      "link": "https://www.reddit.com/r/Bitcoin/comments/1qxpeyz/we_are_so_back/",
+      "source": "Bitcoin - The Currency of the Internet",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Welcome to /r/Solana - Read This To Get Started",
+      "link": "https://www.reddit.com/r/solana/comments/1jmghap/welcome_to_rsolana_read_this_to_get_started/",
+      "source": "Solana",
+      "sentiment": 0.8,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Weekly Discussion Thread, Chats & Trading Talks | February 1-8, 2026",
+      "link": "https://www.reddit.com/r/solana/comments/1qtd228/weekly_discussion_thread_chats_trading_talks/",
+      "source": "Solana",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Solana Foundation - Webinar: Payments On Solana, Tuesday, February 10 6:00 PM - 7:00 PM GMT+1",
+      "link": "https://www.reddit.com/r/solana/comments/1qxpvmg/solana_foundation_webinar_payments_on_solana/",
+      "source": "Solana",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "What's the fastest cross-chain DEX ?",
+      "link": "https://www.reddit.com/r/solana/comments/1qxgrge/whats_the_fastest_crosschain_dex/",
+      "source": "Solana",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Just \u0123ot liquidated...",
+      "link": "https://www.reddit.com/r/solana/comments/1qx2rzc/just_\u0123ot_liquidated/",
+      "source": "Solana",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Bitcoin rebounds back above $70,000 after nearly breaking below $60,000 a day ago",
+      "link": "https://www.cnbc.com/2026/02/06/bitcoin-price-today-60000-in-focus.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": -0.26666666666666666,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Nvidia shares rise 8% as Jensen Huang says $660 billion capex buildout is sustainable",
+      "link": "https://www.cnbc.com/2026/02/06/nvidia-rises-7percent-as-ceo-says-660-billion-capex-buildout-is-sustainable.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Trump holds leverage over Iran thanks to low oil prices, Energy Secretary says",
+      "link": "https://www.cnbc.com/2026/02/06/trump-iran-oil-prices.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": -1.0,
+      "is_crisis": true,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Amazon's plunge continues Big Tech's $1 trillion wipeout as AI bubble fears ignite sell-off",
+      "link": "https://www.cnbc.com/2026/02/06/ai-sell-off-stocks-amazon-oracle.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Trump takes down racist Truth Social post showing Obamas as apes after blowback",
+      "link": "https://www.cnbc.com/2026/02/06/trump-obama-post-white-house.html",
+      "source": "International: Top News And Analysis",
+      "sentiment": -0.3611111111111111,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Gold and Silver Face Uncertainty Ahead of Trump\u2019s Response on Diplomatic Talks",
+      "link": "https://www.investing.com/analysis/gold-and-silver-face-uncertainty-ahead-of-trumps-response-on-diplomatic-talks-200674605",
+      "source": "Commodities Analysis & Opinion",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Gold Drawdowns After Past Extremes Point to More Downside Ahead",
+      "link": "https://www.investing.com/analysis/gold-drawdowns-after-past-extremes-point-to-more-downside-ahead-200674614",
+      "source": "Commodities Analysis & Opinion",
+      "sentiment": 0.125,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Silver Futures Approach a Cycle Window That Often Brings Trend Acceleration",
+      "link": "https://www.investing.com/analysis/silver-futures-approach-a-cycle-window-that-often-brings-trend-acceleration-200674609",
+      "source": "Commodities Analysis & Opinion",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "The Energy Report: Oman Talks but Can Iran Walk the Talk",
+      "link": "https://www.investing.com/analysis/the-energy-report-oman-talks-but-can-iran-walk-the-talk-200674601",
+      "source": "Commodities Analysis & Opinion",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    },
+    {
+      "title": "Metals Price Discovery Is Shifting East, Driving Volatility",
+      "link": "https://www.investing.com/analysis/metals-price-discovery-is-shifting-east-driving-volatility-200674596",
+      "source": "Commodities Analysis & Opinion",
+      "sentiment": 0.0,
+      "is_crisis": false,
+      "is_whale": false,
+      "is_hype": false
+    }
+  ],
+  "health_score": 0.5,
+  "promo_progress": 0.0,
+  "scout_data": [
+    {
+      "symbol": "BTC/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "XRP/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "DOGE/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "SUI/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "ADA/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "AVAX/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "LINK/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "XMR/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "PAXG/USDT",
+      "score": 0.95,
+      "reason": "ANCHOR"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "SHIB/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    },
+    {
+      "symbol": "NEAR/USDT",
+      "score": 0.95,
+      "reason": "ROCKET"
+    }
+  ],
+  "consolidation_data": [],
+  "last_updated": "2026-03-09T10:37:21.133618+00:00",
+  "type": "agent_status",
+  "overwatch": {
+    "state": "NOMINAL",
+    "sitrep": "\ud83c\udfaf **Operation Paper Centurion**: [\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591] 0.0% ($98.04/$3000.00)\n\n\u2705 **SYSTEM NOMINAL**\nOperations are proceeding normally. Market is **Normal**.\n\u2022 Metabolism: PREDATOR\n\u2022 Active Positions: 2\n\u2022 Daily PnL: $+0.00",
+    "updated": "2026-03-25T10:12:11.815755+00:00"
+  },
+  "summary": [
+    {
+      "Symbol": "XAUT/USDT",
+      "Price": "5066.60",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | RESISTANCE",
+      "Entropy": "1.899",
+      "RSI": "46.3",
+      "LSTM": "0.50",
+      "XGB": "0.50",
+      "PnL": "0.00%",
+      "Action": "SELL (VOLATILITY_SQUEEZE)",
+      "Note": "",
+      "_entropy": 1.8990909403940985,
+      "_tda": 0.001643932725935911,
+      "_price": 5066.6,
+      "_vol": 11.10046731021212
+    },
+    {
+      "Symbol": "BNB/USDT",
+      "Price": "627.68",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.211",
+      "RSI": "59.2",
+      "LSTM": "0.50",
+      "XGB": "0.55",
+      "PnL": "0.00%",
+      "Action": "SELL (STRUCT VETO)",
+      "Note": "",
+      "_entropy": 2.2111650109606305,
+      "_tda": 0.0026564007904127584,
+      "_price": 627.68,
+      "_vol": 2.152067923505286
+    },
+    {
+      "Symbol": "XRP/USDT",
+      "Price": "1.35",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "1.974",
+      "RSI": "54.2",
+      "LSTM": "0.50",
+      "XGB": "0.56",
+      "PnL": "0.00%",
+      "Action": "SELL (STRUCT VETO)",
+      "Note": "",
+      "_entropy": 1.97368816829872,
+      "_tda": 0.002669968719371234,
+      "_price": 1.35233,
+      "_vol": 0.006248744420817445
+    },
+    {
+      "Symbol": "LINK/USDT",
+      "Price": "8.78",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.203",
+      "RSI": "55.3",
+      "LSTM": "0.50",
+      "XGB": "0.48",
+      "PnL": "0.00%",
+      "Action": "SELL (STRUCT VETO)",
+      "Note": "",
+      "_entropy": 2.2028922406374236,
+      "_tda": 0.0034105037032054293,
+      "_price": 8.781,
+      "_vol": 0.04741773907855336
+    },
+    {
+      "Symbol": "DOT/USDT",
+      "Price": "1.48",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | SUPPORT",
+      "Entropy": "2.074",
+      "RSI": "45.3",
+      "LSTM": "0.50",
+      "XGB": "0.54",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.074084197442096,
+      "_tda": 0.0035705885876033345,
+      "_price": 1.477,
+      "_vol": 0.00837690675807297
+    },
+    {
+      "Symbol": "ETH/USDT",
+      "Price": "2000.80",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.141",
+      "RSI": "57.0",
+      "LSTM": "0.50",
+      "XGB": "0.48",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.141005778053239,
+      "_tda": 0.003478428993274095,
+      "_price": 2000.8,
+      "_vol": 11.373631905606443
+    },
+    {
+      "Symbol": "SUI/USDT",
+      "Price": "0.907800",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.213",
+      "RSI": "53.7",
+      "LSTM": "0.50",
+      "XGB": "0.48",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.213377385933529,
+      "_tda": 0.0041407540504900305,
+      "_price": 0.9078,
+      "_vol": 0.006059073055475878
+    },
+    {
+      "Symbol": "DOGE/USDT",
+      "Price": "0.090326",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.169",
+      "RSI": "49.4",
+      "LSTM": "0.50",
+      "XGB": "0.48",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.1693600477078174,
+      "_tda": 0.003401537256726545,
+      "_price": 0.090326,
+      "_vol": 0.000491130541394009
+    },
+    {
+      "Symbol": "BTC/USDT",
+      "Price": "67774.00",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.067",
+      "RSI": "55.0",
+      "LSTM": "0.48",
+      "XGB": "0.54",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.066858158957656,
+      "_tda": 0.0026304353391608695,
+      "_price": 67774.0,
+      "_vol": 288.91481521689457
+    },
+    {
+      "Symbol": "AVAX/USDT",
+      "Price": "9.08",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.043",
+      "RSI": "50.0",
+      "LSTM": "0.50",
+      "XGB": "0.52",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.0425071148208995,
+      "_tda": 0.003920294001664989,
+      "_price": 9.079,
+      "_vol": 0.05055290365144682
+    },
+    {
+      "Symbol": "SOL/USDT",
+      "Price": "83.86",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.191",
+      "RSI": "55.3",
+      "LSTM": "0.50",
+      "XGB": "0.53",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.19133732590662,
+      "_tda": 0.0035187687115363925,
+      "_price": 83.86,
+      "_vol": 0.4873058787906839
+    },
+    {
+      "Symbol": "NEAR/USDT",
+      "Price": "1.24",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | RESISTANCE",
+      "Entropy": "2.088",
+      "RSI": "53.4",
+      "LSTM": "0.50",
+      "XGB": "0.54",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.0880233704097018,
+      "_tda": 0.004643251304681472,
+      "_price": 1.2441,
+      "_vol": 0.007891110252939369
+    },
+    {
+      "Symbol": "TAO/USDT",
+      "Price": "196.70",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.01) | NEUTRAL",
+      "Entropy": "2.085",
+      "RSI": "58.2",
+      "LSTM": "0.50",
+      "XGB": "0.48",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.085307222360327,
+      "_tda": 0.005636889631129657,
+      "_price": 196.7,
+      "_vol": 1.9312325232814516
+    },
+    {
+      "Symbol": "WIF/USDT",
+      "Price": "0.175800",
+      "Regime": "CHAOTIC",
+      "Struct": "STABLE (0.00) | NEUTRAL",
+      "Entropy": "2.154",
+      "RSI": "43.4",
+      "LSTM": "0.50",
+      "XGB": "0.50",
+      "PnL": "0.00%",
+      "Action": "HOLD",
+      "Note": "",
+      "_entropy": 2.154087058841668,
+      "_tda": 0.004472494278033767,
+      "_price": 0.1758,
+      "_vol": 0.001309895269896899
+    }
+  ],
+  "summary_updated": "2026-03-09T10:37:21.133618+00:00"
+}

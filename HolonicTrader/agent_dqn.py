@@ -14,8 +14,16 @@ from collections import deque
 from typing import List, Any
 
 # TensorFlow / Keras
-import tensorflow as tf
-from tensorflow.keras import Sequential, layers, models, optimizers
+try:
+    import tensorflow as tf
+    from tensorflow.keras import Sequential, layers, models, optimizers
+except ImportError:
+    tf = None
+    Sequential = object # Dummy to prevent NameError in type hints if used
+    layers = None
+    models = None
+    optimizers = None
+
 
 from HolonicTrader.holon_core import Holon, Disposition
 
@@ -60,7 +68,11 @@ class DeepQLearningHolon(Holon):
         self.batch_size = 32
         
         # Initialize Neural Network
-        self.model = self._build_model()
+        if tf is None:
+            print(f"[{self.name}] ⚠️ TensorFlow not found. DQN disabled (Random Mode).")
+            self.model = None
+        else:
+            self.model = self._build_model()
         
         self.load_knowledge()
 
@@ -103,7 +115,7 @@ class DeepQLearningHolon(Holon):
         Epsilon-Greedy Action Selection.
         State should be list [Entropy, RSI, Returns, 1.0]
         """
-        if np.random.rand() <= self.epsilon:
+        if self.model is None or np.random.rand() <= self.epsilon:
             return random.choice(self.actions)
         
         # Predict Q-values
@@ -127,7 +139,7 @@ class DeepQLearningHolon(Holon):
         Train the network on a batch of experiences.
         Returns the loss.
         """
-        if len(self.memory) < self.batch_size:
+        if self.model is None or len(self.memory) < self.batch_size:
             return 0.0
             
         minibatch = random.sample(self.memory, self.batch_size)

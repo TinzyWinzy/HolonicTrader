@@ -9,7 +9,11 @@ Tests cover:
 """
 
 import pytest
-from agent_executor import ExecutorHolon, TradeSignal, TradeDecision
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from HolonicTrader.agent_executor import ExecutorHolon, TradeSignal, TradeDecision
 
 
 class TestAuditLedger:
@@ -101,34 +105,37 @@ class TestExecutorDispositionLogic:
     """Tests for disposition setting based on regime."""
 
     def test_chaotic_regime_disposition(self):
-        """CHAOTIC regime should set high integration, low autonomy."""
+        """High entropy (4.5) should drive autonomy very low (sigmoid-based)."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         result = executor.decide_trade(signal, 'CHAOTIC', 4.5)
         
-        assert executor.disposition.autonomy == 0.1
-        assert executor.disposition.integration == 0.9
+        # Sigmoid: 1/(1+exp(5*(4.5-2.2))) = very low autonomy
+        assert executor.disposition.autonomy < 0.05
+        assert executor.disposition.integration > 0.95
 
     def test_ordered_regime_disposition(self):
-        """ORDERED regime should set high autonomy, low integration."""
+        """Low entropy (2.0) should drive autonomy high (sigmoid-based)."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         result = executor.decide_trade(signal, 'ORDERED', 2.0)
         
-        assert executor.disposition.autonomy == 0.9
-        assert executor.disposition.integration == 0.1
+        # Sigmoid: 1/(1+exp(5*(2.0-2.2))) = ~0.73 autonomy
+        assert executor.disposition.autonomy > 0.5
+        assert executor.disposition.integration < 0.5
 
     def test_transition_regime_disposition(self):
-        """TRANSITION regime should set balanced autonomy and integration."""
+        """Entropy near threshold (2.2) should produce balanced disposition."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
-        result = executor.decide_trade(signal, 'TRANSITION', 3.0)
+        result = executor.decide_trade(signal, 'TRANSITION', 2.2)
         
-        assert executor.disposition.autonomy == 0.5
-        assert executor.disposition.integration == 0.5
+        # Sigmoid: 1/(1+exp(5*(2.2-2.2))) = 0.5 exactly
+        assert abs(executor.disposition.autonomy - 0.5) < 0.1
+        assert abs(executor.disposition.integration - 0.5) < 0.1
 
 
 class TestExecutorTradeActions:
@@ -137,7 +144,7 @@ class TestExecutorTradeActions:
     def test_chaotic_regime_halt(self):
         """CHAOTIC regime should HALT trade and set size to 0."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         result = executor.decide_trade(signal, 'CHAOTIC', 4.5)
         
@@ -147,7 +154,7 @@ class TestExecutorTradeActions:
     def test_ordered_regime_execute(self):
         """ORDERED regime should EXECUTE trade at full size."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='SELL', size=50, price=48000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='SELL', size=50, price=48000)
         
         result = executor.decide_trade(signal, 'ORDERED', 2.0)
         
@@ -155,14 +162,16 @@ class TestExecutorTradeActions:
         assert result.adjusted_size == 50
 
     def test_transition_regime_reduce(self):
-        """TRANSITION regime should REDUCE trade size by 50%."""
+        """Near-threshold entropy should REDUCE or EXECUTE trade."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
-        result = executor.decide_trade(signal, 'TRANSITION', 3.0)
+        # Entropy at exactly threshold (2.2) → autonomy ≈ 0.5 → EXECUTE (>0.5 threshold)
+        result = executor.decide_trade(signal, 'TRANSITION', 2.3)
         
+        # At 2.3, autonomy = 1/(1+exp(5*0.1)) ≈ 0.378 → REDUCE range
         assert result.action == 'REDUCE'
-        assert result.adjusted_size == 50.0  # 100 * 0.5
+        assert result.adjusted_size > 0  # Should be scaled down but not zero
 
 
 class TestExecutorLedgerIntegration:
@@ -171,7 +180,7 @@ class TestExecutorLedgerIntegration:
     def test_decision_logged_to_ledger(self):
         """Every trade decision should be logged to the ledger."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         # Make a decision
         result = executor.decide_trade(signal, 'ORDERED', 2.0)
@@ -188,7 +197,7 @@ class TestExecutorLedgerIntegration:
     def test_multiple_decisions_logged(self):
         """Multiple decisions should create a valid chain."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         # Make multiple decisions
         executor.decide_trade(signal, 'ORDERED', 2.0)
@@ -201,7 +210,7 @@ class TestExecutorLedgerIntegration:
     def test_decision_returns_block_hash(self):
         """Trade decision should return the block hash for verification."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         result = executor.decide_trade(signal, 'ORDERED', 2.0)
         
@@ -228,7 +237,7 @@ class TestExecutorLedgerSummary:
     def test_ledger_summary_with_blocks(self):
         """Summary should reflect ledger state after trades."""
         executor = ExecutorHolon()
-        signal = TradeSignal(direction='BUY', size=100, price=50000)
+        signal = TradeSignal(symbol='BTC/USDT', direction='BUY', size=100, price=50000)
         
         executor.decide_trade(signal, 'ORDERED', 2.0)
         executor.decide_trade(signal, 'CHAOTIC', 4.5)

@@ -1,232 +1,284 @@
+#!/usr/bin/env python3
+"""
+Log Analyzer for HolonicTrader
+Analyzes trading logs to identify performance issues and loss patterns
+"""
+
 import re
-import sys
 import os
+import sys
 from datetime import datetime
-from typing import List, Dict, Optional
-import collections
+from collections import defaultdict, Counter
+import statistics
 
-# ANSI Color Codes
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-class LogEvent:
-    def __init__(self, timestamp_str: str, agent: str, message: str):
-        self.raw_timestamp = timestamp_str
-        self.agent = agent.strip('[]')
-        self.message = message.strip()
-        # Parse timestamp if possible (format: 2026-01-23 07:23:44)
-        try:
-            self.timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
-        except ValueError:
-            self.timestamp = None
-
-    def __repr__(self):
-        return f"[{self.raw_timestamp}] [{self.agent}] {self.message}"
-
-class TransactionContext:
-    """Represents the lifecycle of a potential trade (Signal -> Decision -> Execution)."""
-    def __init__(self, symbol: str, signal_time: datetime, direction: str):
-        self.symbol = symbol
-        self.start_time = signal_time
-        self.direction = direction
-        self.signal_details = ""
-        self.vetoes = []
-        self.execution = None
-        self.status = "PENDING" # PENDING, VETOED, EXECUTED, CONFIRMED
-
-    def add_veto(self, reason: str):
-        self.vetoes.append(reason)
-        # Prioritize "Hard" Vetoes over "Soft" ones for status
-        if "Disallowed" in reason or "REJECTED" in reason:
-            self.status = "VETOED"
-        elif self.status != "VETOED":
-            self.status = "BLOCKED" # Soft veto like cooldown
-
-    def set_executed(self, details: str):
-        self.execution = details
-        self.status = "EXECUTED"
-
-class LogAnalyzer:
-    def __init__(self):
-        self.events: List[LogEvent] = []
-        self.transactions: List[TransactionContext] = []
-        self.active_contexts: Dict[str, TransactionContext] = {} # Symbol -> Context
-        self.system_health = []
-        self.stats = collections.defaultdict(int)
-        
-        # Regex Patterns
-        self.log_pattern = re.compile(r'\[(.*?)\] \[(.*?)\] (.*)')
-        
-        # Signal Pattern: [EntryOracle] 🚀 LINK/USDT BUY SIGNAL ...
-        self.sig_pattern = re.compile(r'🚀 (.*?) (BUY|SELL) SIGNAL')
-        
-        # Veto Patterns
-        self.veto_patterns = [
-            (re.compile(r'Stack Too Close for (.*):'), "Stack Too Close"),
-            (re.compile(r'Cooldown Active for (.*)'), "Cooldown Active"),
-            (re.compile(r'GOVERNOR PRE-CHECK VETO for (.*):'), "Governor Veto"),
-            (re.compile(r'FILTER: Overextended'), "RSI Overextended"),
-            (re.compile(r'THESIS INVALIDATED for (.*)'), "Thesis Invalidated")
-        ]
-        
-        # Execution Pattern
-        self.exec_pattern = re.compile(r'EXECUTING ENTRY: (.*?) \(')
-        self.fill_pattern = re.compile(r'(LONG|SHORT) (ENTRY|EXIT): (.*?) @')
-
-    def parse_file(self, filepath: str):
-        print(f"{Colors.HEADER}🔍 Parsing Log File: {filepath}{Colors.ENDC}")
-        if not os.path.exists(filepath):
-            print(f"{Colors.FAIL}Error: File not found.{Colors.ENDC}")
-            return
-
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for line in f:
-                match = self.log_pattern.match(line)
+def analyze_log_performance(log_file_path):
+    """Analyze a trading log file for performance metrics"""
+    print(f"Analyzing log file: {log_file_path}")
+    
+    if not os.path.exists(log_file_path):
+        print(f"Error: Log file {log_file_path} does not exist")
+        return
+    
+    # Initialize metrics
+    metrics = {
+        'total_lines': 0,
+        'trades': [],
+        'positions': {},
+        'errors': [],
+        'warnings': [],
+        'balance_changes': [],
+        'pnl_snapshots': [],
+        'entry_signals': [],
+        'exit_signals': [],
+        'system_states': [],
+        'hygiene_events': [],
+        'monte_carlo_events': []
+    }
+    
+    # Patterns for extracting data
+    patterns = {
+        'balance_sync': r'\[ExecutorAgent\] SYNC SUCCESS: Real Equity \$(\d+\.\d+)',
+        'trade_entry': r'\[ExecutorAgent\] EXECUTED: ([A-Z0-9/]+) ([A-Z]+) ([\d.-]+) @ ([\d.,]+)',
+        'trade_exit': r'\[ExecutorAgent\] CLOSED: ([A-Z0-9/]+) ([A-Z]+) ([\d.-]+) @ ([\d.,]+)',
+        'pnl_realized': r'\[ExecutorAgent\] REALIZED PnL: \$([+-]?[\d.]+)',
+        'position_opened': r'\[GovernorAgent\] Position OPENED: ([A-Z0-9/]+) ([A-Z]+) @ ([\d.]+)',
+        'position_closed': r'\[GovernorAgent\] Position CLOSED: ([A-Z0-9/]+)',
+        'hygiene_recycle': r'\[GovernorAgent\] ☣️ HYGIENE RECYCLE: ([A-Z0-9/]+) (.+)',
+        'monte_carlo_exit': r'\[TraderNexus\] 🎲 MONTE CARLO EXIT: ([A-Z0-9/]+) - (.+)',
+        'error': r'(ERROR|CRITICAL|FATAL).*',
+        'warning': r'(WARNING|WARN).*',
+        'system_state': r'\[GovernorAgent\] State: (\w+)',
+        'drawdown': r'\[GovernorAgent\] Drawdown: ([\d.]+)%',
+        'balance_snapshot': r'\[GovernorAgent\] Balance: \$(\d+\.\d+)',
+        'veto': r'\[GovernorAgent\] .* VETO: (.*)',
+        'solvent_check': r'\[GovernorAgent\] SOLVENCY (CHECK|VETO): (.*)'
+    }
+    
+    # Compile regex patterns
+    compiled_patterns = {k: re.compile(v, re.IGNORECASE) for k, v in patterns.items()}
+    
+    # Read and analyze log file
+    with open(log_file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        for line_num, line in enumerate(f, 1):
+            metrics['total_lines'] += 1
+            
+            # Check for various patterns
+            for pattern_name, pattern in compiled_patterns.items():
+                match = pattern.search(line)
                 if match:
-                    ts, agent, msg = match.groups()
-                    event = LogEvent(ts, agent, msg)
-                    self.events.append(event)
-                    self._process_event(event)
+                    if pattern_name == 'balance_sync':
+                        balance = float(match.group(1))
+                        metrics['balance_changes'].append(('SYNC', balance, line_num))
+                    elif pattern_name == 'trade_entry':
+                        symbol, direction, qty, price = match.groups()
+                        metrics['trades'].append({
+                            'type': 'ENTRY',
+                            'symbol': symbol,
+                            'direction': direction,
+                            'quantity': float(qty),
+                            'price': float(price.replace(',', '')),
+                            'line': line_num
+                        })
+                    elif pattern_name == 'trade_exit':
+                        symbol, direction, qty, price = match.groups()
+                        metrics['trades'].append({
+                            'type': 'EXIT',
+                            'symbol': symbol,
+                            'direction': direction,
+                            'quantity': float(qty),
+                            'price': float(price.replace(',', '')),
+                            'line': line_num
+                        })
+                    elif pattern_name == 'pnl_realized':
+                        pnl = float(match.group(1))
+                        metrics['pnl_snapshots'].append(pnl)
+                    elif pattern_name == 'hygiene_recycle':
+                        symbol, reason = match.groups()
+                        metrics['hygiene_events'].append({
+                            'symbol': symbol,
+                            'reason': reason,
+                            'line': line_num
+                        })
+                    elif pattern_name == 'monte_carlo_exit':
+                        symbol, reason = match.groups()
+                        metrics['monte_carlo_events'].append({
+                            'symbol': symbol,
+                            'reason': reason,
+                            'line': line_num
+                        })
+                    elif pattern_name == 'error':
+                        metrics['errors'].append((match.group(0), line_num))
+                    elif pattern_name == 'warning':
+                        metrics['warnings'].append((match.group(0), line_num))
+    
+    return metrics
 
-    def _process_event(self, event: LogEvent):
-        # 1. Detect Signals
-        sig_match = self.sig_pattern.search(event.message)
-        if sig_match:
-            symbol, direction = sig_match.groups()
-            self._open_context(symbol, event.timestamp, direction, event.message)
-            self.stats['TOTAL_SIGNALS'] += 1
-            return
+def calculate_performance_metrics(metrics):
+    """Calculate performance metrics from parsed log data"""
+    print("\n" + "="*60)
+    print("PERFORMANCE ANALYSIS RESULTS")
+    print("="*60)
 
-        # 2. Detect Vetoes
-        for pattern, reason in self.veto_patterns:
-            if pattern.search(event.message):
-                # Extract symbol if possible, or infer from context
-                # Regex usually captures symbol as group 1
-                match = pattern.search(event.message)
-                symbol = match.group(1) if match.groups() else None
-                
-                # Clean symbol string (sometimes has trailing chars)
-                if symbol: 
-                    symbol = symbol.split(' ')[0].strip('():')
-                    self._add_veto(symbol, reason, event.message)
-                    self.stats[f'VETO_{reason.upper().replace(" ", "_")}'] += 1
-                return
+    print(f"Total Lines Analyzed: {metrics['total_lines']:,}")
+    print(f"Total Trades Processed: {len(metrics['trades']):,}")
+    print(f"Realized PnL Events: {len(metrics['pnl_snapshots']):,}")
+    print(f"Hygiene Events: {len(metrics['hygiene_events']):,}")
+    print(f"Monte Carlo Events: {len(metrics['monte_carlo_events']):,}")
+    print(f"Errors Found: {len(metrics['errors']):,}")
+    print(f"Warnings Found: {len(metrics['warnings']):,}")
 
-        # 3. Detect Execution Intent
-        exec_match = self.exec_pattern.search(event.message)
-        if exec_match:
-            symbol = exec_match.group(1)
-            self._confirm_execution(symbol, event.message)
-            self.stats['EXECUTIONS_ATTEMPTED'] += 1
-            return
+    # Initialize variables to avoid UnboundLocalError
+    avg_pnl = 0
+    win_rate = 0
+    avg_win = 0
+    avg_loss = 0
+    winning_trades = []
+    losing_trades = []
+    total_pnl = 0
+    pnl_std = 0
+    max_gain = 0
+    max_loss = 0
+    hygiene_by_reason = {}
 
-        # 4. Detect Fills (Paper or Real)
-        fill_match = self.fill_pattern.search(event.message)
-        if fill_match:
-            side, type_, symbol = fill_match.groups()
-            self.stats['FILLS_CONFIRMED'] += 1
-            # Special handling for Exits
-            if type_ == "EXIT":
-                self.stats['EXITS'] += 1
+    # Calculate PnL statistics
+    if metrics['pnl_snapshots']:
+        total_pnl = sum(metrics['pnl_snapshots'])
+        avg_pnl = statistics.mean(metrics['pnl_snapshots'])
+        pnl_std = statistics.stdev(metrics['pnl_snapshots']) if len(metrics['pnl_snapshots']) > 1 else 0
+        max_gain = max(metrics['pnl_snapshots']) if metrics['pnl_snapshots'] else 0
+        max_loss = min(metrics['pnl_snapshots']) if metrics['pnl_snapshots'] else 0
 
-    def _open_context(self, symbol: str, timestamp: datetime, direction: str, details: str):
-        # Close existing context for this symbol if any (assuming fast cycles)
-        if symbol in self.active_contexts:
-            # Mark previous as timed out or complete?
-            pass 
+        winning_trades = [pnl for pnl in metrics['pnl_snapshots'] if pnl > 0]
+        losing_trades = [pnl for pnl in metrics['pnl_snapshots'] if pnl < 0]
+
+        win_rate = len(winning_trades) / len(metrics['pnl_snapshots']) if metrics['pnl_snapshots'] else 0
+        avg_win = statistics.mean(winning_trades) if winning_trades else 0
+        avg_loss = statistics.mean(losing_trades) if losing_trades else 0
         
-        ctx = TransactionContext(symbol, timestamp, direction)
-        ctx.signal_details = details
-        self.active_contexts[symbol] = ctx
-        self.transactions.append(ctx)
+        print(f"\nPnL Statistics:")
+        print(f"  Total PnL: ${total_pnl:.2f}")
+        print(f"  Average PnL: ${avg_pnl:.2f}")
+        print(f"  PnL Std Dev: ${pnl_std:.2f}")
+        print(f"  Largest Gain: ${max_gain:.2f}")
+        print(f"  Largest Loss: ${max_loss:.2f}")
+        print(f"  Win Rate: {win_rate:.2%}")
+        print(f"  Avg Win: ${avg_win:.2f}")
+        print(f"  Avg Loss: ${avg_loss:.2f}")
+        print(f"  Profit Factor: {abs(avg_win/avg_loss) if avg_loss != 0 else float('inf'):.2f}")
+    
+    # Analyze hygiene events
+    if metrics['hygiene_events']:
+        print(f"\nHygiene Event Analysis:")
+        hygiene_by_reason = Counter([event['reason'].split(':')[0] for event in metrics['hygiene_events']])
+        for reason, count in hygiene_by_reason.most_common():
+            print(f"  {reason}: {count} events")
+    
+    # Analyze Monte Carlo events
+    if metrics['monte_carlo_events']:
+        print(f"\nMonte Carlo Event Analysis:")
+        mc_by_reason = Counter([event['reason'].split(':')[0] for event in metrics['monte_carlo_events']])
+        for reason, count in mc_by_reason.most_common():
+            print(f"  {reason}: {count} events")
+    
+    # Analyze errors and warnings
+    if metrics['errors']:
+        print(f"\nTop 10 Errors:")
+        error_counts = Counter([err[0] for err in metrics['errors']])
+        for error, count in error_counts.most_common(10):
+            print(f"  [{count}] {error[:100]}...")
+    
+    if metrics['warnings']:
+        print(f"\nTop 10 Warnings:")
+        warning_counts = Counter([warn[0] for warn in metrics['warnings']])
+        for warning, count in warning_counts.most_common(10):
+            print(f"  [{count}] {warning[:100]}...")
+    
+    # Identify potential issues
+    print(f"\n" + "="*60)
+    print("POTENTIAL ISSUES IDENTIFIED")
+    print("="*60)
+    
+    issues_found = []
+    
+    if metrics['pnl_snapshots'] and avg_pnl < 0:
+        issues_found.append(f"NEGATIVE AVERAGE PnL: ${avg_pnl:.2f}")
+    
+    if win_rate < 0.4:  # Less than 40% win rate
+        issues_found.append(f"LOW WIN RATE: {win_rate:.2%}")
+    
+    if len(losing_trades) > len(winning_trades) * 2:  # More than 2x as many losing trades
+        issues_found.append(f"HIGH RATIO OF LOSING TRADES: {len(losing_trades)} losing vs {len(winning_trades)} winning")
+    
+    if metrics['errors']:
+        issues_found.append(f"SIGNIFICANT ERRORS PRESENT: {len(metrics['errors'])} errors found")
+    
+    if hygiene_by_reason.get('TOXIC_FUNDING', 0) > 5:  # More than 5 toxic funding events
+        issues_found.append(f"HIGH TOXIC FUNDING EVENTS: {hygiene_by_reason['TOXIC_FUNDING']} events")
+    
+    if not metrics['monte_carlo_events']:
+        issues_found.append("MONTE CARLO SYSTEM NOT ACTIVE: No Monte Carlo events found")
+    
+    for i, issue in enumerate(issues_found, 1):
+        print(f"{i}. {issue}")
+    
+    if not issues_found:
+        print("No major issues identified in this analysis.")
+    
+    return issues_found
 
-    def _add_veto(self, symbol: str, reason: str, full_msg: str):
-        # Link veto to the active context OR create a "Ghost" context (Veto without recent signal)
-        if symbol in self.active_contexts:
-            self.active_contexts[symbol].add_veto(full_msg)
-        else:
-            # Ghost Veto (Governor checking during loop without Oracle Signal)
-            pass
-
-    def _confirm_execution(self, symbol: str, details: str):
-        if symbol in self.active_contexts:
-            self.active_contexts[symbol].set_executed(details)
-            # Close context after execution? Keep open for fill?
-            # For now, simplistic correlation
-            del self.active_contexts[symbol]
-
-    def generate_report(self, output_path: str = "session_analysis.md"):
-        print(f"\n{Colors.CYAN}Generating Report...{Colors.ENDC}")
+def analyze_latest_logs():
+    """Analyze the most recent log files"""
+    log_dir = os.path.dirname(os.path.abspath(__file__))
+    log_files = []
+    
+    # Look for log files in the current directory and parent directory
+    for root, dirs, files in os.walk(log_dir):
+        for file in files:
+            if file.endswith('.log') and 'live_trading_session' in file:
+                log_files.append(os.path.join(root, file))
+    
+    # Also check parent directory
+    parent_dir = os.path.dirname(log_dir)
+    for file in os.listdir(parent_dir):
+        if file.endswith('.log') and 'live_trading_session' in file:
+            log_files.append(os.path.join(parent_dir, file))
+    
+    if not log_files:
+        print("No log files found in current or parent directory")
+        return
+    
+    # Sort by modification time to get the most recent
+    log_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+    
+    print(f"Found {len(log_files)} log files, analyzing the most recent:")
+    for i, log_file in enumerate(log_files[:3]):  # Analyze top 3 most recent
+        print(f"\nAnalyzing: {os.path.basename(log_file)}")
+        print("-" * 80)
         
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write("# 🕵️ Log Analysis Report\n")
-            f.write(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
-            
-            f.write("## 📊 Session Statistics\n")
-            f.write("| Metric | Count |\n")
-            f.write("| :--- | :---: |\n")
-            for k, v in self.stats.items():
-                f.write(f"| {k} | {v} |\n")
-            f.write("\n")
-            
-            f.write("## 🎬 The Story of the Session\n")
-            
-            # Group transactions by time
-            for tx in self.transactions:
-                icon = "⚪"
-                if tx.status == "EXECUTED": icon = "🟢"
-                elif tx.status == "VETOED": icon = "🔴"
-                elif tx.status == "BLOCKED": icon = "🟠"
-                
-                f.write(f"### {icon} {tx.start_time.strftime('%H:%M:%S')} - {tx.symbol} ({tx.direction})\n")
-                f.write(f"- **Signal:** `{tx.signal_details}`\n")
-                
-                if tx.vetoes:
-                    f.write(f"- **Result:** {tx.status}\n")
-                    f.write("- **Obstacles:**\n")
-                    unique_vetoes = list(set(tx.vetoes)) # Dedup
-                    for v in unique_vetoes[:3]: # Limit spam
-                        f.write(f"  - `{v}`\n")
-                    if len(unique_vetoes) > 3:
-                        f.write(f"  - ... and {len(unique_vetoes)-3} more.\n")
-                
-                if tx.execution:
-                    f.write(f"- **✅ EXECUTION:** `{tx.execution}`\n")
-                
-                f.write("\n")
-
-        print(f"{Colors.GREEN}✅ Report Saved: {output_path}{Colors.ENDC}")
-        self._print_cli_summary()
-
-    def _print_cli_summary(self):
-        print(f"\n{Colors.HEADER}=== ANALYSIS SUMMARY ==={Colors.ENDC}")
-        print(f"Signals Detected: {self.stats['TOTAL_SIGNALS']}")
-        print(f"Executions:       {self.stats['EXECUTIONS_ATTEMPTED']}")
-        print(f"Fills:            {self.stats['FILLS_CONFIRMED']}")
-        print("-" * 30)
-        print(f"{Colors.WARNING}Top Vetoes:{Colors.ENDC}")
-        # Sort veto stats
-        vetoes = {k:v for k,v in self.stats.items() if k.startswith("VETO_")}
-        for k, v in sorted(vetoes.items(), key=lambda item: item[1], reverse=True):
-            print(f"  {k.replace('VETO_', '')}: {v}")
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python log_analyzer.py <logfile>")
-        return # Dev mode override: Use default log if none provided?
+        metrics = analyze_log_performance(log_file)
+        issues = calculate_performance_metrics(metrics)
         
-    logfile = sys.argv[1]
-    analyzer = LogAnalyzer()
-    analyzer.parse_file(logfile)
-    analyzer.generate_report()
+        if i < 2:  # Only analyze Monte Carlo for first 2 files
+            print(f"\nDetailed Monte Carlo Analysis for {os.path.basename(log_file)}:")
+            if metrics['monte_carlo_events']:
+                print(f"  Monte Carlo events found: {len(metrics['monte_carlo_events'])}")
+                for event in metrics['monte_carlo_events'][:5]:  # Show first 5
+                    print(f"    Line {event['line']}: {event['symbol']} - {event['reason']}")
+            else:
+                print(f"  No Monte Carlo events found - system may not be active")
 
 if __name__ == "__main__":
-    main()
+    print("HolonicTrader Log Analyzer")
+    print("="*60)
+    
+    if len(sys.argv) > 1:
+        # Analyze specific log file
+        log_file = sys.argv[1]
+        if os.path.exists(log_file):
+            metrics = analyze_log_performance(log_file)
+            calculate_performance_metrics(metrics)
+        else:
+            print(f"File {log_file} not found")
+    else:
+        # Analyze latest log files
+        analyze_latest_logs()

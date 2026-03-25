@@ -2,7 +2,7 @@ use rand::prelude::*;
 use rand_distr::{Normal, Distribution};
 use std::collections::HashMap;
 
-pub fn estimate_ou_parameters(prices: &[f64]) -> HashMap<String, f64> {
+pub fn estimate_ou_parameters(prices: &[f64], dt: f64) -> HashMap<String, f64> {
     let n = prices.len();
     if n < 2 {
         return HashMap::new();
@@ -32,8 +32,8 @@ pub fn estimate_ou_parameters(prices: &[f64]) -> HashMap<String, f64> {
     let a = (n_f * sum_xy - sum_x * sum_y) / denominator;
     let b = (sum_y - a * sum_x) / n_f;
 
-    // lambda = -ln(a) / dt (assuming dt=1 for unit steps)
-    let lambda = if a > 0.0 { -a.ln() } else { 0.1 }; // Safety fallback
+    // lambda = -ln(a) / dt
+    let lambda = if a > 0.0 { -a.ln() / dt } else { 0.0001 }; // Safety fallback
     
     // mu = b / (1 - a)
     let mu = if (1.0 - a).abs() > 1e-12 { b / (1.0 - a) } else { sum_x / n_f };
@@ -58,11 +58,14 @@ pub fn estimate_ou_parameters(prices: &[f64]) -> HashMap<String, f64> {
     map.insert("mu".to_string(), mu);
     map.insert("sigma".to_string(), sigma);
     map.insert("drift".to_string(), lambda * (mu - prices[n - 1])); // Instantaneous drift
+    map.insert("a".to_string(), a); // Store exact AR1 coefficient
+    map.insert("b".to_string(), b); // Store exact AR1 intercept
+    map.insert("residual_sigma".to_string(), variance.sqrt()); // Store exact residual std
     
     map
 }
 
-pub fn estimate_gbm_parameters(prices: &[f64]) -> HashMap<String, f64> {
+pub fn estimate_gbm_parameters(prices: &[f64], dt: f64) -> HashMap<String, f64> {
     let n = prices.len();
     if n < 2 {
         return HashMap::new();
@@ -83,11 +86,11 @@ pub fn estimate_gbm_parameters(prices: &[f64]) -> HashMap<String, f64> {
     let mean = sum / returns.len() as f64;
     
     let sq_sum: f64 = returns.iter().map(|x| (x - mean).powi(2)).sum();
-    let variance = sq_sum / returns.len() as f64;
+    let variance = (sq_sum / returns.len() as f64) / dt;
     let sigma = variance.sqrt();
     
-    // mu = mean + 0.5 * sigma^2
-    let mu = mean + 0.5 * variance;
+    // mu = mean/dt + 0.5 * sigma^2
+    let mu = (mean / dt) + 0.5 * variance;
 
     let mut map = HashMap::new();
     map.insert("mu".to_string(), mu);
@@ -103,10 +106,15 @@ pub fn simulate_paths(
     start_price: f64,
     horizon: usize,
     num_paths: usize,
+    dt: f64,
 ) -> Vec<Vec<f64>> {
     let mu = *params.get("mu").unwrap_or(&0.0);
     let sigma = *params.get("sigma").unwrap_or(&0.1);
-    let lambda = *params.get("lambda").unwrap_or(&0.1);
+    
+    // For OU Exact Simulation
+    let a = *params.get("a").unwrap_or(&0.999);
+    let b = *params.get("b").unwrap_or(&0.0);
+    let residual_sigma = *params.get("residual_sigma").unwrap_or(&0.01);
 
     use rayon::prelude::*;
 
@@ -121,11 +129,11 @@ pub fn simulate_paths(
             let z = normal.sample(&mut rng);
             
             if model == "OU" {
-                let dx = lambda * (mu - current_price) + sigma * z;
-                current_price += dx;
+                // Exact discrete AR(1) update avoids Euler explosion
+                current_price = a * current_price + b + residual_sigma * z;
             } else {
                 let drift = mu - 0.5 * sigma.powi(2);
-                current_price *= (drift + sigma * z).exp();
+                current_price *= (drift * dt + sigma * dt.sqrt() * z).exp();
             }
             path.push(current_price);
         }
@@ -143,10 +151,15 @@ pub fn calculate_ruin_probability(
     tp_price: f64,
     horizon: usize,
     num_paths: usize,
+    dt: f64,
 ) -> f64 {
     let mu = *params.get("mu").unwrap_or(&0.0);
     let sigma = *params.get("sigma").unwrap_or(&0.1);
-    let lambda = *params.get("lambda").unwrap_or(&0.1);
+    
+    // For OU Exact Simulation
+    let a = *params.get("a").unwrap_or(&0.999);
+    let b = *params.get("b").unwrap_or(&0.0);
+    let residual_sigma = *params.get("residual_sigma").unwrap_or(&0.01);
     
     let is_buy = start_price < tp_price; // Simple heuristic for direction
 
@@ -162,11 +175,10 @@ pub fn calculate_ruin_probability(
             let z = normal.sample(&mut rng);
             
             if model == "OU" {
-                let dx = lambda * (mu - current_price) + sigma * z;
-                current_price += dx;
+                current_price = a * current_price + b + residual_sigma * z;
             } else {
                 let drift = mu - 0.5 * sigma.powi(2);
-                current_price *= (drift + sigma * z).exp();
+                current_price *= (drift * dt + sigma * dt.sqrt() * z).exp();
             }
 
             if is_buy {

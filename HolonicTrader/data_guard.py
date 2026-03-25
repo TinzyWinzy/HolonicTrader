@@ -9,18 +9,20 @@ class DataGuard:
     def __init__(self):
         # Category-Specific Glitch Thresholds
         # Absolute Max Daily ROI (e.g., 0.50 = 50% for BTC)
+        # FIX #2 2026-03-02: RAISED thresholds to stop rejecting winning genomes
+        # Old thresholds were too aggressive (rejected 25%+ ROI as glitches)
         self.glitch_thresholds = {
-            'large_cap': {'max_daily_roi': 0.50, 'max_hourly_roi': 0.15, 'max_candle_roi': 0.10},
-            'mid_cap':   {'max_daily_roi': 0.80, 'max_hourly_roi': 0.30, 'max_candle_roi': 0.20},
-            'meme_coin': {'max_daily_roi': 100.0, 'max_hourly_roi': 25.0, 'max_candle_roi': 10.0},
-            'default':   {'max_daily_roi': 1.0, 'max_hourly_roi': 0.40, 'max_candle_roi': 0.25}
+            'large_cap': {'max_daily_roi': 0.80, 'max_hourly_roi': 0.25, 'max_candle_roi': 0.15},  # Was 0.50/0.15/0.10
+            'mid_cap':   {'max_daily_roi': 1.50, 'max_hourly_roi': 0.50, 'max_candle_roi': 0.30},  # Was 0.80/0.30/0.20
+            'meme_coin': {'max_daily_roi': 200.0, 'max_hourly_roi': 50.0, 'max_candle_roi': 20.0},  # Was 100/25/10
+            'default':   {'max_daily_roi': 2.0, 'max_hourly_roi': 0.60, 'max_candle_roi': 0.40}   # Was 1.0/0.40/0.25
         }
-        
+
         # Mappings (Simplified internal classification)
         self.meme_list = ['PEPE', 'SHIB', 'BONK', 'WIF', 'FLOKI', 'DOGE']
         self.large_cap = ['BTC', 'ETH']
-        self.mid_cap = ['SOL', 'AVAX', 'LINK', 'UNI', 'AAVE', 'BNB', 'NEAR', 'SUI']
-        
+        self.mid_cap = ['SOL', 'AVAX', 'LINK', 'UNI', 'AAVE', 'BNB', 'NEAR', 'SUI', 'XRP', 'ADA', 'DOGE', 'TAO', 'FET', 'WLD', 'ARB', 'OP', 'IMX', 'STX', 'APT', 'TIA', 'SEI', 'INJ', 'KAS', 'LDO', 'PYTH', 'JTO', 'ORDI']
+
         self.rejection_log = []
         self.alert_threshold = 5 # Alerts if > 5 glitches per hour
         self.glitch_history = [] # Timestamps of detected glitches

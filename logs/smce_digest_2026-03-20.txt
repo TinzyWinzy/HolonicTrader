@@ -1,0 +1,30 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-20 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $88.39
+  End:    $88.27
+  Change: -0.13%  ($-0.11)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: TRANSITION
+    TRANSITION  : 100% of cycles
+  Last inputs: {"structure": "BEARISH", "entropy": 1.0, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ✅ Zero violations – all rules respected.
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

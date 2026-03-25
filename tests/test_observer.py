@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 import numpy as np
-from agent_observer import ObserverHolon
+from HolonicTrader.agent_observer import ObserverHolon
 
 def test_observer():
     print("Testing ObserverHolon...")

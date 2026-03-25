@@ -44,12 +44,19 @@ pub fn calculate_signals_matrix(
                     results.insert("atr".to_string(), *atr_vec.last().unwrap_or(&0.0));
                 }
                 
-                // 4. Entropy
-                results.insert("shannon_entropy".to_string(), entropy::calculate_shannon_entropy(p));
+                // 4. Entropy (compute returns from raw prices first for Shannon)
+                let returns: Vec<f64> = p.windows(2).map(|w| {
+                    if w[0].abs() > 1e-12 { (w[1] - w[0]) / w[0] } else { 0.0 }
+                }).collect();
+                if returns.len() >= 10 {
+                    results.insert("shannon_entropy".to_string(), entropy::calculate_shannon_entropy(&returns));
+                } else {
+                    results.insert("shannon_entropy".to_string(), entropy::calculate_shannon_entropy(p));
+                }
                 results.insert("perm_entropy".to_string(), entropy::calculate_permutation_entropy(p, 3, 1));
                 
                 // 5. SDE (OU Parameters)
-                let ou = sde::estimate_ou_parameters(p);
+                let ou = sde::estimate_ou_parameters(p, 1.0 / 35040.0);
                 for (k, v) in ou {
                     results.insert(format!("ou_{}", k), v);
                 }

@@ -11,9 +11,12 @@ logger = logging.getLogger("ValidationGate")
 class LiveValidationGate:
     def __init__(self, paper_period_hours: int = 48):
         self.paper_period_hours = paper_period_hours
-        # AGGRESSIVE MODE: Relaxed for Maximum Profit Focus
-        self.min_trades = 2  # Was 10 - too strict in slow markets
-        self.max_drawdown = 0.40  # Was 0.25 - allow more risk tolerance
+        # FIX #3 2026-03-02: STRICT MODE - Block losing genomes
+        # Old settings allowed -3% PnL and 5% win rate to pass
+        self.min_trades = 5  # Was 2 - require more statistical significance
+        self.max_drawdown = 0.30  # Was 0.40 - tighter drawdown control
+        self.min_win_rate = 0.40  # NEW: Require 40%+ win rate
+        self.min_pnl = 0.0  # NEW: Require POSITIVE PnL (was -0.03)
         self.validation_log = 'validation_history.json'
 
         
@@ -55,13 +58,13 @@ class LiveValidationGate:
         
         # 3. Assessment
         stats = self._calculate_stats(arena)
-        
+
+        # FIX #3: STRICT VALIDATION - All checks must pass
         checks = {
             'sufficient_trades': stats['trade_count'] >= self.min_trades,
             'controlled_drawdown': stats['max_drawdown'] <= self.max_drawdown,
-            # AGGRESSIVE: Allow slight negative PnL (-3%) to survive choppy validation
-            # Survival of the fittest includes those who lose LESS in a crash.
-            'positive_pnl': stats['pnl_pct'] > -0.03, 
+            'positive_pnl': stats['pnl_pct'] >= self.min_pnl,  # STRICT: Must be >= 0
+            'decent_win_rate': stats['win_rate'] >= self.min_win_rate,  # STRICT: Must be >= 40%
             'sanity': self._params_sanity(genome)
         }
         

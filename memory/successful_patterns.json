@@ -1,0 +1,6502 @@
+[
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 53,
+    "timestamp": "2026-03-21T14:11:50.646343+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 54,
+    "timestamp": "2026-03-21T14:19:20.126716+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 55,
+    "timestamp": "2026-03-21T14:25:38.734961+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 56,
+    "timestamp": "2026-03-21T14:31:48.752850+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 57,
+    "timestamp": "2026-03-21T14:36:38.779013+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 58,
+    "timestamp": "2026-03-21T14:41:43.121027+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 59,
+    "timestamp": "2026-03-21T14:46:44.294517+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 60,
+    "timestamp": "2026-03-21T14:51:55.525039+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 61,
+    "timestamp": "2026-03-21T14:56:51.204274+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 62,
+    "timestamp": "2026-03-21T15:02:10.840760+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 63,
+    "timestamp": "2026-03-21T15:06:47.907417+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 64,
+    "timestamp": "2026-03-21T15:12:09.474611+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 65,
+    "timestamp": "2026-03-21T15:16:56.087410+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 66,
+    "timestamp": "2026-03-21T15:22:03.598202+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 67,
+    "timestamp": "2026-03-21T15:26:58.351060+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 68,
+    "timestamp": "2026-03-21T15:32:00.442293+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 69,
+    "timestamp": "2026-03-21T15:37:01.733174+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 70,
+    "timestamp": "2026-03-21T15:42:11.581333+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 71,
+    "timestamp": "2026-03-21T15:46:58.984164+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 72,
+    "timestamp": "2026-03-21T15:51:57.010500+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 73,
+    "timestamp": "2026-03-21T15:57:11.187904+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 74,
+    "timestamp": "2026-03-21T16:01:54.687335+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 75,
+    "timestamp": "2026-03-21T16:06:53.225643+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 76,
+    "timestamp": "2026-03-21T16:12:28.208914+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 77,
+    "timestamp": "2026-03-21T16:17:38.591437+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 78,
+    "timestamp": "2026-03-21T16:23:09.334530+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 79,
+    "timestamp": "2026-03-21T16:28:09.606303+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 80,
+    "timestamp": "2026-03-21T16:33:22.107891+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 81,
+    "timestamp": "2026-03-21T16:41:29.998127+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 82,
+    "timestamp": "2026-03-21T16:48:39.903298+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 83,
+    "timestamp": "2026-03-21T17:00:21.380248+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 84,
+    "timestamp": "2026-03-21T17:09:44.914978+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 85,
+    "timestamp": "2026-03-21T17:15:59.108229+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 86,
+    "timestamp": "2026-03-21T17:22:14.423950+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 87,
+    "timestamp": "2026-03-21T17:30:56.982476+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 88,
+    "timestamp": "2026-03-21T17:38:26.662969+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 89,
+    "timestamp": "2026-03-21T17:45:39.501952+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 90,
+    "timestamp": "2026-03-21T17:50:36.294462+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 91,
+    "timestamp": "2026-03-21T17:55:53.284996+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 92,
+    "timestamp": "2026-03-21T18:01:45.567515+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 93,
+    "timestamp": "2026-03-21T18:07:40.178114+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 94,
+    "timestamp": "2026-03-21T18:13:02.295795+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 95,
+    "timestamp": "2026-03-21T18:18:26.230691+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 96,
+    "timestamp": "2026-03-21T18:24:05.732017+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 97,
+    "timestamp": "2026-03-21T18:29:01.620914+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 98,
+    "timestamp": "2026-03-21T18:34:48.600446+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 99,
+    "timestamp": "2026-03-21T18:40:16.199012+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 100,
+    "timestamp": "2026-03-21T18:46:59.878391+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 101,
+    "timestamp": "2026-03-21T18:52:03.069651+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 102,
+    "timestamp": "2026-03-21T18:57:32.317431+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 103,
+    "timestamp": "2026-03-21T19:03:10.677605+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 104,
+    "timestamp": "2026-03-21T19:07:57.768717+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 105,
+    "timestamp": "2026-03-21T19:13:17.378920+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 106,
+    "timestamp": "2026-03-21T19:19:43.132603+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 107,
+    "timestamp": "2026-03-21T19:27:55.188419+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.002174869198039605,
+      "win_rate": 0.59,
+      "overall_score": 6.330010343234126
+    },
+    "result": {
+      "expectancy": 0.002174869198039605
+    },
+    "cycle_id": 108,
+    "timestamp": "2026-03-21T19:37:25.620455+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-21T20:23:05.794313+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-21T20:28:00.505372+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-21T20:32:56.660373+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-21T20:38:03.684936+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-21T20:43:02.643476+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-21T20:48:01.594466+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-21T20:52:58.050342+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-21T20:58:05.087006+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-21T21:03:04.916731+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-21T21:08:02.127620+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-21T21:12:52.574554+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001690869198039605,
+      "win_rate": 0.585,
+      "overall_score": 6.290593713776318
+    },
+    "result": {
+      "expectancy": 0.001690869198039605
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-21T21:18:01.243402+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-21T21:23:06.056161+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-21T21:27:47.173380+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-21T21:32:50.027022+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 16,
+    "timestamp": "2026-03-21T21:37:54.290442+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 17,
+    "timestamp": "2026-03-21T21:42:50.297954+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 18,
+    "timestamp": "2026-03-21T21:47:43.974365+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 19,
+    "timestamp": "2026-03-21T21:52:43.147075+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018063691980396042,
+      "win_rate": 0.585,
+      "overall_score": 6.297038448041373
+    },
+    "result": {
+      "expectancy": 0.0018063691980396042
+    },
+    "cycle_id": 20,
+    "timestamp": "2026-03-21T21:57:42.137815+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029809191980395937,
+      "win_rate": 0.595,
+      "overall_score": 6.413982265413394
+    },
+    "result": {
+      "expectancy": 0.0029809191980395937
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-21T22:09:07.577013+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029809191980395937,
+      "win_rate": 0.595,
+      "overall_score": 6.413982265413394
+    },
+    "result": {
+      "expectancy": 0.0029809191980395937
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-21T22:14:12.004808+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029809191980395937,
+      "win_rate": 0.595,
+      "overall_score": 6.413982265413394
+    },
+    "result": {
+      "expectancy": 0.0029809191980395937
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-21T22:19:10.806773+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029809191980395937,
+      "win_rate": 0.595,
+      "overall_score": 6.413982265413394
+    },
+    "result": {
+      "expectancy": 0.0029809191980395937
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-21T22:24:08.993474+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0039000181140287447,
+      "win_rate": 0.6,
+      "overall_score": 6.479226437713879
+    },
+    "result": {
+      "expectancy": 0.0039000181140287447
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-21T22:48:06.706909+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-21T23:04:15.134215+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-21T23:09:31.561275+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-21T23:14:40.443978+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-21T23:19:32.749955+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-21T23:24:31.823464+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-21T23:29:35.181843+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-21T23:34:20.716228+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-21T23:39:25.745319+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-21T23:44:21.602992+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-21T23:49:18.910199+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-21T23:54:22.015765+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.003977018114028749,
+      "win_rate": 0.595,
+      "overall_score": 6.492141962026999
+    },
+    "result": {
+      "expectancy": 0.003977018114028749
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-21T23:59:23.397380+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0038882141140287457,
+      "win_rate": 0.59,
+      "overall_score": 6.473126496859927
+    },
+    "result": {
+      "expectancy": 0.0038882141140287457
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-22T00:04:18.243618+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0037070141140287463,
+      "win_rate": 0.585,
+      "overall_score": 6.450035226458774
+    },
+    "result": {
+      "expectancy": 0.0037070141140287463
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-22T00:09:24.279065+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0027044816140287496,
+      "win_rate": 0.565,
+      "overall_score": 6.336079220133144
+    },
+    "result": {
+      "expectancy": 0.0027044816140287496
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-22T00:14:20.853006+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0025137316140287583,
+      "win_rate": 0.56,
+      "overall_score": 6.31188346656598
+    },
+    "result": {
+      "expectancy": 0.0025137316140287583
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-22T00:19:19.273717+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0016684221140287631,
+      "win_rate": 0.55,
+      "overall_score": 6.2394058866550175
+    },
+    "result": {
+      "expectancy": 0.0016684221140287631
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-22T00:38:34.446689+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0016684221140287631,
+      "win_rate": 0.55,
+      "overall_score": 6.2394058866550175
+    },
+    "result": {
+      "expectancy": 0.0016684221140287631
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-22T00:43:36.574487+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0016684221140287631,
+      "win_rate": 0.55,
+      "overall_score": 6.2394058866550175
+    },
+    "result": {
+      "expectancy": 0.0016684221140287631
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-22T00:48:37.678499+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029418551087362944,
+      "win_rate": 0.55,
+      "overall_score": 6.3139288858118885
+    },
+    "result": {
+      "expectancy": 0.0029418551087362944
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-22T01:13:39.179222+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0029418551087362944,
+      "win_rate": 0.55,
+      "overall_score": 6.3139288858118885
+    },
+    "result": {
+      "expectancy": 0.0029418551087362944
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-22T01:18:35.835608+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0021670531087362947,
+      "win_rate": 0.54,
+      "overall_score": 6.243697680328705
+    },
+    "result": {
+      "expectancy": 0.0021670531087362947
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-22T01:23:40.591018+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0021670531087362947,
+      "win_rate": 0.54,
+      "overall_score": 6.243697680328705
+    },
+    "result": {
+      "expectancy": 0.0021670531087362947
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-22T01:28:40.078981+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0021670531087362947,
+      "win_rate": 0.54,
+      "overall_score": 6.243697680328705
+    },
+    "result": {
+      "expectancy": 0.0021670531087362947
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-22T01:33:35.416348+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-22T01:38:38.011900+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-22T01:43:34.200819+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-22T01:48:31.379155+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-22T01:53:31.117990+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-22T01:58:28.563741+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-22T02:03:27.082820+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019395481087362953,
+      "win_rate": 0.535,
+      "overall_score": 6.2239606494295066
+    },
+    "result": {
+      "expectancy": 0.0019395481087362953
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-22T02:08:30.832247+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-22T02:13:25.993593+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-22T02:18:28.787274+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-22T02:23:21.472344+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 16,
+    "timestamp": "2026-03-22T02:28:23.833855+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 17,
+    "timestamp": "2026-03-22T02:33:22.493579+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 18,
+    "timestamp": "2026-03-22T02:38:18.151376+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 19,
+    "timestamp": "2026-03-22T02:43:19.270448+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 20,
+    "timestamp": "2026-03-22T02:48:23.449972+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 21,
+    "timestamp": "2026-03-22T02:53:16.796539+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 22,
+    "timestamp": "2026-03-22T02:58:14.806169+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 23,
+    "timestamp": "2026-03-22T03:03:18.180123+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 24,
+    "timestamp": "2026-03-22T03:08:13.438389+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 25,
+    "timestamp": "2026-03-22T03:13:15.601672+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 26,
+    "timestamp": "2026-03-22T03:18:12.792637+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 27,
+    "timestamp": "2026-03-22T03:23:13.167713+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018664671087362857,
+      "win_rate": 0.53,
+      "overall_score": 6.211100974458495
+    },
+    "result": {
+      "expectancy": 0.0018664671087362857
+    },
+    "cycle_id": 28,
+    "timestamp": "2026-03-22T03:28:09.401005+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 29,
+    "timestamp": "2026-03-22T03:33:12.108343+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 30,
+    "timestamp": "2026-03-22T03:38:06.300402+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 31,
+    "timestamp": "2026-03-22T03:43:11.181683+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 32,
+    "timestamp": "2026-03-22T03:48:07.300806+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 33,
+    "timestamp": "2026-03-22T03:53:05.754860+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 34,
+    "timestamp": "2026-03-22T03:58:06.598789+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 35,
+    "timestamp": "2026-03-22T04:03:09.246729+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 36,
+    "timestamp": "2026-03-22T04:08:04.736337+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 37,
+    "timestamp": "2026-03-22T04:13:00.524105+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 38,
+    "timestamp": "2026-03-22T04:18:00.303655+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 39,
+    "timestamp": "2026-03-22T04:23:03.783654+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 40,
+    "timestamp": "2026-03-22T04:27:57.888477+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 41,
+    "timestamp": "2026-03-22T04:32:56.242847+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 42,
+    "timestamp": "2026-03-22T04:37:59.197723+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 43,
+    "timestamp": "2026-03-22T04:42:56.847883+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 44,
+    "timestamp": "2026-03-22T04:47:52.916386+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 45,
+    "timestamp": "2026-03-22T04:52:56.210805+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 46,
+    "timestamp": "2026-03-22T04:57:49.895447+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 47,
+    "timestamp": "2026-03-22T05:02:52.695163+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 48,
+    "timestamp": "2026-03-22T05:07:52.601770+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 49,
+    "timestamp": "2026-03-22T05:12:49.294363+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 50,
+    "timestamp": "2026-03-22T05:17:50.621240+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 51,
+    "timestamp": "2026-03-22T05:22:50.033895+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 52,
+    "timestamp": "2026-03-22T05:27:45.408450+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 53,
+    "timestamp": "2026-03-22T05:32:44.127279+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 54,
+    "timestamp": "2026-03-22T05:37:59.501142+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 55,
+    "timestamp": "2026-03-22T05:42:40.972045+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 56,
+    "timestamp": "2026-03-22T05:47:45.572870+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 57,
+    "timestamp": "2026-03-22T05:52:40.330363+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 58,
+    "timestamp": "2026-03-22T05:57:40.498767+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 59,
+    "timestamp": "2026-03-22T06:02:33.211442+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 60,
+    "timestamp": "2026-03-22T06:07:37.792199+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 61,
+    "timestamp": "2026-03-22T06:12:36.870728+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001892342108736289,
+      "win_rate": 0.53,
+      "overall_score": 6.213627055117326
+    },
+    "result": {
+      "expectancy": 0.001892342108736289
+    },
+    "cycle_id": 62,
+    "timestamp": "2026-03-22T06:17:34.983989+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 63,
+    "timestamp": "2026-03-22T06:22:38.750403+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 64,
+    "timestamp": "2026-03-22T06:27:34.337502+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 65,
+    "timestamp": "2026-03-22T06:32:32.844212+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 66,
+    "timestamp": "2026-03-22T06:37:32.252765+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 67,
+    "timestamp": "2026-03-22T06:42:34.862110+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 68,
+    "timestamp": "2026-03-22T06:47:29.999021+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018834971087362904,
+      "win_rate": 0.525,
+      "overall_score": 6.203010677539305
+    },
+    "result": {
+      "expectancy": 0.0018834971087362904
+    },
+    "cycle_id": 69,
+    "timestamp": "2026-03-22T06:52:27.286284+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 70,
+    "timestamp": "2026-03-22T06:57:28.752413+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 71,
+    "timestamp": "2026-03-22T07:02:31.448381+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 72,
+    "timestamp": "2026-03-22T07:07:32.373792+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 73,
+    "timestamp": "2026-03-22T07:12:27.654591+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 74,
+    "timestamp": "2026-03-22T07:17:29.500192+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 75,
+    "timestamp": "2026-03-22T07:22:19.337531+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 76,
+    "timestamp": "2026-03-22T07:27:25.539907+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 77,
+    "timestamp": "2026-03-22T07:32:27.212380+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 78,
+    "timestamp": "2026-03-22T07:37:17.924282+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 79,
+    "timestamp": "2026-03-22T07:42:24.935546+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 80,
+    "timestamp": "2026-03-22T07:47:20.706429+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 81,
+    "timestamp": "2026-03-22T07:52:17.468413+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 82,
+    "timestamp": "2026-03-22T07:57:26.266900+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 83,
+    "timestamp": "2026-03-22T08:02:15.484208+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 84,
+    "timestamp": "2026-03-22T08:07:37.156405+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 85,
+    "timestamp": "2026-03-22T08:12:15.155605+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 86,
+    "timestamp": "2026-03-22T08:17:09.592454+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 87,
+    "timestamp": "2026-03-22T08:22:11.234780+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 88,
+    "timestamp": "2026-03-22T08:27:10.321513+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 89,
+    "timestamp": "2026-03-22T08:32:08.163594+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 90,
+    "timestamp": "2026-03-22T08:37:10.314611+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 91,
+    "timestamp": "2026-03-22T08:42:08.195867+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 92,
+    "timestamp": "2026-03-22T08:47:12.328214+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 93,
+    "timestamp": "2026-03-22T08:52:07.643283+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 94,
+    "timestamp": "2026-03-22T08:57:20.530776+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 95,
+    "timestamp": "2026-03-22T09:02:10.682982+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 96,
+    "timestamp": "2026-03-22T09:07:31.673994+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 97,
+    "timestamp": "2026-03-22T09:12:10.141746+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 98,
+    "timestamp": "2026-03-22T09:17:05.959563+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 99,
+    "timestamp": "2026-03-22T09:22:04.405266+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 100,
+    "timestamp": "2026-03-22T09:27:00.365600+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018707541087362774,
+      "win_rate": 0.52,
+      "overall_score": 6.192024574575126
+    },
+    "result": {
+      "expectancy": 0.0018707541087362774
+    },
+    "cycle_id": 101,
+    "timestamp": "2026-03-22T09:32:12.954044+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-22T09:42:08.927890+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-22T09:48:02.646235+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-22T09:53:32.690045+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-22T09:58:46.995244+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-22T10:04:20.325705+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019396628389862208,
+      "win_rate": 0.515,
+      "overall_score": 6.200908791756996
+    },
+    "result": {
+      "expectancy": 0.0019396628389862208
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-22T10:09:12.957529+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019624118389862198,
+      "win_rate": 0.515,
+      "overall_score": 6.203004576069245
+    },
+    "result": {
+      "expectancy": 0.0019624118389862198
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-22T10:14:32.261325+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0019624118389862198,
+      "win_rate": 0.515,
+      "overall_score": 6.203004576069245
+    },
+    "result": {
+      "expectancy": 0.0019624118389862198
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-22T10:19:35.359210+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.00195755085458702,
+      "win_rate": 0.52,
+      "overall_score": 6.208906651577004
+    },
+    "result": {
+      "expectancy": 0.00195755085458702
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-22T10:37:47.152394+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.00195755085458702,
+      "win_rate": 0.52,
+      "overall_score": 6.208906651577004
+    },
+    "result": {
+      "expectancy": 0.00195755085458702
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-22T10:43:32.489528+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.00195755085458702,
+      "win_rate": 0.52,
+      "overall_score": 6.208906651577004
+    },
+    "result": {
+      "expectancy": 0.00195755085458702
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-22T10:48:48.666251+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.00195755085458702,
+      "win_rate": 0.52,
+      "overall_score": 6.208906651577004
+    },
+    "result": {
+      "expectancy": 0.00195755085458702
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-22T10:53:32.111685+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.00195755085458702,
+      "win_rate": 0.52,
+      "overall_score": 6.208906651577004
+    },
+    "result": {
+      "expectancy": 0.00195755085458702
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-22T10:58:31.500955+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-22T11:04:09.292568+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-22T11:08:43.154630+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-22T11:13:53.308532+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-22T11:18:57.616510+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-22T11:23:44.431189+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0015747917509455582,
+      "win_rate": 0.52,
+      "overall_score": 6.191057864054012
+    },
+    "result": {
+      "expectancy": 0.0015747917509455582
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-22T11:29:54.458650+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-22T11:36:38.768615+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-22T11:41:42.673602+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-22T11:47:16.449555+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-22T11:52:21.332106+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 16,
+    "timestamp": "2026-03-22T11:57:46.251932+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 17,
+    "timestamp": "2026-03-22T12:02:33.946589+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 18,
+    "timestamp": "2026-03-22T12:07:29.149831+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 19,
+    "timestamp": "2026-03-22T12:13:53.849529+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 20,
+    "timestamp": "2026-03-22T12:19:32.989302+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 21,
+    "timestamp": "2026-03-22T12:25:08.126262+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 22,
+    "timestamp": "2026-03-22T12:30:44.209650+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 23,
+    "timestamp": "2026-03-22T12:36:00.758343+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 24,
+    "timestamp": "2026-03-22T12:40:48.474198+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 25,
+    "timestamp": "2026-03-22T12:46:05.112870+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 26,
+    "timestamp": "2026-03-22T12:51:29.376311+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 27,
+    "timestamp": "2026-03-22T12:57:00.208785+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 28,
+    "timestamp": "2026-03-22T13:02:46.519807+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 29,
+    "timestamp": "2026-03-22T13:07:37.684162+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 30,
+    "timestamp": "2026-03-22T13:12:26.823395+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 31,
+    "timestamp": "2026-03-22T13:18:51.149218+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 32,
+    "timestamp": "2026-03-22T13:24:42.748853+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 33,
+    "timestamp": "2026-03-22T13:30:44.742649+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 34,
+    "timestamp": "2026-03-22T13:37:30.590102+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 35,
+    "timestamp": "2026-03-22T13:43:11.540610+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 36,
+    "timestamp": "2026-03-22T13:50:04.032534+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 37,
+    "timestamp": "2026-03-22T13:55:19.137261+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 38,
+    "timestamp": "2026-03-22T14:03:08.170811+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 39,
+    "timestamp": "2026-03-22T14:08:36.584220+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 40,
+    "timestamp": "2026-03-22T14:13:51.657644+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 41,
+    "timestamp": "2026-03-22T14:19:06.034178+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 42,
+    "timestamp": "2026-03-22T14:24:01.394905+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 43,
+    "timestamp": "2026-03-22T14:28:49.253316+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 44,
+    "timestamp": "2026-03-22T14:34:26.412707+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 45,
+    "timestamp": "2026-03-22T14:39:47.807409+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 46,
+    "timestamp": "2026-03-22T14:44:34.919862+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 47,
+    "timestamp": "2026-03-22T14:49:37.829213+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 48,
+    "timestamp": "2026-03-22T14:55:27.326180+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0020678425050946903,
+      "win_rate": 0.53,
+      "overall_score": 6.249475911791953
+    },
+    "result": {
+      "expectancy": 0.0020678425050946903
+    },
+    "cycle_id": 49,
+    "timestamp": "2026-03-22T15:02:04.619484+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0018653425050946925,
+      "win_rate": 0.525,
+      "overall_score": 6.223261879917939
+    },
+    "result": {
+      "expectancy": 0.0018653425050946925
+    },
+    "cycle_id": 50,
+    "timestamp": "2026-03-22T15:06:46.249826+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001659592505094688,
+      "win_rate": 0.51,
+      "overall_score": 6.180512199353946
+    },
+    "result": {
+      "expectancy": 0.001659592505094688
+    },
+    "cycle_id": 51,
+    "timestamp": "2026-03-22T15:11:46.674055+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.001339142505094688,
+      "win_rate": 0.485,
+      "overall_score": 6.111230863580147
+    },
+    "result": {
+      "expectancy": 0.001339142505094688
+    },
+    "cycle_id": 52,
+    "timestamp": "2026-03-22T15:17:20.347613+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 53,
+    "timestamp": "2026-03-22T15:22:01.843956+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 54,
+    "timestamp": "2026-03-22T15:28:03.987799+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 55,
+    "timestamp": "2026-03-22T15:33:40.667585+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 56,
+    "timestamp": "2026-03-22T15:38:40.729417+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 57,
+    "timestamp": "2026-03-22T15:44:58.599982+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 58,
+    "timestamp": "2026-03-22T15:49:49.569343+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 59,
+    "timestamp": "2026-03-22T15:54:31.475670+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 60,
+    "timestamp": "2026-03-22T16:00:09.441467+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 61,
+    "timestamp": "2026-03-22T16:05:19.322210+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 62,
+    "timestamp": "2026-03-22T16:10:31.355034+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 63,
+    "timestamp": "2026-03-22T16:16:20.754953+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 64,
+    "timestamp": "2026-03-22T16:23:44.540170+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 65,
+    "timestamp": "2026-03-22T16:29:05.726359+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 66,
+    "timestamp": "2026-03-22T16:34:53.861739+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0012877925050946877,
+      "win_rate": 0.48,
+      "overall_score": 6.097913970189867
+    },
+    "result": {
+      "expectancy": 0.0012877925050946877
+    },
+    "cycle_id": 67,
+    "timestamp": "2026-03-22T16:43:28.772316+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 68,
+    "timestamp": "2026-03-22T16:50:16.748002+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 69,
+    "timestamp": "2026-03-22T16:57:01.868117+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 70,
+    "timestamp": "2026-03-22T17:04:26.967822+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 71,
+    "timestamp": "2026-03-22T17:11:06.969062+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 72,
+    "timestamp": "2026-03-22T17:18:58.567880+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 73,
+    "timestamp": "2026-03-22T17:25:19.023742+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 74,
+    "timestamp": "2026-03-22T17:30:47.938651+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 75,
+    "timestamp": "2026-03-22T17:36:42.449289+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 76,
+    "timestamp": "2026-03-22T17:45:45.416769+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 77,
+    "timestamp": "2026-03-22T17:51:54.084309+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 78,
+    "timestamp": "2026-03-22T17:58:50.516958+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 79,
+    "timestamp": "2026-03-22T18:09:09.528779+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 80,
+    "timestamp": "2026-03-22T18:15:47.996370+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 81,
+    "timestamp": "2026-03-22T18:20:36.223083+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 82,
+    "timestamp": "2026-03-22T18:26:26.760920+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 83,
+    "timestamp": "2026-03-22T18:33:50.063287+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 84,
+    "timestamp": "2026-03-22T18:38:44.479102+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 85,
+    "timestamp": "2026-03-22T18:43:52.567466+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 86,
+    "timestamp": "2026-03-22T18:49:24.319763+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 87,
+    "timestamp": "2026-03-22T18:54:47.873186+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0011630425050946896,
+      "win_rate": 0.47,
+      "overall_score": 6.07086545444264
+    },
+    "result": {
+      "expectancy": 0.0011630425050946896
+    },
+    "cycle_id": 88,
+    "timestamp": "2026-03-22T18:59:33.902054+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 89,
+    "timestamp": "2026-03-22T19:05:13.239605+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 90,
+    "timestamp": "2026-03-22T19:10:07.567031+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 91,
+    "timestamp": "2026-03-22T19:16:08.693259+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 92,
+    "timestamp": "2026-03-22T19:21:01.784339+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 93,
+    "timestamp": "2026-03-22T19:26:22.337119+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 94,
+    "timestamp": "2026-03-22T19:31:39.292382+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 95,
+    "timestamp": "2026-03-22T19:37:04.127464+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 96,
+    "timestamp": "2026-03-22T19:42:33.292163+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 97,
+    "timestamp": "2026-03-22T19:48:11.113208+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 98,
+    "timestamp": "2026-03-22T19:53:45.537965+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 99,
+    "timestamp": "2026-03-22T19:59:40.555920+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 100,
+    "timestamp": "2026-03-22T20:04:11.747377+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 101,
+    "timestamp": "2026-03-22T20:09:20.419100+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 102,
+    "timestamp": "2026-03-22T20:14:25.102517+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 103,
+    "timestamp": "2026-03-22T20:19:30.022327+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 104,
+    "timestamp": "2026-03-22T20:24:18.688040+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 105,
+    "timestamp": "2026-03-22T20:29:15.243687+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 106,
+    "timestamp": "2026-03-22T20:34:11.329477+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 107,
+    "timestamp": "2026-03-22T20:39:11.666098+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 108,
+    "timestamp": "2026-03-22T20:44:43.328250+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 109,
+    "timestamp": "2026-03-22T20:49:42.976187+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 110,
+    "timestamp": "2026-03-22T20:54:46.863388+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 111,
+    "timestamp": "2026-03-22T20:59:43.748376+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 112,
+    "timestamp": "2026-03-22T21:04:39.112433+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 113,
+    "timestamp": "2026-03-22T21:09:37.412663+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 114,
+    "timestamp": "2026-03-22T21:14:36.676632+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 115,
+    "timestamp": "2026-03-22T21:19:33.478074+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 116,
+    "timestamp": "2026-03-22T21:24:36.539271+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 117,
+    "timestamp": "2026-03-22T21:29:33.192087+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 118,
+    "timestamp": "2026-03-22T21:34:31.811157+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 119,
+    "timestamp": "2026-03-22T21:39:30.801891+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 120,
+    "timestamp": "2026-03-22T21:44:27.528636+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 121,
+    "timestamp": "2026-03-22T21:49:29.765367+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 122,
+    "timestamp": "2026-03-22T21:54:27.823001+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 123,
+    "timestamp": "2026-03-22T21:59:25.217541+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 124,
+    "timestamp": "2026-03-22T22:04:24.949412+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 125,
+    "timestamp": "2026-03-22T22:09:22.755899+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 126,
+    "timestamp": "2026-03-22T22:14:21.493001+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 127,
+    "timestamp": "2026-03-22T22:19:21.063162+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 128,
+    "timestamp": "2026-03-22T22:24:19.057914+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 129,
+    "timestamp": "2026-03-22T22:29:21.712380+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 130,
+    "timestamp": "2026-03-22T22:34:17.899406+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 131,
+    "timestamp": "2026-03-22T22:39:17.224456+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 132,
+    "timestamp": "2026-03-22T22:44:13.700775+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 133,
+    "timestamp": "2026-03-22T22:49:14.433386+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 134,
+    "timestamp": "2026-03-22T22:54:15.531494+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 135,
+    "timestamp": "2026-03-22T22:59:08.675550+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 136,
+    "timestamp": "2026-03-22T23:04:09.511344+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 137,
+    "timestamp": "2026-03-22T23:09:10.940785+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 138,
+    "timestamp": "2026-03-22T23:14:07.683153+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 139,
+    "timestamp": "2026-03-22T23:19:06.035939+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 140,
+    "timestamp": "2026-03-22T23:24:10.935646+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 141,
+    "timestamp": "2026-03-22T23:29:08.760418+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 142,
+    "timestamp": "2026-03-22T23:34:01.779202+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 143,
+    "timestamp": "2026-03-22T23:39:02.445522+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 144,
+    "timestamp": "2026-03-22T23:44:01.158365+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 145,
+    "timestamp": "2026-03-22T23:49:23.150228+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 146,
+    "timestamp": "2026-03-22T23:53:56.888859+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 147,
+    "timestamp": "2026-03-22T23:58:57.352704+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 148,
+    "timestamp": "2026-03-23T00:03:56.241336+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 149,
+    "timestamp": "2026-03-23T00:08:58.106739+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 150,
+    "timestamp": "2026-03-23T00:13:49.970461+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 151,
+    "timestamp": "2026-03-23T00:18:56.902887+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 152,
+    "timestamp": "2026-03-23T00:23:53.973968+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 153,
+    "timestamp": "2026-03-23T00:28:53.424881+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 154,
+    "timestamp": "2026-03-23T00:33:51.023163+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 155,
+    "timestamp": "2026-03-23T00:38:49.762196+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 156,
+    "timestamp": "2026-03-23T00:43:46.522271+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 157,
+    "timestamp": "2026-03-23T00:48:47.636322+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 158,
+    "timestamp": "2026-03-23T00:53:42.323475+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 159,
+    "timestamp": "2026-03-23T00:58:46.685479+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 160,
+    "timestamp": "2026-03-23T01:03:40.891462+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 161,
+    "timestamp": "2026-03-23T01:08:41.752286+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 162,
+    "timestamp": "2026-03-23T01:13:44.770872+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 163,
+    "timestamp": "2026-03-23T01:18:37.276655+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 164,
+    "timestamp": "2026-03-23T01:23:38.240219+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 165,
+    "timestamp": "2026-03-23T01:28:40.550856+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 166,
+    "timestamp": "2026-03-23T01:33:39.485282+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 167,
+    "timestamp": "2026-03-23T01:38:39.393533+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 168,
+    "timestamp": "2026-03-23T01:43:33.746440+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 169,
+    "timestamp": "2026-03-23T01:48:35.402110+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 170,
+    "timestamp": "2026-03-23T01:53:33.625146+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-23T03:17:33.430565+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-23T03:22:32.644746+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-23T03:27:34.336873+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-23T03:32:29.421856+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-23T03:37:30.033287+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-23T03:42:28.941554+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-23T03:47:25.436233+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-23T03:52:25.774601+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-23T03:57:37.679330+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-23T04:02:22.560019+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-23T04:07:22.869040+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-23T04:12:17.058867+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-23T04:17:26.383713+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-23T04:22:20.257431+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-23T04:27:23.542835+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 16,
+    "timestamp": "2026-03-23T04:32:12.941035+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 17,
+    "timestamp": "2026-03-23T04:37:18.108720+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 18,
+    "timestamp": "2026-03-23T04:42:15.503567+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 19,
+    "timestamp": "2026-03-23T04:47:11.237892+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 20,
+    "timestamp": "2026-03-23T04:52:13.986626+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 21,
+    "timestamp": "2026-03-23T04:57:07.803310+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 22,
+    "timestamp": "2026-03-23T05:02:12.201624+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 23,
+    "timestamp": "2026-03-23T05:07:05.167904+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 24,
+    "timestamp": "2026-03-23T05:12:07.063120+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 25,
+    "timestamp": "2026-03-23T05:17:13.573229+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 26,
+    "timestamp": "2026-03-23T05:22:01.746249+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 27,
+    "timestamp": "2026-03-23T05:27:11.333453+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 28,
+    "timestamp": "2026-03-23T05:32:01.946223+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 29,
+    "timestamp": "2026-03-23T05:37:02.141219+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 30,
+    "timestamp": "2026-03-23T05:42:01.129226+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 31,
+    "timestamp": "2026-03-23T05:47:02.891985+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 32,
+    "timestamp": "2026-03-23T05:51:55.869577+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 33,
+    "timestamp": "2026-03-23T05:57:02.314775+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 34,
+    "timestamp": "2026-03-23T06:01:59.992372+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 35,
+    "timestamp": "2026-03-23T06:06:59.243683+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 36,
+    "timestamp": "2026-03-23T06:11:51.526508+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 37,
+    "timestamp": "2026-03-23T06:16:55.698965+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 38,
+    "timestamp": "2026-03-23T06:21:50.878835+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 39,
+    "timestamp": "2026-03-23T06:26:50.321140+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 40,
+    "timestamp": "2026-03-23T06:31:53.079960+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 41,
+    "timestamp": "2026-03-23T06:36:47.847838+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 42,
+    "timestamp": "2026-03-23T06:41:50.270251+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 43,
+    "timestamp": "2026-03-23T06:46:48.178593+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 44,
+    "timestamp": "2026-03-23T06:51:43.515904+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 45,
+    "timestamp": "2026-03-23T06:56:59.762922+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 46,
+    "timestamp": "2026-03-23T07:01:46.387445+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 47,
+    "timestamp": "2026-03-23T07:06:40.661197+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 48,
+    "timestamp": "2026-03-23T07:11:41.764827+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 49,
+    "timestamp": "2026-03-23T07:16:41.031896+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 50,
+    "timestamp": "2026-03-23T07:21:37.896294+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 51,
+    "timestamp": "2026-03-23T07:26:34.067130+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 52,
+    "timestamp": "2026-03-23T07:32:09.494456+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 53,
+    "timestamp": "2026-03-23T07:36:53.147505+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 54,
+    "timestamp": "2026-03-23T07:42:01.821873+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 55,
+    "timestamp": "2026-03-23T07:46:44.412746+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 56,
+    "timestamp": "2026-03-23T07:52:01.698322+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 57,
+    "timestamp": "2026-03-23T07:56:39.585902+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 58,
+    "timestamp": "2026-03-23T08:01:47.764652+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 59,
+    "timestamp": "2026-03-23T08:06:49.953702+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 60,
+    "timestamp": "2026-03-23T08:11:55.509973+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 61,
+    "timestamp": "2026-03-23T08:17:03.293120+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 62,
+    "timestamp": "2026-03-23T08:21:57.169444+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 63,
+    "timestamp": "2026-03-23T08:27:38.100431+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 64,
+    "timestamp": "2026-03-23T08:32:22.852393+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 65,
+    "timestamp": "2026-03-23T08:37:36.638627+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-23T09:56:10.568727+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-23T10:02:31.359467+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-23T10:09:22.428169+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-23T10:23:54.142325+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-23T10:32:57.369438+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-23T10:39:38.887381+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-23T10:45:13.982965+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-23T10:52:05.927623+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-23T11:00:49.405071+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-23T11:11:28.922468+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-23T11:26:18.231899+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 9,
+    "timestamp": "2026-03-23T11:36:18.504477+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 10,
+    "timestamp": "2026-03-23T11:47:44.750445+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 11,
+    "timestamp": "2026-03-23T12:01:44.094999+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 12,
+    "timestamp": "2026-03-23T12:08:19.717471+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 13,
+    "timestamp": "2026-03-23T12:14:14.025716+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 14,
+    "timestamp": "2026-03-23T12:21:50.827008+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 15,
+    "timestamp": "2026-03-23T12:30:54.237320+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 16,
+    "timestamp": "2026-03-23T12:37:02.179178+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 17,
+    "timestamp": "2026-03-23T12:43:26.758894+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 18,
+    "timestamp": "2026-03-23T12:55:43.553064+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 19,
+    "timestamp": "2026-03-23T13:05:44.120784+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 20,
+    "timestamp": "2026-03-23T13:11:55.135070+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 21,
+    "timestamp": "2026-03-23T13:18:11.666594+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 22,
+    "timestamp": "2026-03-23T13:23:58.848130+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 23,
+    "timestamp": "2026-03-23T13:29:36.267591+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 24,
+    "timestamp": "2026-03-23T13:36:26.945271+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 25,
+    "timestamp": "2026-03-23T13:42:24.637157+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 26,
+    "timestamp": "2026-03-23T13:49:58.036329+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 27,
+    "timestamp": "2026-03-23T13:55:52.367136+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 28,
+    "timestamp": "2026-03-23T14:02:06.220983+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 29,
+    "timestamp": "2026-03-23T14:07:35.326080+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 30,
+    "timestamp": "2026-03-23T14:14:31.805304+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 31,
+    "timestamp": "2026-03-23T14:19:09.547282+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 32,
+    "timestamp": "2026-03-23T14:24:42.289150+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 33,
+    "timestamp": "2026-03-23T14:29:50.730270+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0007636901338406912,
+      "win_rate": 0.465,
+      "overall_score": 6.043943363420125
+    },
+    "result": {
+      "expectancy": 0.0007636901338406912
+    },
+    "cycle_id": 34,
+    "timestamp": "2026-03-23T14:34:42.990737+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 35,
+    "timestamp": "2026-03-23T14:39:50.046310+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 36,
+    "timestamp": "2026-03-23T14:44:43.247423+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 37,
+    "timestamp": "2026-03-23T14:49:44.803185+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 38,
+    "timestamp": "2026-03-23T14:55:05.352196+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 39,
+    "timestamp": "2026-03-23T14:59:55.815144+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 40,
+    "timestamp": "2026-03-23T15:04:36.140464+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 41,
+    "timestamp": "2026-03-23T15:09:41.853146+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 42,
+    "timestamp": "2026-03-23T15:14:44.638464+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 43,
+    "timestamp": "2026-03-23T15:19:35.299202+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 44,
+    "timestamp": "2026-03-23T15:24:44.809559+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 0.0003974118361034472,
+      "win_rate": 0.46,
+      "overall_score": 5.719086020623582
+    },
+    "result": {
+      "expectancy": 0.0003974118361034472
+    },
+    "cycle_id": 45,
+    "timestamp": "2026-03-23T15:30:01.292126+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 1,
+    "timestamp": "2026-03-24T10:47:58.241573+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 2,
+    "timestamp": "2026-03-24T11:06:56.026781+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 3,
+    "timestamp": "2026-03-24T11:26:05.118985+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 4,
+    "timestamp": "2026-03-24T11:42:42.231446+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 5,
+    "timestamp": "2026-03-24T12:03:33.531285+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 6,
+    "timestamp": "2026-03-24T12:23:39.107792+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 7,
+    "timestamp": "2026-03-24T12:45:02.939118+00:00"
+  },
+  {
+    "strategy": "SYSTEM",
+    "conditions": {
+      "expectancy": 1.609156200864728e-05,
+      "win_rate": 0.41,
+      "overall_score": 5.163530035699993
+    },
+    "result": {
+      "expectancy": 1.609156200864728e-05
+    },
+    "cycle_id": 8,
+    "timestamp": "2026-03-24T13:08:07.415506+00:00"
+  }
+]

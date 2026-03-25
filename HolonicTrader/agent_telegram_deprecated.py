@@ -13,6 +13,7 @@ from typing import Any, Dict
 try:
     from telegram import Update
     from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+    from telegram.error import NetworkError
     TELEGRAM_AVAILABLE = True
 except ImportError:
     TELEGRAM_AVAILABLE = False
@@ -70,8 +71,13 @@ class TelegramHolon(Holon):
                 # We specify close_loop=False so we can restart it if needed
                 
                 print(f"[{self.name}] 🔄 Starting Polling...")
-                self.app.run_polling(stop_signals=None, close_loop=False)
+                # Increased timeout and read_timeout for stability
+                self.app.run_polling(stop_signals=None, close_loop=False, timeout=20, read_timeout=30, write_timeout=30)
                 
+            except NetworkError as e:
+                print(f"[{self.name}] ⚠️ Telegram Network Error: {e}. Retrying in 5s...")
+                import time
+                time.sleep(5)
             except Exception as e:
                 # If we are here, polling crashed.
                 print(f"[{self.name}] ⚠️ Telegram Connection Lost: {e}. Retrying in 10s...")

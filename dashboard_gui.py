@@ -4,6 +4,7 @@ import threading
 import queue
 from datetime import datetime
 import time
+import json
 
 # Matplotlib
 import matplotlib
@@ -19,8 +20,6 @@ from mpl_toolkits.mplot3d import Axes3D # 3D Viz
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
-# from main_live_phase4 import run_bot
-# from run_backtest import run_backtest
 
 # Theme Colors
 # Theme Colors: BLOOMBERG TERMINAL EDITION
@@ -40,22 +39,106 @@ COLORS = {
     'accent': '#FF6D00'
 }
 
+class StatusPollThread(threading.Thread):
+    def __init__(self, msg_queue, stop_event):
+        super().__init__()
+        self.msg_queue = msg_queue
+        self.stop_event = stop_event
+        # Search in current directory and parent directory for status file
+        self.status_file_paths = [
+            os.path.join(os.path.dirname(__file__), 'dashboard_status.json'),
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dashboard_status.json'),
+        ]
+        self.status_file = None  # Will be set when found
+        self._last_mtime = 0
+        self._last_data_time = None
+        self.daemon = True
+
+    def run(self):
+        while not self.stop_event.is_set():
+            try:
+                # Find status file
+                if not self.status_file:
+                    for path in self.status_file_paths:
+                        if os.path.exists(path):
+                            self.status_file = path
+                            break
+                    if not self.status_file:
+                        time.sleep(1.0)
+                        continue
+
+                if not os.path.exists(self.status_file):
+                    self.status_file = None  # Reset and search again
+                    time.sleep(1.0)
+                    continue
+
+                mtime = os.path.getmtime(self.status_file)
+                if mtime > self._last_mtime:
+                    self._last_mtime = mtime
+
+                    # Robust read with retries
+                    data = None
+                    for _ in range(3):
+                        try:
+                            with open(self.status_file, 'r', encoding='utf-8') as f:
+                                content = f.read().strip()
+                                if content:
+                                    data = json.loads(content)
+                                    break
+                        except json.JSONDecodeError:
+                            time.sleep(0.1)
+                        except Exception:
+                            time.sleep(0.1)
+
+                    if data:
+                        # Check data freshness (use newest timestamp)
+                        l_up = data.get('last_updated')
+                        s_up = data.get('summary_updated')
+                        last_updated = max([t for t in (l_up, s_up) if t]) if (l_up or s_up) else None
+                        
+                        self._last_data_time = last_updated
+                        if data.get('type') == 'agent_status' or 'gov_state' in data:
+                            self.msg_queue.put({'type': 'agent_status', 'data': data})
+
+                        # Process summary
+                        if 'summary' in data:
+                            self.msg_queue.put({'type': 'summary', 'data': data['summary']})
+
+                        # Process overwatch
+                        if 'overwatch' in data:
+                             ow = data['overwatch']
+                             self.msg_queue.put({
+                                'type': 'overwatch_update',
+                                'state': ow.get('state', 'NOMINAL'),
+                                'sitrep': ow.get('sitrep', ''),
+                                'updated': ow.get('updated', '')
+                             })
+                        
+                        # Send connection status
+                        self.msg_queue.put({
+                            'type': 'connection_status',
+                            'connected': True,
+                            'last_update': last_updated
+                        })
+
+            except Exception as e:
+                print(f"Poll Error: {e}")
+                self.msg_queue.put({'type': 'connection_status', 'connected': False, 'error': str(e)})
+
+            time.sleep(0.5) # Poll interval
+
 class HolonicDashboard:
     def __init__(self, root):
         # ... (init vars)
         self.scout_last_read = 0.0
         
-        # 3D Holospace Data
-        self.market_phase_data = {} # Symbol -> {'entropy': [], 'tda': [], 'price': [], 'vol': []}
-        self.max_phase_points = 50
-        
         # ... (config vars)
         # Config Variables
         self.conf_symbol = tk.StringVar(value="BTC/USDT")
         self.conf_timeframe = tk.StringVar(value="1h")
-        self.conf_alloc = tk.DoubleVar(value=0.1)
-        self.conf_leverage = tk.DoubleVar(value=1.0)
-        self.conf_micro_mode = tk.BooleanVar(value=True)
+        self.conf_alloc = tk.DoubleVar(value=0.25)
+        self.conf_leverage = tk.DoubleVar(value=10.0)
+        self.conf_micro_mode = tk.BooleanVar(value=False)
         
         # State Variables
         self.is_running_live = False
@@ -69,7 +152,6 @@ class HolonicDashboard:
         self.equity_history = []
         self.order_history = [] 
         self.max_equity_points = 200
-        self.max_phase_points = 50
         self.max_log_entries = 500  # Maximum log entries before trimming
         self.max_orders = 100
         
@@ -80,6 +162,13 @@ class HolonicDashboard:
         self.last_summary_hash = 0
         self.rendered_news_hashes = set()
         self.scout_last_read = 0.0
+
+        # Initialize data structures for new visualization elements
+        self.current_holdings = {}
+        self.current_entry_prices = {}
+        self.current_current_prices = {}
+        self.current_balance = 0
+
         self.root.title("A E H M L   T R A D E R   //   P H A S E   I V")
         self.root.geometry("1600x1000")
         self.root.configure(bg=COLORS['bg_dark'])
@@ -100,6 +189,7 @@ class HolonicDashboard:
         self.tab_agents = ttk.Frame(self.notebook, padding=10)
         self.tab_news = ttk.Frame(self.notebook, padding=10)
         self.tab_orders = ttk.Frame(self.notebook, padding=10)
+        self.tab_signals = ttk.Frame(self.notebook, padding=10)
         self.tab_config = ttk.Frame(self.notebook, padding=10)
         self.tab_backtest = ttk.Frame(self.notebook, padding=10)
         
@@ -109,10 +199,7 @@ class HolonicDashboard:
         self.notebook.add(self.tab_agents, text="  🤖 Holon Status  ")
         self.notebook.add(self.tab_news, text="  📰 News & Trends  ")
         self.notebook.add(self.tab_orders, text="  📋 Order History  ")
-        
-        # NEW TAB
-        self.tab_holospace = ttk.Frame(self.notebook, padding=10)
-        self.notebook.add(self.tab_holospace, text="  🧊 3D Holospace  ")
+        self.notebook.add(self.tab_signals, text="  📡 Signals  ")
         
         self.notebook.add(self.tab_config, text="  ⚙️ Configuration  ")
         self.notebook.add(self.tab_backtest, text="  📈 Backtesting  ")
@@ -126,12 +213,16 @@ class HolonicDashboard:
         self._setup_agents_tab()
         self._setup_news_tab()
         self._setup_orders_tab()
-        self._setup_holospace_tab() # SETUP
+        self._setup_signals_tab()
         self._setup_config_tab()
         self._setup_backtest_tab()
         
         # Start Message Queue Loop
         self.process_queue()
+
+        # Start Status Polling Thread
+        self.poll_thread = StatusPollThread(self.gui_queue, self.gui_stop_event)
+        self.poll_thread.start()
 
     def _configure_styles(self):
         s = self.style
@@ -174,21 +265,26 @@ class HolonicDashboard:
         # Top Controls with Panic Button (IMPROVEMENT 7)
         ctl_frame = ttk.Frame(self.tab_live)
         ctl_frame.pack(fill=tk.X, pady=5)
-        
+
         self.start_btn = ttk.Button(ctl_frame, text="▶ START LIVE BOT", command=self.start_live_bot)
         self.start_btn.pack(side=tk.LEFT, padx=5)
-        
+
         self.stop_btn = ttk.Button(ctl_frame, text="⏹ STOP BOT", command=self.stop_bot, state=tk.DISABLED)
         self.stop_btn.pack(side=tk.LEFT, padx=5)
-        
+
         # === IMPROVEMENT 7: PANIC BUTTON ===
         self.panic_btn = ttk.Button(ctl_frame, text="🚨 PANIC CLOSE ALL", command=self.panic_close_all, style="Danger.TButton")
         self.panic_btn.pack(side=tk.RIGHT, padx=5)
-        
+
         # Status Label
         self.status_label = ttk.Label(ctl_frame, textvariable=self.status_var, font=('Segoe UI', 10, 'bold'), foreground=COLORS['accent_red'])
         self.status_label.pack(side=tk.LEFT, padx=15)
         
+        # Connection Status Indicator (NEW)
+        self.conn_status_var = tk.StringVar(value="🔴 DISCONNECTED")
+        self.conn_status_label = ttk.Label(ctl_frame, textvariable=self.conn_status_var, font=('Segoe UI', 9), foreground=COLORS['accent_red'])
+        self.conn_status_label.pack(side=tk.LEFT, padx=15)
+
         # === IMPROVEMENT 10: Log Export Button ===
         self.export_btn = ttk.Button(ctl_frame, text="💾 Export Log", command=self.export_log)
         self.export_btn.pack(side=tk.RIGHT, padx=5)
@@ -222,10 +318,15 @@ class HolonicDashboard:
         self.promo_label = ttk.Label(r_grid, text="--:--:--", style="Data.TLabel")
         self.promo_label.grid(row=0, column=6, padx=5, sticky="w")
         
-        # 4. Balance (IMPROVEMENT 8)
-        ttk.Label(r_grid, text="BALANCE:", style="SubHeader.TLabel").grid(row=0, column=7, padx=15, sticky="w")
+        # 4. Balance (IMPROVEMENT 8) -> Renamed to Avail Margin
+        ttk.Label(r_grid, text="AVAIL MARGIN:", style="SubHeader.TLabel").grid(row=0, column=7, padx=15, sticky="w")
         self.balance_label = ttk.Label(r_grid, text="Loading...", style="Data.TLabel", foreground=COLORS['accent_green'])
         self.balance_label.grid(row=0, column=8, padx=5, sticky="w")
+        
+        # 5. Total Equity (NEW)
+        ttk.Label(r_grid, text="TOTAL EQUITY:", style="SubHeader.TLabel").grid(row=0, column=9, padx=15, sticky="w")
+        self.equity_label = ttk.Label(r_grid, text="Loading...", style="Data.TLabel", foreground=COLORS['accent_secondary'])
+        self.equity_label.grid(row=0, column=10, padx=5, sticky="w")
         
         # Left Col: Metrics & Table
         left_col = ttk.Frame(grid_frame)
@@ -608,6 +709,77 @@ class HolonicDashboard:
         self.order_tree.tag_configure('filled', foreground=COLORS['accent_green'])
         self.order_tree.tag_configure('canceled', foreground=COLORS['accent_red'])
 
+    # ========================== TAB: SIGNALS ==========================
+    def _setup_signals_tab(self):
+        frame = ttk.Frame(self.tab_signals)
+        frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        ttk.Label(frame, text="📡 Signal Provider Intelligence", style="Header.TLabel").pack(anchor="w", pady=10)
+        ttk.Label(frame, text="High-Probability Setups (HPS) — Auto-refreshes every 60s", style="SubHeader.TLabel").pack(anchor="w")
+        
+        sig_cols = ("Symbol", "Direction", "Price", "Conviction", "TP", "SL", "RR", "HPS", "Pillars")
+        self.signal_tree = ttk.Treeview(frame, columns=sig_cols, show='headings', height=20)
+        self.signal_tree.pack(fill=tk.BOTH, expand=True, pady=10)
+        
+        self.signal_tree.column("Symbol", width=90)
+        self.signal_tree.column("Direction", width=70)
+        self.signal_tree.column("Price", width=90)
+        self.signal_tree.column("Conviction", width=80)
+        self.signal_tree.column("TP", width=90)
+        self.signal_tree.column("SL", width=90)
+        self.signal_tree.column("RR", width=60)
+        self.signal_tree.column("HPS", width=50)
+        self.signal_tree.column("Pillars", width=250)
+        
+        for col in sig_cols:
+            self.signal_tree.heading(col, text=col)
+        
+        self.signal_tree.tag_configure('buy', foreground=COLORS['accent_green'])
+        self.signal_tree.tag_configure('sell', foreground=COLORS['accent_red'])
+        self.signal_tree.tag_configure('hps', foreground='#FFD700', background='#1a1a00')  # Gold for HPS
+        
+        # Last update label
+        self.signal_update_lbl = ttk.Label(frame, text="Waiting for signal data...", foreground=COLORS['text_secondary'])
+        self.signal_update_lbl.pack(anchor="w")
+
+    def _update_signals_tab(self, signal_report):
+        """Update the Signals tab with latest signal provider data."""
+        if not signal_report:
+            return
+        
+        # Clear existing
+        for child in self.signal_tree.get_children():
+            self.signal_tree.delete(child)
+        
+        for sig in signal_report:
+            direction = sig.get('direction', '?')
+            tag = 'buy' if direction == 'BUY' else ('sell' if direction == 'SELL' else 'neutral')
+            
+            hps = sig.get('hps', {})
+            is_hps = hps.get('is_hps', False) if isinstance(hps, dict) else False
+            pillars = ', '.join(hps.get('pillars', [])) if isinstance(hps, dict) else ''
+            hps_score = hps.get('score', 0) if isinstance(hps, dict) else 0
+            
+            if is_hps:
+                tag = 'hps'
+            
+            rr = sig.get('risk_reward', 0)
+            
+            values = (
+                self._safe_tcl(sig.get('symbol', '?')),
+                self._safe_tcl(direction),
+                self._safe_tcl(f"${sig.get('price', 0):.2f}"),
+                self._safe_tcl(f"{sig.get('conviction', 0):.2f}"),
+                self._safe_tcl(f"${sig.get('tp', 0):.2f}"),
+                self._safe_tcl(f"${sig.get('sl', 0):.2f}"),
+                self._safe_tcl(f"{rr:.1f}" if rr else '-'),
+                self._safe_tcl(f"{hps_score}/5" if is_hps else '-'),
+                self._safe_tcl(pillars if pillars else '-'),
+            )
+            self.signal_tree.insert('', tk.END, values=values, tags=(tag,))
+        
+        self.signal_update_lbl.config(text=f"Last updated: {datetime.now().strftime('%H:%M:%S')} ({len(signal_report)} signals)")
+
     # ========================== TAB OVERWATCH (NEW) ==========================
     def _setup_overwatch_tab(self):
         # 1. Header: System DEFCON Status
@@ -767,105 +939,54 @@ class HolonicDashboard:
         self.chart_frame = ttk.LabelFrame(self.tab_backtest, text="Equity Curve")
         self.chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
         self._setup_chart()
-    # ========================== TAB 7: 3D HOLOSPACE ==========================
-    def _setup_holospace_tab(self):
-        # Control Panel
-        ctl = ttk.Frame(self.tab_holospace)
-        ctl.pack(fill=tk.X, padx=10, pady=5)
-        
-        ttk.Label(ctl, text="🧊 Market Phase Space (Entropy vs Topology vs Price)", style="Header.TLabel").pack(side=tk.LEFT)
-        ttk.Button(ctl, text="🔄 Reset View", command=self._reset_3d_view).pack(side=tk.RIGHT)
-        
-        # 3D Canvas
-        self.fig_3d = Figure(figsize=(8, 6), dpi=100, facecolor=COLORS['bg_card'])
-        self.ax_3d = self.fig_3d.add_subplot(111, projection='3d')
-        self._style_3d_axes()
-        
-        self.canvas_3d = FigureCanvasTkAgg(self.fig_3d, master=self.tab_holospace)
-        self.canvas_3d.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        
-    def _style_3d_axes(self):
-        self.ax_3d.set_facecolor(COLORS['bg_dark'])
-        self.ax_3d.xaxis.set_pane_color((0.1, 0.1, 0.18, 1.0))
-        self.ax_3d.yaxis.set_pane_color((0.1, 0.1, 0.18, 1.0))
-        self.ax_3d.zaxis.set_pane_color((0.1, 0.1, 0.18, 1.0))
-        
-        self.ax_3d.grid(color=COLORS['border'], linestyle=':', linewidth=0.5)
-        
-        # Labels
-        self.ax_3d.set_xlabel('Entropy (Chaos)', color=COLORS['accent_red'])
-        self.ax_3d.set_ylabel('TDA Score (Structure)', color=COLORS['accent_blue'])
-        self.ax_3d.set_zlabel('Price Change %', color=COLORS['accent_green'])
-        
-        self.ax_3d.tick_params(axis='x', colors=COLORS['text_secondary'])
-        self.ax_3d.tick_params(axis='y', colors=COLORS['text_secondary'])
-        self.ax_3d.tick_params(axis='z', colors=COLORS['text_secondary'])
-        
-    def _reset_3d_view(self):
-        self.ax_3d.view_init(elev=30, azim=-60)
-        self.canvas_3d.draw()
+    def _update_enhanced_consolidation_radar(self, consolidation_data):
+        """Update the consolidation radar with enhanced information."""
+        # OPTIMIZATION: Radar Guard
+        radar_hash = hash(str(consolidation_data))
+        if radar_hash != self.last_radar_hash:
+            self.last_radar_hash = radar_hash
+            # Clear and Repopulate Radar Tree
+            for item in self.radar_tree.get_children():
+                self.radar_tree.delete(item)
 
-    def _update_holospace(self):
-        """Update 3D Holospace visualization."""
-        # OPTIMIZATION: Only update if tab is visible
-        try:
-            current_tab = self.notebook.index(self.notebook.select())
-            # Assuming holospace is tab index (check actual index)
-            if self.notebook.tab(current_tab, 'text').strip() != '🌌 Holospace':
-                return  # Skip if not visible
-        except:
-            pass  # Fallback if tab check fails
-        
-        # OPTIMIZATION: Throttle to 10s even if visible (3D plotting is expensive)
-        current_time = time.time()
-        last_update = getattr(self, '_last_3d_update', 0)
-        if current_time - last_update < 10.0:
-            return  # Skip update
-        self._last_3d_update = current_time
-        
-        if not self.market_phase_data:
-            return
-        
-        self.ax_3d.clear()
-        self._style_3d_axes()
-        
-        # Plot Trajectories
-        for sym, history in self.market_phase_data.items():
-            if len(history) < 2:
-                continue
-            
-            # Extract Components
-            xs = [p['entropy'] for p in history]
-            ys = [p['tda'] for p in history]
-            
-            # Normalize Price relative to start (for Z-axis)
-            p0 = history[0]['price']
-            zs = [((p['price'] - p0) / p0) * 100 for p in history]
-            
-            # Color based on Entropy Regime (Physics)
-            last_entropy = xs[-1]
-            if last_entropy > 1.2:
-                color = COLORS['accent_red'] # Chaos
-            elif last_entropy < 0.6:
-                color = COLORS['accent_blue'] # Order
-            else:
-                color = COLORS['accent_yellow'] # Transition
-            
-            # Highlight BTC
-            if sym == "BTC/USDT":
-                color = '#FFFFFF' # White Highlight
-            
-            # Plot Line
-            self.ax_3d.plot(xs, ys, zs, color=color, linewidth=1, alpha=0.6)
-            
-            # Plot Head
-            self.ax_3d.scatter(xs[-1], ys[-1], zs[-1], color=color, s=20)
-            self.ax_3d.text(xs[-1], ys[-1], zs[-1], sym, color=COLORS['text_primary'], fontsize=8)
-        
-        try:
-            self.canvas_3d.draw()
-        except:
-            pass  # Ignore draw errors
+            # Sort by score in descending order to show highest risk first
+            sorted_data = sorted(consolidation_data, key=lambda x: x.get('score', 0), reverse=True)
+
+            for i, r in enumerate(sorted_data):
+                # Format: {'symbol': 'BTC', 'score': 0.85, 'reason': 'High Vol', 'pnl': -123.45, 'age': 10, 'effective_age': 5, 'status': 'CLOSE_RECOMMENDED'}
+                sym = r.get('symbol', 'UNKNOWN')
+                score = r.get('score', 0.0)
+                reason = r.get('reason', 'Scanning...')
+                pnl = r.get('pnl', 0.0)
+                age = r.get('age', 0)
+                effective_age = r.get('effective_age', 0)
+                status = r.get('status', 'MONITOR')
+
+                # Determine tag based on status and score
+                if status == 'FORCE_CLOSE' or score > 0.9:
+                    tag = 'force'
+                    status_display = "FORCE CLOSE"
+                elif status == 'CLOSE_RECOMMENDED' or score > 0.7:
+                    tag = 'close'
+                    status_display = "CLOSE"
+                else:
+                    tag = 'keep'
+                    status_display = "KEEP"
+
+                # Format PnL with color consideration
+                pnl_str = f"${pnl:.2f}" if abs(pnl) > 0.01 else "-"
+                if pnl < 0:
+                    pnl_str = f"{pnl_str}"
+
+                self.radar_tree.insert('', 'end', values=(
+                    self._safe_tcl(f"#{i+1}"),
+                    self._safe_tcl(sym),
+                    self._safe_tcl(f"{score:.2f}"),
+                    self._safe_tcl(pnl_str),
+                    self._safe_tcl(f"{age}"),
+                    self._safe_tcl(f"{effective_age}"),
+                    self._safe_tcl(status_display)
+                ), tags=(tag,))
 
     # ========================== LOGIC ==========================
     def _metric(self, parent, text, default, row):
@@ -1085,7 +1206,7 @@ class HolonicDashboard:
         def run_wrapper(stop_event, queue, cfg, cmd_queue):
             try:
                 from main_live_phase4 import run_bot
-                run_bot(stop_event, queue, cfg, cmd_queue)
+                run_bot(stop_event, queue, cfg, cmd_queue, disable_telegram=True)
             except Exception as e:
                 print(f"CRITICAL BOOT ERROR: {e}")
                 import traceback
@@ -1286,10 +1407,18 @@ class HolonicDashboard:
         try:
             while True:
                 msg = self.gui_queue.get_nowait()
-                self._handle_queue_message(msg)
+                try:
+                    self._handle_queue_message(msg)
+                except Exception as e:
+                    print(f"GUI Queue Processing Error: {e}")
                 processed_any = True
         except queue.Empty:
             pass
+        
+        # === FILE-BASED SYNC FOR EXTERNAL BOT ===
+        # Polling moved to background thread (StatusPollThread)
+        # file_processed = self._poll_status_file() 
+        # processed_any = processed_any or file_processed
         
         # === OPTIMIZATION: Batch Log Pruning ===
         children = self.log_tree.get_children()
@@ -1298,42 +1427,59 @@ class HolonicDashboard:
             for child in children[:excess_count]:
                 self.log_tree.delete(child)
 
-        # Update 3D viz and scout radar
-        self._update_holospace()
-        
+        # Note: Heavy generic updates (Holospace, MonteCarlo, etc.) were removed for performance.
         # OPTIMIZATION: Adaptive polling (50ms if busy, 200ms if idle)
         next_poll = 50 if processed_any else 200
         self.root.after(next_poll, self.process_queue)
     
+
+    
     def _handle_queue_message(self, msg):
         mtype = msg.get("type", "")
-        
+
         if mtype == 'log':
             self.log(msg.get('message', ''))
             
+        elif mtype == 'connection_status':
+            # Update connection status indicator
+            connected = msg.get('connected', False)
+            last_update = msg.get('last_update', '')
+            error = msg.get('error', '')
+            
+            if connected:
+                self.conn_status_var.set("🟢 CONNECTED")
+                self.conn_status_label.config(foreground=COLORS['accent_green'])
+                # Show last update time if available
+                if last_update:
+                    try:
+                        # Parse ISO timestamp and show relative time
+                        from datetime import datetime
+                        dt = datetime.fromisoformat(last_update.replace('Z', '+00:00'))
+                        now = datetime.now(dt.tzinfo)
+                        diff = (now - dt).total_seconds()
+                        if diff < 60:
+                            self.conn_status_var.set(f"🟢 LIVE ({int(diff)}s ago)")
+                        elif diff < 3600:
+                            self.conn_status_var.set(f"🟢 LIVE ({int(diff/60)}m ago)")
+                        else:
+                            self.conn_status_var.set(f"🟡 STALE ({int(diff/3600)}h ago)")
+                            self.conn_status_label.config(foreground=COLORS['accent_yellow'])
+                    except Exception:
+                        pass
+            else:
+                self.conn_status_var.set(f"🔴 DISCONNECTED{': ' + error if error else ''}")
+                self.conn_status_label.config(foreground=COLORS['accent_red'])
+
         elif mtype == 'summary':
             data = msg.get('data', [])
-            
+
             # Clear existing rows
             for child in self.tree.get_children():
                 self.tree.delete(child)
-            
+
             # Repopulate
             for row in data:
-                # 3D Holospace Data Capture
-                if '_entropy' in row and '_tda' in row:
-                    sym = row.get('Symbol', 'UNKNOWN')
-                    if sym not in self.market_phase_data: self.market_phase_data[sym] = []
-                    
-                    self.market_phase_data[sym].append({
-                        'entropy': float(row['_entropy']),
-                        'tda': float(row['_tda']),
-                        'price': float(row['_price']),
-                        'vol': float(row.get('_vol', 0.0))
-                    })
-                    
-                    if len(self.market_phase_data[sym]) > self.max_phase_points:
-                        self.market_phase_data[sym].pop(0)
+
 
                 pnl_str = row.get('PnL', '-')
                 struct_mode = row.get('Struct', '-')
@@ -1427,10 +1573,12 @@ class HolonicDashboard:
             if balance is not None:
                 self.balance_label.config(text=f"${float(balance):.2f}")
             
-            # === IMPROVEMENT 2: Update Equity Chart ===
+            # === IMPROVEMENT 2: Update Equity Chart & Label ===
             equity = data.get('equity')
             if equity is not None:
                 self.update_equity_chart(float(equity))
+                if hasattr(self, 'equity_label'):
+                    self.equity_label.config(text=f"${float(equity):.2f}")
             
             # === IMPROVEMENT 4: Update Position Cards ===
             holdings = data.get('holdings')
@@ -1462,30 +1610,44 @@ class HolonicDashboard:
                     # Clear and Repopulate Radar Tree
                     for item in self.radar_tree.get_children():
                         self.radar_tree.delete(item)
-                    
+
                     for i, r in enumerate(consolidation_data):
                         # Format: {'symbol': 'BTC', 'score': 0.85, 'reason': 'High Vol'}
                         sym = r.get('symbol', 'UNKNOWN')
                         score = r.get('score', 0.0)
                         reason = r.get('reason', 'Scanning...')
-                        
+
                         status = "HIGH RISK" if score > 0.8 else "WATCH"
                         tag = 'close' if score > 0.8 else 'neutral'
-                        
+
                         self.radar_tree.insert('', 'end', values=(
-                            self._safe_tcl(f"#{i+1}"), 
-                            self._safe_tcl(sym), 
-                            self._safe_tcl(f"{score:.2f}"), 
-                            "-", 
-                            "-", 
-                            "-", 
+                            self._safe_tcl(f"#{i+1}"),
+                            self._safe_tcl(sym),
+                            self._safe_tcl(f"{score:.2f}"),
+                            "-",
+                            "-",
+                            "-",
                             self._safe_tcl(status)
                         ), tags=(tag,))
-            
+
             # 2. Update Scout Watchlist - Scout Tab
             scout_data = data.get('scout_data', [])
             if scout_data:
                  self._update_scout_text(scout_data)
+
+            # 3. Store portfolio data for Portfolio tab
+            holdings = data.get('holdings', {})
+            entry_prices = data.get('entry_prices', {})
+            current_prices = data.get('current_prices', {})
+            balance = data.get('balance', 0)
+
+            # Store data for portfolio tab
+            self.current_holdings = holdings
+            self.current_entry_prices = entry_prices
+            self.current_current_prices = current_prices
+            self.current_balance = balance
+
+            # (Monte Carlo and Enhanced Radar updates removed)
 
         elif mtype == 'order':
             order = msg.get('data', {})
@@ -1524,6 +1686,12 @@ class HolonicDashboard:
             
             # Use centralized update (force=True for explicit regime events)
             self._update_regime_health(regime, health, force_update=True)
+
+        # === Signal Report (from agent_status data) ===
+        if mtype == 'agent_status':
+            signal_report = msg.get('data', {}).get('signal_report', [])
+            if signal_report:
+                self._update_signals_tab(signal_report)
 
     def _update_scout_text(self, scout_data):
         self.scout_text.delete(1.0, tk.END)

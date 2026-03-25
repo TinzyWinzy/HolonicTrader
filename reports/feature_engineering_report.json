@@ -1,0 +1,179 @@
+{
+  "audit": {
+    "original_shape": [
+      155,
+      14
+    ],
+    "cleaned_shape": [
+      131,
+      25
+    ],
+    "final_shape": [
+      131,
+      7
+    ],
+    "dropped_columns": [
+      "session_file",
+      "order_id",
+      "fee_usd",
+      "raw",
+      "event"
+    ]
+  },
+  "correlations": [
+    [
+      "ret",
+      -0.2594258226236904
+    ],
+    [
+      "atr",
+      0.09126998161019688
+    ],
+    [
+      "rv_10_ann",
+      0.06121082609336894
+    ],
+    [
+      "rv_10",
+      0.061210826093368906
+    ],
+    [
+      "price",
+      -0.04727262198391963
+    ],
+    [
+      "qty",
+      0.04434871942584338
+    ],
+    [
+      "vol_spike",
+      -0.04184408853221603
+    ]
+  ],
+  "feature_importance": [
+    {
+      "feature": "qty",
+      "importance": 0.003949900157749653,
+      "cumulative_pct": 92.07759054419657
+    },
+    {
+      "feature": "vol_lag1",
+      "importance": 0.0003398517073947005,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "ret",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "price",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "rv_10",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "rv_10_ann",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "vol_spike",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "atr",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "day_of_week",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "is_weekend",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "ret_roll3",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "hour",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "ret_std3",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "price_ma3",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "price_ma5",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "price_std3",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "ret_lag1",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "ret_lag2",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "price_momentum",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    },
+    {
+      "feature": "vol_regime",
+      "importance": 0.0,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "selected_features": [
+    "qty",
+    "price",
+    "ret"
+  ],
+  "new_features_added": [
+    "hour",
+    "day_of_week",
+    "is_weekend",
+    "ret_roll3",
+    "ret_std3",
+    "price_ma3",
+    "price_std3",
+    "price_ma5",
+    "ret_lag1",
+    "ret_lag2",
+    "vol_lag1",
+    "price_momentum",
+    "vol_regime"
+  ],
+  "model_metrics": {
+    "train_mse": 0.00047564017161229257,
+    "test_mse": 0.000457570162729736
+  }
+}

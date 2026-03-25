@@ -41,6 +41,15 @@ class DatabaseManager:
             c.execute("ALTER TABLE portfolio ADD COLUMN fortress_balance REAL")
         except sqlite3.OperationalError:
             pass # Column likely exists
+            
+        try:
+            c.execute("ALTER TABLE portfolio ADD COLUMN repayment_reserve REAL")
+            print("[Database] Added repayment_reserve column to portfolio table")
+        except sqlite3.OperationalError as e:
+            if "duplicate column" in str(e).lower():
+                pass  # Column already exists
+            else:
+                raise  # Re-raise unexpected errors
         
         # Ledger Table (The Blockchain)
         c.execute('''
@@ -79,6 +88,28 @@ class DatabaseManager:
             c.execute("ALTER TABLE trades ADD COLUMN unrealized_pnl_percent REAL")
         except sqlite3.OperationalError:
             pass  # Column already exists
+            
+        # EXPERIMENT B: Metric Columns
+        try:
+            c.execute("ALTER TABLE trades ADD COLUMN mfe REAL")
+            c.execute("ALTER TABLE trades ADD COLUMN mae REAL")
+        except sqlite3.OperationalError:
+            pass
+
+        # 2026-03-21: Trade metadata columns for winning pattern analysis
+        for col_name, col_type in [
+            ('exit_reason', 'TEXT'),       # TARGET, STOP_LOSS, TRAILING, HARD_STOP, FORCED, HYGIENE
+            ('strategy_type', 'TEXT'),     # WHALE_SHADOW, TREND, KALMAN_VALUE, etc.
+            ('entropy_score', 'REAL'),     # Shannon entropy at entry (0-2.3)
+            ('regime', 'TEXT'),            # ORDERED, TRANSITION, CHAOTIC
+            ('conviction', 'REAL'),        # Oracle conviction at entry (0-1.0)
+            ('quality_score', 'REAL'),     # Atlas quality score (0-100)
+            ('is_whitelisted', 'INTEGER'), # 1 if whitelisted at entry time
+        ]:
+            try:
+                c.execute(f"ALTER TABLE trades ADD COLUMN {col_name} {col_type}")
+            except sqlite3.OperationalError:
+                pass
         
         # RL Experience Table (DQN Memory)
         c.execute('''
@@ -93,6 +124,43 @@ class DatabaseManager:
             done BOOLEAN
         )
         ''')
+
+        # Experience Memory Table (The Hippocampus)
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS memory_vectors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT,
+            symbol TEXT,
+            context_vector TEXT, -- JSON list [RSI, BB, Vol, ...]
+            outcome TEXT,        -- 'WIN' or 'LOSS'
+            pnl_percent REAL,
+            embedding_signature TEXT -- Optional: For faster indexing
+        )
+        ''')
+        
+        # SMCE State Table (Layer 0 Capital Doctrine)
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS smce_state (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            smce_tier TEXT,
+            day_start_equity REAL,
+            week_start_equity REAL,
+            last_day_reset TEXT,
+            last_week_reset INTEGER,
+            defensive_cooldown_until REAL,
+            risk_multiplier_smce REAL,
+            consecutive_clean_days INTEGER,
+            period_max_drawdown REAL,
+            allocation_pct_boost REAL,
+            updated_at TEXT
+        )
+        ''')
+        
+        # Migration: Add allocation_pct_boost if missing
+        try:
+            c.execute("ALTER TABLE smce_state ADD COLUMN allocation_pct_boost REAL")
+        except sqlite3.OperationalError:
+            pass
         
         conn.commit()
         conn.close()
@@ -103,8 +171,8 @@ class DatabaseManager:
         c = conn.cursor()
         
         c.execute('''
-        INSERT INTO trades (symbol, direction, quantity, price, cost_usd, timestamp, pnl, pnl_percent, unrealized_pnl, unrealized_pnl_percent)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO trades (symbol, direction, quantity, price, cost_usd, timestamp, pnl, pnl_percent, unrealized_pnl, unrealized_pnl_percent, mfe, mae, exit_reason, strategy_type, entropy_score, regime, conviction, quality_score, is_whitelisted)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             trade_data['symbol'],
             trade_data['direction'],
@@ -115,7 +183,16 @@ class DatabaseManager:
             trade_data.get('pnl', 0.0),
             trade_data.get('pnl_percent', 0.0),
             trade_data.get('unrealized_pnl', 0.0),
-            trade_data.get('unrealized_pnl_percent', 0.0)
+            trade_data.get('unrealized_pnl_percent', 0.0),
+            trade_data.get('mfe', 0.0),
+            trade_data.get('mae', 0.0),
+            trade_data.get('exit_reason'),
+            trade_data.get('strategy_type'),
+            trade_data.get('entropy_score'),
+            trade_data.get('regime'),
+            trade_data.get('conviction'),
+            trade_data.get('quality_score'),
+            trade_data.get('is_whitelisted'),
         ))
         conn.commit()
         conn.close()
@@ -182,9 +259,9 @@ class DatabaseManager:
         
         # Explicit column names in INSERT to match the actual table schema
         c.execute('''
-        INSERT OR REPLACE INTO portfolio (id, balance_usd, held_assets, position_metadata, fortress_balance, updated_at)
-        VALUES (1, ?, ?, ?, ?, ?)
-        ''', (usd, assets_json, meta_json, fortress_balance, timestamp))
+        INSERT OR REPLACE INTO portfolio (id, balance_usd, held_assets, position_metadata, fortress_balance, repayment_reserve, updated_at)
+        VALUES (1, ?, ?, ?, ?, ?, ?)
+        ''', (usd, assets_json, meta_json, fortress_balance, getattr(self, '_last_repayment_reserve', 0.0), timestamp))
         
         conn.commit()
         conn.close()
@@ -194,8 +271,8 @@ class DatabaseManager:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        
-        c.execute('SELECT balance_usd, held_assets, position_metadata, fortress_balance FROM portfolio WHERE id = 1')
+
+        c.execute('SELECT balance_usd, held_assets, position_metadata, fortress_balance, repayment_reserve FROM portfolio WHERE id = 1')
         row = c.fetchone()
         conn.close()
         
@@ -203,12 +280,17 @@ class DatabaseManager:
             # Deserialize
             held_assets = json.loads(row['held_assets']) if row['held_assets'] else {}
             position_metadata = json.loads(row['position_metadata']) if row['position_metadata'] else {}
-            
+
+            # Handle missing columns gracefully (old database schema)
+            fortress_balance = row['fortress_balance'] if 'fortress_balance' in row.keys() else 0.0
+            repayment_reserve = row['repayment_reserve'] if 'repayment_reserve' in row.keys() else 0.0
+
             return {
-                'balance_usd': row['balance_usd'], 
+                'balance_usd': row['balance_usd'],
                 'held_assets': held_assets,
                 'position_metadata': position_metadata,
-                'fortress_balance': row['fortress_balance'] or 0.0
+                'fortress_balance': fortress_balance or 0.0,
+                'repayment_reserve': repayment_reserve or 0.0
             }
         return None
 
@@ -301,3 +383,70 @@ class DatabaseManager:
                 continue
                 
         return results
+
+    def save_smce_state(self, state_data: Dict[str, Any]):
+        """Save SMCE L0 Capital Doctrine state."""
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        timestamp = datetime.now().isoformat()
+        
+        c.execute('''
+        INSERT OR REPLACE INTO smce_state (
+            id, smce_tier, day_start_equity, week_start_equity,
+            last_day_reset, last_week_reset, defensive_cooldown_until,
+            risk_multiplier_smce, consecutive_clean_days, period_max_drawdown,
+            allocation_pct_boost, updated_at
+        )
+        VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            state_data.get('smce_tier', 'SMALL'),
+            state_data.get('day_start_equity', 0.0),
+            state_data.get('week_start_equity', 0.0),
+            str(state_data.get('last_day_reset', datetime.utcnow().date().isoformat())),
+            int(state_data.get('last_week_reset', datetime.utcnow().isocalendar()[1])),
+            float(state_data.get('defensive_cooldown_until', 0.0)),
+            float(state_data.get('risk_multiplier_smce', 1.0)),
+            int(state_data.get('consecutive_clean_days', 0)),
+            float(state_data.get('period_max_drawdown', 0.0)),
+            float(state_data.get('allocation_pct_boost', 0.0)),
+            timestamp
+        ))
+        conn.commit()
+        conn.close()
+
+    def load_smce_state(self) -> Optional[Dict[str, Any]]:
+        """Load SMCE L0 Capital Doctrine state."""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute('SELECT * FROM smce_state WHERE id = 1')
+        row = c.fetchone()
+        conn.close()
+        
+        if row:
+            return dict(row)
+        return None
+
+    def save_repayment_reserve(self, reserve: float):
+        """Standalone update for repayment reserve."""
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        self._last_repayment_reserve = reserve 
+        c.execute("UPDATE portfolio SET repayment_reserve = ?, updated_at = ? WHERE id = 1", 
+                  (reserve, datetime.now().isoformat()))
+        conn.commit()
+        conn.close()
+
+    def load_repayment_reserve(self) -> float:
+        """Standalone load for repayment reserve."""
+        conn = sqlite3.connect(self.db_path)
+        c = conn.cursor()
+        try:
+            c.execute("SELECT repayment_reserve FROM portfolio WHERE id = 1")
+            row = c.fetchone()
+            conn.close()
+            if row and row[0] is not None:
+                return float(row[0])
+        except sqlite3.OperationalError:
+            pass  # Column doesn't exist yet
+        return 0.0

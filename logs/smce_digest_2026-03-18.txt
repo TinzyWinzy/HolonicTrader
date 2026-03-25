@@ -1,0 +1,59 @@
+==============================================================
+  SMCE DAILY DIGEST – 2026-03-18 UTC
+==============================================================
+
+── EQUITY ──────────────────────────────────────────────────
+  Start:  $90.66
+  End:    $90.42
+  Change: -0.27%  ($-0.24)
+
+── TRADES ──────────────────────────────────────────────────
+  No trades executed today.
+
+── REGIME ──────────────────────────────────────────────────
+  Dominant: TRANSITION
+    TRANSITION  : 100% of cycles
+  Last inputs: {"structure": "BEARISH", "entropy": 1.0, "liquidity_status": "healthy", "correlation_idx": 0.5, "drawdown_breach": false}
+
+── PROBABILITY SCORECARDS ──────────────────────────────────
+  No scorecard data.
+
+── MONTE CARLO SUMMARY ─────────────────────────────────────
+  No MC data available.
+
+── CONSTITUTIONAL VIOLATIONS ───────────────────────────────
+  ⚠️ [22:05] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:06] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:08] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:32] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:35] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:36] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:38] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:39] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:40] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:42] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:43] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:45] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:47] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:48] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:49] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:50] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:53] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:57] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:58] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [22:59] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:01] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:04] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:04] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:06] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:06] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:09] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:11] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:12] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:14] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+  ⚠️ [23:16] LAYER0_DOCTRINE: [Layer0] STACKING BLOCKED: position in BONK/USDT already exists (entry=0.0000)
+
+── SYSTEM HEALTH ───────────────────────────────────────────
+  ✅ No warnings.
+
+==============================================================

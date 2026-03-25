@@ -16,21 +16,25 @@ import config
 logger = logging.getLogger("EvolutionLab")
 
 class EvolutionLab:
-    def __init__(self, 
+    def __init__(self,
                  symbols: List[str] = None, # Default to None, load from config if missing
                  initial_capital: float = None,
                  leverage: float = 5.0, # REDUCED: 20x -> 5x for Survival
                  population_size: int = 60,
                  fitness_mode: str = 'BALANCED', # 'BALANCED' (Safety) or 'AGGRESSIVE' (Growth)
-                 verbose: bool = False):
-        
+                 verbose: bool = False,
+                 history_limit: int = 1500,  # Primary data rows
+                 secondary_limit: int = 6000):  # Secondary data rows
+
         self.symbols = symbols if symbols else list(config.KRAKEN_SYMBOL_MAP.keys())
         self.initial_capital = initial_capital if initial_capital else config.INITIAL_CAPITAL
         self.leverage = leverage
         self.population_size = population_size
         self.fitness_mode = fitness_mode
         self.verbose = verbose
-        
+        self.history_limit = history_limit
+        self.secondary_limit = secondary_limit
+
         self.datasets: Dict[str, Playground] = {}
         self.population: List[Dict] = []
         self.hall_of_fame: List[Dict] = [] # Memory: Top Genomes
@@ -38,13 +42,16 @@ class EvolutionLab:
         self.guard = DataGuard()
         self.profiler = AssetProfiler()
 
-    def load_data(self, history_limit: int = 1500, secondary_limit: int = 6000):
         """Pre-load data for all arenas."""
         logger.info(f"📡 Pre-loading Gauntlet Data for {self.symbols}...")
+
+        # Determine Source based on Mode
+        data_source = 'krakenfutures' if getattr(config, 'TRADING_MODE', 'SPOT') == 'FUTURES' else 'kraken'
+
         for sym in self.symbols:
             p = Playground(symbol=sym, initial_capital=self.initial_capital, verbose=False, leverage=self.leverage)
-            p.load_data(limit=history_limit)
-            p.load_secondary_data(limit=secondary_limit)
+            p.load_data(source=data_source, limit=self.history_limit)
+            p.load_secondary_data(source=data_source, limit=self.secondary_limit)
             
             # Profile Asset
             if p.df is not None and not p.df.empty:
@@ -55,19 +62,23 @@ class EvolutionLab:
 
     def generate_random_genome(self) -> Dict:
         """Spawn random genome suitable for benchmark survival."""
+        # FIX #4 2026-03-02: Align leverage with REGIME limits
+        # SMALL regime max_leverage = 5.0, so cap evolution at 5x
+        # This prevents simulation/live mismatch (genome evolves at 10x, lives trades at 5x)
         return {
             'rsi_buy': random.uniform(20, 50),     # Buy Dip
             'rsi_sell': random.uniform(75, 95),    # Sell Rip
-            'stop_loss': random.uniform(0.01, 0.05), # 1% - 5% (Safe for 1x)
-            'take_profit': random.uniform(0.05, 0.20), # Swing targets
+            'stop_loss': random.uniform(0.01, 0.12), # 1% - 12%
+            'take_profit': random.uniform(0.02, 0.30), # 2% - 30%
             'use_satellite': True,
             'sat_rvol': random.uniform(2.0, 5.0),
-            'sat_bb_expand': random.uniform(0.05, 0.25),
-            
+            'sat_bb_expand': random.uniform(0.005, 0.05), # 0.5% - 5%
+
             # --- INSTITUTIONAL GENES ---
-            'leverage_cap': round(random.uniform(1.0, 5.0), 2), # RESTORED: 1-5x (Golden Ratio)
-            'trailing_activation': random.uniform(0.1, 1.5), # RECALIBRATED: 10% - 150% gain
-            'trailing_distance': random.uniform(0.01, 0.05)  # RECALIBRATED: 1% - 5% trail
+            # FIX: Cap at 5x to match SMALL regime max_leverage
+            'leverage_cap': round(random.uniform(1.0, 5.0), 2), # Was 1-10x
+            'trailing_activation': random.uniform(0.1, 1.5),
+            'trailing_distance': random.uniform(0.01, 0.05)
         }
 
     def normalize_gene(self, key: str, value: float) -> float:
@@ -77,17 +88,18 @@ class EvolutionLab:
         elif key == 'rsi_sell':
             return max(40.0, min(90.0, value))
         elif key == 'stop_loss':
-            # Hard Limit: 0.5% to 10% (Prevent 0.0001% stops that trigger on noise)
-            return max(0.005, min(0.10, value))
+            # Hard Limit: 0.5% to 15%
+            return max(0.005, min(0.15, value))
         elif key == 'take_profit':
             # Hard Limit: 1% to 50%
             return max(0.01, min(0.50, value))
         elif key == 'leverage_cap':
-            return max(1.0, min(5.0, value))
+            # FIX #4: Hard cap at 5x to match SMALL regime max_leverage
+            return max(1.0, min(5.0, value))  # Was 1-10x
         elif key == 'sat_rvol':
             # Soft Limit: Tanh compression for > 5.0
             if value > 5.0:
-                return 5.0 + math.tanh(value - 5.0) * 5.0 # Maxes around 10
+                return 5.0 + math.tanh(value - 5.0) * 5.0
             return max(1.0, value)
         elif key == 'trailing_activation':
             # Hard Limit: 5% to 200% activation
@@ -95,6 +107,9 @@ class EvolutionLab:
         elif key == 'trailing_distance':
             # Hard Limit: 0.5% to 10% distance
             return max(0.005, min(0.10, value))
+        elif key == 'sat_bb_expand':
+            # Hard Limit: 0.1% to 10% expansion
+            return max(0.001, min(0.10, value))
         else:
             return value
 
@@ -160,9 +175,8 @@ class EvolutionLab:
                 continue
             
             # --- DATA FIX: Ensure minimum history for valid split ---
-            # Need at least 500 bars for meaningful Training + 200 for Validation
-            if len(arena.df) < 500: # Relaxed from 700 to allow newer coins
-                # logger.warning(f"⚠️ {symbol} skipped: Insufficient Data ({len(arena.df)} rows < 500)")
+            # Need at least 700 bars for meaningful Training (490) + Validation (210 = ~60 days @ 1h)
+            if len(arena.df) < 700:
                 continue
             # ----------------------------------------------------
             
@@ -207,9 +221,22 @@ class EvolutionLab:
             # Capture Metrics for this Asset (Focus on Validation for Fitness)
             if arena.trades:
                 valid_arenas += 1
-                
+
                 # --- DATA GLITCH GUARD (Advanced) ---
-                is_valid, reason = self.guard.validate_roi(symbol, val_roi)
+                # FIX 2026-03-08: validate_roi is for single-candle checks, not cumulative validation ROI
+                # For evolution validation (multi-candle), use much higher thresholds
+                # Only reject truly insane ROIs (>1000% = 10x return in validation period)
+                is_valid = True
+                reason = "Valid"
+
+                # Hard limit: reject only physics-violating ROIs (>100x return is definitely a glitch)
+                if val_roi > 100.0:  # 10,000% cumulative ROI is impossible
+                    is_valid = False
+                    reason = f"Physics violation: {val_roi*100:.1f}% cumulative ROI"
+                elif val_roi < -0.99:  # 99%+ loss is also suspicious (liquidation glitch)
+                    is_valid = False
+                    reason = f"Suspicious total loss: {val_roi*100:.1f}%"
+
                 if not is_valid:
                     logger.warning(f"🛡️ DATA GUARD: Ignoring {symbol} Glitch ROI {val_roi*100:.1f}%. Reason: {reason}")
                     valid_arenas -= 1 # Revert count
@@ -265,56 +292,49 @@ class EvolutionLab:
                 'final_equity': self.initial_capital, 'sharpe':0,'sortino':0, 'trades':0
             }
             
-        # === FITNESS FUNCTION (Multi-Objective) ===
-        # Prioritize Risk-Adjusted Returns > Raw ROI
-        
+        # === FITNESS FUNCTION V2 - ROI-DOMINANT (FIX 2026-03-02) ===
+        # FIX #1: Eliminate Fitness Inflation - ROI now 80%+ of fitness
+        # Problem: Old fitness allowed high Sharpe/sortino to mask negative ROI
+        # Solution: Raw ROI is now the PRIMARY driver
+
         # 1. Survival Factor (Heavy Penalty for DD)
         survival_score = 1.0
-        if avg_dd > 0.25: survival_score -= (avg_dd - 0.25) * 2.0 # Relaxed from 0.15
-        if avg_dd > 0.50: survival_score = 0.2 # Relaxed death zone from 0.30
-        
-        # 2. Activity Check (Avoid dead strategies)
-        # Relaxed: Only punish if practically zero trades (< 0.5 per arena)
-        # 2. Activity Check (Avoid dead strategies)
-        # Relaxed: Only punish if practically zero trades (< 0.5 per arena)
-        if total_trades < (valid_arenas * 0.5): 
-            survival_score *= 0.5 # Stricter again (was 0.8) - Dead bots must die.
-            
-        # --- NEW: EQUITY RELIABILITY (User Request) ---
-        # Penalize Negative AVG ROI heavily.
-        if avg_roi < 0:
-            survival_score *= 0.1 # 90% Penalty for losing money.
-        # ----------------------------------------------
-            
-        # 3. Core Score: Sharpe + Sortino + ROI
-        # Weighting: Reliability (60%), Growth (40%)
-        # CLAMPING: Prevent Sharpe/Sortino inflation
-        c_sharpe = min(avg_sharpe, 3.0) 
-        c_sortino = min(avg_sortino, 5.0)
-        
-        # AGGRESSIVE BOOST: Scale ROI higher to reward ANY profit in bear markets
-        # Add constant 1.0 base to raw_score to prevent multipication to zero if metrics are slightly negative
-        # REPAIR: Base 10.0 to allow negative ROI to have a gradient.
-        # If ROI is -0.5 (-50%), score = 10 + (-10) = 0.
-        # If ROI is -0.1 (-10%), score = 10 + (-2) = 8.
-        # If ROI is 0.1 (10%), score = 10 + 2 = 12.
-        raw_score = 10.0 + (c_sharpe * 2.0) + (c_sortino * 1.0) + (avg_roi * 20.0)
-        
-        # 4. Quadratic Drawdown Penalty (RECALIBRATION)
-        # Relaxed Curve: 
-        # 10% DD = 1 / (1 + (0.5)^2) = ~0.8x
-        # 40% DD = 1 / (1 + (2.0)^2) = 0.2x
-        dd_penalty = 1.0 / (1.0 + (avg_dd * 5.0)**2) # Was * 10.0 (too harsh)
+        if avg_dd > 0.25: survival_score -= (avg_dd - 0.25) * 2.0
+        if avg_dd > 0.50: survival_score = 0.2
 
-        
-        # 5. Overfit Penalty: If Train ROI is 2x Val ROI
-        # overfit_penalty = max(0, (train_roi - val_roi) * 2.0)
-        
-        # 6. Diversity Bonus: Must trade >= 3 assets if portfolio testing
+        # 2. Activity Check (Avoid dead strategies & 1-trade lottery winners)
+        # Minimum 5 trades across basket to prove statistical validity
+        if total_trades < 5:
+            survival_score *= 0.05  # 95% penalty — not enough data to trust
+        elif total_trades < (valid_arenas * 2):
+            survival_score *= 0.5  # Penalty for low activity
+
+        # 3. EQUITY RELIABILITY - CRITICAL FIX
+        # Penalize Negative AVG ROI: 95% penalty (was 90%)
+        if avg_roi < 0:
+            survival_score *= 0.05
+
+        # 4. Core Score: ROI-DOMINANT (80% weight)
+        # CLAMPING: Prevent Sharpe/Sortino from dominating
+        c_sharpe = min(avg_sharpe, 2.0)  # Lower cap (was 3.0)
+        c_sortino = min(avg_sortino, 3.0)  # Lower cap (was 5.0)
+
+        # ROI-First Formula:
+        # - ROI contributes 80% of raw score (via 100x multiplier)
+        # - Sharpe/Sortino contribute 20% max (small bonuses)
+        # Example: ROI=10%, Sharpe=2, Sortino=3 → raw = 10 + 4 + 3 = 17
+        #          ROI=-10%, Sharpe=2, Sortino=3 → raw = -10 + 4 + 3 = -3 (penalized)
+        raw_score = (avg_roi * 100.0) + (c_sharpe * 1.0) + (c_sortino * 0.5)
+
+        # 5. Quadratic Drawdown Penalty (STRICTER)
+        # 10% DD = 0.8x | 25% DD = 0.44x | 40% DD = 0.11x
+        dd_penalty = 1.0 / (1.0 + (avg_dd * 6.0)**2)
+
+        # 6. Diversity Bonus
         diversity_bonus = 1.0
         if len(active_symbols) >= 3 and valid_arenas < 3:
-            diversity_bonus = 0.5 # Concentration Risk
-            
+            diversity_bonus = 0.5
+
         fitness = max(0.0, raw_score * survival_score * dd_penalty * diversity_bonus)
         
         # Fake Equity for Log readability (Projected)
@@ -506,7 +526,6 @@ class EvolutionLab:
 if __name__ == "__main__":
     # Test Run
     lab = EvolutionLab(leverage=5.0)
-    lab.load_data()
     lab.seed_population()
     winner = lab.evolve(generations=3)
     print(winner)

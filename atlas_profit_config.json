@@ -1,0 +1,82 @@
+{
+  "profit_phase": "ACTIVE_TRADING",
+  "account_tier": "NANO",
+  "active_strategies": [
+    "BUY_ONLY",
+    "SELL_ONLY"
+  ],
+  "minimum_trade_size_usd": 15.0,
+  "minimum_notional_with_leverage": 30.0,
+  "minimum_edge_pct": 0.004,
+  "leverage_settings": {
+    "default_leverage": 3.0,
+    "max_leverage": 5.0,
+    "leverage_by_confidence": {
+      "high": 5.0,
+      "medium": 3.0,
+      "low": 2.0
+    }
+  },
+  "trade_filters": {
+    "signal_strength_threshold": 0.5,
+    "volatility_threshold_pct": 0.0025,
+    "spread_max_pct": 0.001,
+    "liquidity_min_score": 0.7,
+    "regime_compliance": true
+  },
+  "capital_allocation": {
+    "buy_strategy_capital": 0.8,
+    "reserve_capital": 0.2,
+    "max_position_size_pct": 0.5,
+    "daily_loss_limit_pct": 0.05,
+    "max_drawdown_pct": 0.2
+  },
+  "nano_specific_rules": {
+    "min_margin_for_trade": 20.0,
+    "emergency_reserve": 10.0,
+    "compound_threshold": 150.0,
+    "graduation_threshold": 500.0
+  },
+  "symbol_blacklist": [
+    "ADA/USD",
+    "XAUT/USD"
+  ],
+  "symbol_whitelist": [
+    "LTC/USD",
+    "LDO/USD",
+    "IMX/USD",
+    "XTZ/USD",
+    "XRP/USD"
+  ],
+  "symbol_watchlist": [
+    "SOL/USD",
+    "AVAX/USD"
+  ],
+  "edge_amplification": {
+    "enabled": true,
+    "phase": "PHASE_2",
+    "blacklist_enforcement": "HARD",
+    "whitelist_priority": true,
+    "min_quality_score": 40,
+    "symbol_performance_tracking": true,
+    "auto_blacklist_enabled": true,
+    "auto_whitelist_enabled": true
+  },
+  "exit_strategy": {
+    "default_stop_loss_pct": 0.025,
+    "default_take_profit_pct": 0.045,
+    "trailing_stop_enabled": true,
+    "trailing_stop_pct": 0.02,
+    "exit_early_on_signal_reversal": true,
+    "symbol_specific_exits": true,
+    "improved_exit_logic": {
+      "widened_stops_for_stopouts": true,
+      "dynamic_take_profit": true,
+      "regime_aware_exits": true
+    }
+  },
+  "created_at": "2026-03-18T09:12:37.976841",
+  "updated_at": "2026-03-19T16:46:55.836343",
+  "integration_version": "1.1-nano-phase2",
+  "patch_applied": "2026-03-19_atlas_relaxation"
+}

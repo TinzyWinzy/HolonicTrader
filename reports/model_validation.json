@@ -1,0 +1,31 @@
+{
+  "n_samples": 6,
+  "baseline": {
+    "mse": 0.05752083333333343,
+    "mae": 0.17999999999999997,
+    "r2": 0.3908125441280291
+  },
+  "rich": {
+    "mse": 0.05752083333333343,
+    "mae": 0.17999999999999997,
+    "r2": 0.3908125441280291
+  },
+  "trading_simulation": {
+    "buy_hold": {
+      "trades": 6,
+      "win_rate": 0.0,
+      "total_pnl": -2.26
+    },
+    "baseline": {
+      "trades": 0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0
+    },
+    "rich": {
+      "trades": 0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0
+    }
+  },
+  "timestamp": "2026-03-21T23:19:36.087305"
+}

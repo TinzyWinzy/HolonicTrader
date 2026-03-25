@@ -1,4 +1,4 @@
-
+﻿
 import pandas as pd
 import numpy as np
 import time
@@ -14,7 +14,7 @@ from HolonicTrader.agent_observer import ObserverHolon
 from HolonicTrader.data_guard import DataGuard
 try:
     import holonic_speed # Use Rust for Indicators
-    print("[Sandbox] 🚀 Rust Engine Loaded (High Performance)")
+    print("[Sandbox] ðŸš€ Rust Engine Loaded (High Performance)")
 except ImportError:
     # Fallback to pure Python if Rust module is missing/incompatible
     print("[Sandbox] Rust Engine not found. Using Python Fallback (Slower).")
@@ -87,13 +87,18 @@ class Playground:
         self.df = None
         self.df_secondary = None
         self.strategy: Strategy = None
-        
+
         # Data Quality Shield
         self.guard = DataGuard()
 
     def load_data(self, source: str = 'kraken', timeframe: str = '1h', limit: int = 1000):
         """Load historical data using ObserverHolon with Pickle Caching."""
-        print(f"[Sandbox] 📥 Loading {limit} candles for {self.symbol}...")
+        # Windows UTF-8 fix
+        msg = f"[Sandbox] Loading {limit} candles for {self.symbol}..."
+        try:
+            print(msg)
+        except UnicodeEncodeError:
+            print(msg.encode('ascii', errors='replace'))
         observer = ObserverHolon(exchange_id=source)
         
         # Cache Path
@@ -106,10 +111,10 @@ class Playground:
                 # Check if cache is fresh enough (e.g. < 1 hour old?) - actually just check valid
                 try:
                     self.df = pd.read_pickle(cache_path)
-                    print(f"   ⚡ Cache Hit: Loaded {len(self.df)} candles from {cache_path}")
+                    print(f"   âš¡ Cache Hit: Loaded {len(self.df)} candles from {cache_path}")
                     return # Skip Fetch + Compute
                 except Exception as e:
-                    print(f"   ⚠️ Cache Corrupt: {e}")
+                    print(f"   âš ï¸ Cache Corrupt: {e}")
                     
             # 2. Load/Fetch Raw
             self.df = observer.load_local_history(self.symbol)
@@ -131,20 +136,20 @@ class Playground:
                  # 4. Save Cache
                  try:
                      self.df.to_pickle(cache_path)
-                     print(f"   💾 Cache Saved: {cache_path}")
+                     print(f"   ðŸ’¾ Cache Saved: {cache_path}")
                  except Exception as e:
-                     print(f"   ⚠️ Cache Save Failed: {e}")
+                     print(f"   âš ï¸ Cache Save Failed: {e}")
                      
             else:
-                 print(f"   ⚠️ Loaded {len(self.df)} candles (Empty or Missing Timestamp)")
+                 print(f"   âš ï¸ Loaded {len(self.df)} candles (Empty or Missing Timestamp)")
             
         except Exception as e:
-            print(f"[Sandbox] ❌ Data Load Error: {e}")
+            print(f"[Sandbox] âŒ Data Load Error: {e}")
 
-    def load_secondary_data(self, timeframe: str = '15m', limit: int = 4000):
+    def load_secondary_data(self, timeframe: str = '15m', limit: int = 4000, source: str = 'kraken'):
         """Load secondary timeframe data (e.g., 15m) for Satellite logic."""
-        print(f"[Sandbox] 📥 Loading Secondary Data ({timeframe}) for {self.symbol}...")
-        observer = ObserverHolon(exchange_id='kraken') # Default to kraken
+        print(f"[Sandbox] ðŸ“¥ Loading Secondary Data ({timeframe}) for {self.symbol}...")
+        observer = ObserverHolon(exchange_id=source) # Default to kraken
         try:
             # Local mapping might differ for 15m, Observer handles it? 
             # Observer.load_local_history takes symbol, but usually assumes 1H default?
@@ -165,7 +170,7 @@ class Playground:
                     # Check timestamp if CSV exists to ensure freshness? 
                     # For simplicity, if pickle exists, we trust it (or assume Observer updates it)
                     self.df_secondary = pd.read_pickle(pickle_path)
-                    print(f"   ⚡ Secondary Data Cache Hit ({timeframe})")
+                    print(f"   âš¡ Secondary Data Cache Hit ({timeframe})")
                     self._compute_indicators(self.df_secondary)
                     return # Done
                 except Exception:
@@ -188,7 +193,7 @@ class Playground:
                     except: pass
                     
                 except Exception as e:
-                    print(f"   ⚠️ Read Error (Lock?): {e}")
+                    print(f"   âš ï¸ Read Error (Lock?): {e}")
                     self.df_secondary = None
             else:
                  print(f"   Local {timeframe} missing. Fetching...")
@@ -206,13 +211,13 @@ class Playground:
                     self._audit_data_integrity(self.df_secondary)
                     self._compute_indicators(self.df_secondary)
                 else:
-                    print(f"   ⚠️ Secondary data missing 'timestamp' column. Ignoring.")
+                    print(f"   âš ï¸ Secondary data missing 'timestamp' column. Ignoring.")
                     self.df_secondary = None
             else:
                 self.df_secondary = None
                 
         except Exception as e:
-            print(f"[Sandbox] ❌ Secondary Data Load Error: {e}")
+            print(f"[Sandbox] âŒ Secondary Data Load Error: {e}")
             self.df_secondary = None
 
     def _audit_data_integrity(self, df: pd.DataFrame):
@@ -230,14 +235,14 @@ class Playground:
                 glitch_indices.append(df.index[i])
         
         if glitch_indices:
-            print(f"   ⚠️ DATA INTEGRITY ALERT: Found {len(glitch_indices)} Glitch Candles. Guarding...")
+            print(f"   âš ï¸ DATA INTEGRITY ALERT: Found {len(glitch_indices)} Glitch Candles. Guarding...")
             # Ideally we mask them or skip, for now we log and warn.
 
     def _compute_indicators(self, df):
         """Pre-calculate standard indicators using Rust Speed."""
         if df is None or df.empty: return
 
-        #print(f"[Sandbox] ⚡ Computing Indicators for {len(df)} rows...")
+        #print(f"[Sandbox] âš¡ Computing Indicators for {len(df)} rows...")
         closes = df['close'].values.tolist()
         highs = df['high'].values.tolist()
         lows = df['low'].values.tolist()
@@ -273,15 +278,15 @@ class Playground:
     def inject_strategy(self, strategy_instance: Strategy):
         """Load a strategy instance."""
         self.strategy = strategy_instance
-        if self.verbose: print(f"[Sandbox] 💉 Injected Strategy: {self.strategy.name}")
+        if self.verbose: print(f"[Sandbox] ðŸ’‰ Injected Strategy: {self.strategy.name}")
 
     def run(self):
         """Run the simulation loop."""
         if self.df is None or self.df.empty:
-            print("[Sandbox] ⚠️ No Data Loaded. Aborting.")
+            print("[Sandbox] âš ï¸ No Data Loaded. Aborting.")
             return
 
-        if self.verbose: print(f"[Sandbox] ▶️ Running Simulation on {len(self.df)} candles...")
+        if self.verbose: print(f"[Sandbox] â–¶ï¸ Running Simulation on {len(self.df)} candles...")
         
         if hasattr(self.strategy, 'genome') and 'holonic_speed' in globals():
             try:
@@ -312,7 +317,7 @@ class Playground:
                     'price': row['close']
                 }
             except KeyError as e:
-                # print(f"[Sandbox] ❌ CRITICAL: Missing Column {e} in row. Available: {row.index.tolist()}")
+                # print(f"[Sandbox] âŒ CRITICAL: Missing Column {e} in row. Available: {row.index.tolist()}")
                 return
             
             portfolio_state = {
@@ -388,7 +393,7 @@ class Playground:
                 
                 self.capital -= funding_cost
                 self.last_funding_time = current_ts
-                # if self.verbose: print(f"[Sandbox] 💸 Funding: -${funding_cost:.2f}")
+                # if self.verbose: print(f"[Sandbox] ðŸ’¸ Funding: -${funding_cost:.2f}")
 
             # --- EXECUTION LATENCY (Next-Open Rule) ---
             # If we have a pending signal from previous candle, execute it NOW on the OPEN
@@ -425,7 +430,7 @@ class Playground:
                 maintenance_margin = self.margin_locked * 0.50 
                 # Liquidation Condition: Equity drops below MM
                 if current_equity < maintenance_margin:
-                     if self.verbose: print(f"[Sandbox] ☠️ LIQUIDATION! Equity ${current_equity:.2f} < MM ${maintenance_margin:.2f}")
+                     if self.verbose: print(f"[Sandbox] â˜ ï¸ LIQUIDATION! Equity ${current_equity:.2f} < MM ${maintenance_margin:.2f}")
                      
                      # Liquidation Penalty: You lose MM too (Exchange keeps it)
                      # Or just zero.
@@ -445,12 +450,12 @@ class Playground:
 
             # Bankruptcy Check
             if self.capital <= 0 and self.inventory == 0:
-                if self.verbose: print("[Sandbox] 💸 BANKRUPTCY. Simulation Terminated.")
+                if self.verbose: print("[Sandbox] ðŸ’¸ BANKRUPTCY. Simulation Terminated.")
                 break
 
         elapsed = time.time() - start_time
         if self.verbose: 
-            print(f"[Sandbox] ✅ Simulation Complete in {elapsed:.2f}s")
+            print(f"[Sandbox] âœ… Simulation Complete in {elapsed:.2f}s")
             self.report()
 
     def _execute(self, signal: Signal, row):
@@ -486,7 +491,7 @@ class Playground:
                     is_stacking = True
                     self.stack_count = getattr(self, 'stack_count', 1) + 1
                     if self.verbose: 
-                        reason = "🐋 WHALE" if limit == 4 else "🥞 STACK"
+                        reason = "ðŸ‹ WHALE" if limit == 4 else "ðŸ¥ž STACK"
                         pass # print(f"[Sandbox] {reason} count: {self.stack_count}")
 
             if allow_buy:
@@ -507,7 +512,7 @@ class Playground:
                     if implied_notional > max_size_usd:
                         # Cap size to available liquidity
                         if self.verbose: 
-                            print(f"[Sandbox] 💧 LIQUIDITY CONSTRAINED: Wanted ${implied_notional:.0f}, Capped at ${max_size_usd:.0f} (1% Vol)")
+                            print(f"[Sandbox] ðŸ’§ LIQUIDITY CONSTRAINED: Wanted ${implied_notional:.0f}, Capped at ${max_size_usd:.0f} (1% Vol)")
                         
                         # Recalculate pct_size to fit liquidity
                         # pct_size = (max_size_usd / leverage) / capital
@@ -558,7 +563,7 @@ class Playground:
                 qty = notional_value / exec_price
                 
                 if self.verbose:
-                    print(f"[Sandbox] 🛒 BUY Exec: Price ${exec_price:.2f} | Size {pct_size*100:.1f}% | Lev {leverage}x | Fee ${fee:.2f}")
+                    print(f"[Sandbox] ðŸ›’ BUY Exec: Price ${exec_price:.2f} | Size {pct_size*100:.1f}% | Lev {leverage}x | Fee ${fee:.2f}")
 
                 if qty > 0:
                     self.capital -= (margin_to_spend + fee) # Deduct Margin + Fee
@@ -732,7 +737,7 @@ class Playground:
     def report(self):
         """Print performance report."""
         print("\n" + "="*40)
-        print(f"🥪 SANDBOX REPORT: {self.strategy.name}")
+        print(f"ðŸ¥ª SANDBOX REPORT: {self.strategy.name}")
         print("="*40)
         
         final_eq = self.equity_curve[-1]['equity'] if self.equity_curve else self.initial_capital
@@ -743,19 +748,19 @@ class Playground:
             first_price = self.df['close'].iloc[0]
             last_price = self.df['close'].iloc[-1]
             bnh_ret = ((last_price - first_price) / first_price) * 100
-            print(f"📈 Buy & Hold: {bnh_ret:+.2f}% (${self.initial_capital * (1+bnh_ret/100):.2f})")
+            print(f"ðŸ“ˆ Buy & Hold: {bnh_ret:+.2f}% (${self.initial_capital * (1+bnh_ret/100):.2f})")
         else:
             bnh_ret = 0.0
             
-        print(f"🤖 Strategy:  {total_ret:+.2f}% (${final_eq:.2f})")
-        print(f"📊 Trades: {len(self.trades)}")
+        print(f"ðŸ¤– Strategy:  {total_ret:+.2f}% (${final_eq:.2f})")
+        print(f"ðŸ“Š Trades: {len(self.trades)}")
         
         wins = [t for t in self.trades if (t['type'] == 'SELL' or t['type'] == 'LIQUIDATION') and t.get('pnl', 0) > 0]
         losses = [t for t in self.trades if (t['type'] == 'SELL' or t['type'] == 'LIQUIDATION') and t.get('pnl', 0) <= 0]
         
         closed_trades = wins + losses
         win_rate = (len(wins) / len(closed_trades) * 100) if closed_trades else 0
-        print(f"✅ Win Rate: {win_rate:.1f}% ({len(wins)} W / {len(losses)} L)")
+        print(f"âœ… Win Rate: {win_rate:.1f}% ({len(wins)} W / {len(losses)} L)")
         
         # Calculate Max Drawdown
         mdd = 0.0
@@ -765,12 +770,12 @@ class Playground:
             dd = (peak - point['equity']) / peak
             if dd > mdd: mdd = dd
             
-        print(f"📉 Max Drawdown: {mdd*100:.1f}%")
+        print(f"ðŸ“‰ Max Drawdown: {mdd*100:.1f}%")
         
         if bnh_ret > 0 and total_ret < bnh_ret:
-             print("⚠️  Strategy Underperforming Benchmark (Buy & Hold)")
+             print("âš ï¸  Strategy Underperforming Benchmark (Buy & Hold)")
         if bnh_ret < 0 and total_ret > bnh_ret:
-             print("🛡️  Strategy Outperforming Bear Market")
+             print("ðŸ›¡ï¸  Strategy Outperforming Bear Market")
         
         print(f"Final Equity:   ${final_eq:.2f}")
         print(f"Total Return:   {total_ret:+.2f}%")
@@ -781,7 +786,7 @@ class Playground:
 
     def _run_warp_speed(self):
         """
-        🚀 WARP VELOCITY: Use Rust Engine for 10,000x Speed.
+        ðŸš€ WARP VELOCITY: Use Rust Engine for 10,000x Speed.
         Only works for Gene-based Strategies (EvoStrategy) that can be vectorized.
         """
         if self.df is None or self.df.empty: return
@@ -855,8 +860,9 @@ class Playground:
                 self.equity_curve.append({'timestamp': exit_ts, 'equity': running_balance})
                 
             if self.verbose: 
-                print(f"[Sandbox] 🚀 Warp Speed Complete. Trades: {len(self.trades)} | Balance: ${self.capital:.2f}")
+                print(f"[Sandbox] ðŸš€ Warp Speed Complete. Trades: {len(self.trades)} | Balance: ${self.capital:.2f}")
 
         except Exception as e:
-            if self.verbose: print(f"[Sandbox] ⚠️ Warp Speed Failed ({e}). Refactoring to Python.")
+            if self.verbose: print(f"[Sandbox] âš ï¸ Warp Speed Failed ({e}). Refactoring to Python.")
             raise e
+

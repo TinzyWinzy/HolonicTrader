@@ -1,0 +1,1328 @@
+{
+  "model_info": {
+    "DQN": {
+      "file": "dqn_model.keras",
+      "last_trained": "2026-02-06T22:18:01.522681"
+    },
+    "XGBoost": {
+      "file": "xgboost_model.json",
+      "last_trained": "2026-02-06T22:24:41.712865"
+    }
+  },
+  "backtest": {
+    "n_base_trades": 0,
+    "total_pnl_base": 0.0,
+    "n_rich_trades": 0,
+    "total_pnl_rich": 0.0,
+    "expectancy_base": 0.0,
+    "expectancy_rich": 0.0,
+    "timestamp": "2026-03-21T22:37:14.323787"
+  },
+  "live_vs_sim": {
+    "generated_at": "2026-03-21T22:37:14.656298",
+    "total_trades": 949,
+    "symbol_performance": {
+      "TAO/USDT": {
+        "trades": 84,
+        "wins": 54,
+        "losses": 30,
+        "win_rate": 0.6429,
+        "total_pnl": 974.3993,
+        "expectancy": 11.6,
+        "profit_factor": 23.9,
+        "avg_win": 18.8324,
+        "avg_loss": 1.4184,
+        "payoff_ratio": 13.28,
+        "max_win_streak": 16,
+        "max_loss_streak": 11,
+        "directions": {
+          "BUY": {
+            "trades": 76,
+            "wins": 46,
+            "pnl": 973.9447352954527
+          },
+          "SELL": {
+            "trades": 8,
+            "wins": 8,
+            "pnl": 0.4546000000000018
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "BNB/USDT": {
+        "trades": 38,
+        "wins": 27,
+        "losses": 11,
+        "win_rate": 0.7105,
+        "total_pnl": 626.1173,
+        "expectancy": 16.4768,
+        "profit_factor": 13.39,
+        "avg_win": 25.0605,
+        "avg_loss": 4.5923,
+        "payoff_ratio": 5.46,
+        "max_win_streak": 6,
+        "max_loss_streak": 3,
+        "directions": {
+          "BUY": {
+            "trades": 23,
+            "wins": 17,
+            "pnl": 629.4259000000001
+          },
+          "SELL": {
+            "trades": 15,
+            "wins": 10,
+            "pnl": -3.308616666666674
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "ETH/USDT": {
+        "trades": 60,
+        "wins": 37,
+        "losses": 23,
+        "win_rate": 0.6167,
+        "total_pnl": 100.9551,
+        "expectancy": 1.6826,
+        "profit_factor": 3.94,
+        "avg_win": 3.6555,
+        "avg_loss": 1.4913,
+        "payoff_ratio": 2.45,
+        "max_win_streak": 11,
+        "max_loss_streak": 5,
+        "directions": {
+          "SELL": {
+            "trades": 20,
+            "wins": 17,
+            "pnl": 17.547619999999995
+          },
+          "BUY": {
+            "trades": 40,
+            "wins": 20,
+            "pnl": 83.40752448769214
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "AAVE/USDT": {
+        "trades": 21,
+        "wins": 10,
+        "losses": 11,
+        "win_rate": 0.4762,
+        "total_pnl": 51.9181,
+        "expectancy": 2.4723,
+        "profit_factor": 99.9,
+        "avg_win": 5.2274,
+        "avg_loss": 0.0324,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 5,
+        "max_loss_streak": 4,
+        "directions": {
+          "BUY": {
+            "trades": 20,
+            "wins": 9,
+            "pnl": 51.9021
+          },
+          "SELL": {
+            "trades": 1,
+            "wins": 1,
+            "pnl": 0.01599999999999966
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "WIF/USDT": {
+        "trades": 17,
+        "wins": 12,
+        "losses": 5,
+        "win_rate": 0.7059,
+        "total_pnl": 16.5448,
+        "expectancy": 0.9732,
+        "profit_factor": 99.9,
+        "avg_win": 1.3817,
+        "avg_loss": 0.0072,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 10,
+        "max_loss_streak": 2,
+        "directions": {
+          "SELL": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.033600000000000185
+          },
+          "BUY": {
+            "trades": 16,
+            "wins": 12,
+            "pnl": 16.578400000000002
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "DOT/USDT": {
+        "trades": 48,
+        "wins": 18,
+        "losses": 30,
+        "win_rate": 0.375,
+        "total_pnl": 10.2517,
+        "expectancy": 0.2136,
+        "profit_factor": 25.03,
+        "avg_win": 0.5932,
+        "avg_loss": 0.0142,
+        "payoff_ratio": 41.72,
+        "max_win_streak": 8,
+        "max_loss_streak": 13,
+        "directions": {
+          "BUY": {
+            "trades": 44,
+            "wins": 16,
+            "pnl": 10.242700000000006
+          },
+          "SELL": {
+            "trades": 4,
+            "wins": 2,
+            "pnl": 0.009000000000000424
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": -0.0002,
+        "edge_ratio": 0.0
+      },
+      "LTC/USDT": {
+        "trades": 5,
+        "wins": 3,
+        "losses": 2,
+        "win_rate": 0.6,
+        "total_pnl": 0.2788,
+        "expectancy": 0.0558,
+        "profit_factor": 6.43,
+        "avg_win": 0.11,
+        "avg_loss": 0.0256,
+        "payoff_ratio": 4.29,
+        "max_win_streak": 3,
+        "max_loss_streak": 2,
+        "directions": {
+          "BUY": {
+            "trades": 4,
+            "wins": 2,
+            "pnl": 0.11500000000000135
+          },
+          "SELL": {
+            "trades": 1,
+            "wins": 1,
+            "pnl": 0.16380000000000067
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "XRP/USDT": {
+        "trades": 25,
+        "wins": 20,
+        "losses": 5,
+        "win_rate": 0.8,
+        "total_pnl": 0.2431,
+        "expectancy": 0.0097,
+        "profit_factor": 2.21,
+        "avg_win": 0.0222,
+        "avg_loss": 0.0402,
+        "payoff_ratio": 0.55,
+        "max_win_streak": 10,
+        "max_loss_streak": 2,
+        "directions": {
+          "BUY": {
+            "trades": 12,
+            "wins": 8,
+            "pnl": -0.12154000000000043
+          },
+          "SELL": {
+            "trades": 13,
+            "wins": 12,
+            "pnl": 0.36465999999999754
+          }
+        },
+        "avg_mfe": 0.0001,
+        "avg_mae": -0.0,
+        "edge_ratio": 5.81
+      },
+      "SHIB/USDT": {
+        "trades": 15,
+        "wins": 9,
+        "losses": 6,
+        "win_rate": 0.6,
+        "total_pnl": 0.1427,
+        "expectancy": 0.0095,
+        "profit_factor": 3.49,
+        "avg_win": 0.0222,
+        "avg_loss": 0.0095,
+        "payoff_ratio": 2.33,
+        "max_win_streak": 4,
+        "max_loss_streak": 3,
+        "directions": {
+          "SELL": {
+            "trades": 7,
+            "wins": 4,
+            "pnl": 0.04671199999999922
+          },
+          "BUY": {
+            "trades": 8,
+            "wins": 5,
+            "pnl": 0.09601200000000043
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "XTZ/USDT": {
+        "trades": 8,
+        "wins": 7,
+        "losses": 1,
+        "win_rate": 0.875,
+        "total_pnl": 0.1044,
+        "expectancy": 0.013,
+        "profit_factor": 4.18,
+        "avg_win": 0.0196,
+        "avg_loss": 0.0328,
+        "payoff_ratio": 0.6,
+        "max_win_streak": 7,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 4,
+            "wins": 4,
+            "pnl": 0.07880000000000004
+          },
+          "SELL": {
+            "trades": 4,
+            "wins": 3,
+            "pnl": 0.025599999999999956
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "LDO/USDT": {
+        "trades": 4,
+        "wins": 3,
+        "losses": 1,
+        "win_rate": 0.75,
+        "total_pnl": 0.0863,
+        "expectancy": 0.0216,
+        "profit_factor": 99.9,
+        "avg_win": 0.0288,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 3,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 4,
+            "wins": 3,
+            "pnl": 0.0862999999999996
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "PEPE/USDT": {
+        "trades": 20,
+        "wins": 17,
+        "losses": 3,
+        "win_rate": 0.85,
+        "total_pnl": 0.0794,
+        "expectancy": 0.004,
+        "profit_factor": 3.24,
+        "avg_win": 0.0067,
+        "avg_loss": 0.0118,
+        "payoff_ratio": 0.57,
+        "max_win_streak": 17,
+        "max_loss_streak": 3,
+        "directions": {
+          "BUY": {
+            "trades": 3,
+            "wins": 0,
+            "pnl": -0.03535879999999972
+          },
+          "SELL": {
+            "trades": 17,
+            "wins": 17,
+            "pnl": 0.11473510000000096
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "IMX/USDT": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 0.5,
+        "total_pnl": 0.0462,
+        "expectancy": 0.0231,
+        "profit_factor": 99.9,
+        "avg_win": 0.0462,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 1,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 1,
+            "pnl": 0.04620000000000015
+          },
+          "SELL": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": 0.0
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "DOGE/USDT": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 0.5,
+        "total_pnl": 0.0204,
+        "expectancy": 0.0102,
+        "profit_factor": 99.9,
+        "avg_win": 0.0204,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 1,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 2,
+            "wins": 1,
+            "pnl": 0.020397999999999528
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "TIA/USDT": {
+        "trades": 3,
+        "wins": 2,
+        "losses": 1,
+        "win_rate": 0.6667,
+        "total_pnl": 0.0124,
+        "expectancy": 0.0041,
+        "profit_factor": 1.3,
+        "avg_win": 0.0271,
+        "avg_loss": 0.0418,
+        "payoff_ratio": 0.65,
+        "max_win_streak": 2,
+        "max_loss_streak": 1,
+        "directions": {
+          "SELL": {
+            "trades": 3,
+            "wins": 2,
+            "pnl": 0.012370000000000742
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "BONK/USDT": {
+        "trades": 16,
+        "wins": 8,
+        "losses": 8,
+        "win_rate": 0.5,
+        "total_pnl": 0.0107,
+        "expectancy": 0.0007,
+        "profit_factor": 1.1,
+        "avg_win": 0.015,
+        "avg_loss": 0.0137,
+        "payoff_ratio": 1.1,
+        "max_win_streak": 7,
+        "max_loss_streak": 5,
+        "directions": {
+          "BUY": {
+            "trades": 16,
+            "wins": 8,
+            "pnl": 0.010718000000002233
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "LINK/USDT": {
+        "trades": 7,
+        "wins": 1,
+        "losses": 6,
+        "win_rate": 0.1429,
+        "total_pnl": 0.0058,
+        "expectancy": 0.0008,
+        "profit_factor": 1.16,
+        "avg_win": 0.0432,
+        "avg_loss": 0.0062,
+        "payoff_ratio": 6.93,
+        "max_win_streak": 1,
+        "max_loss_streak": 6,
+        "directions": {
+          "BUY": {
+            "trades": 2,
+            "wins": 0,
+            "pnl": 0.0
+          },
+          "SELL": {
+            "trades": 5,
+            "wins": 1,
+            "pnl": 0.005799999999999625
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "WLD/USDT": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 0.5,
+        "total_pnl": 0.004,
+        "expectancy": 0.002,
+        "profit_factor": 99.9,
+        "avg_win": 0.004,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 1,
+        "max_loss_streak": 1,
+        "directions": {
+          "SELL": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": 0.0
+          },
+          "BUY": {
+            "trades": 1,
+            "wins": 1,
+            "pnl": 0.00399999999999956
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "AAPLX/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": 0.0,
+        "expectancy": 0.0,
+        "profit_factor": 99.9,
+        "avg_win": 0,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": 0.0
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "SPYX/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": 0.0,
+        "expectancy": 0.0,
+        "profit_factor": 99.9,
+        "avg_win": 0,
+        "avg_loss": 0.0,
+        "payoff_ratio": 99.9,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": 0.0
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "PYTH/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": -0.0004,
+        "expectancy": -0.0004,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0004,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.0003999999999999837
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "JTO/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": -0.0077,
+        "expectancy": -0.0077,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0077,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.007699999999999763
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "ARB/USDT": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "total_pnl": -0.0158,
+        "expectancy": -0.0079,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0079,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 2,
+        "directions": {
+          "SELL": {
+            "trades": 2,
+            "wins": 0,
+            "pnl": -0.01579999999999962
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "APT/USDT": {
+        "trades": 3,
+        "wins": 2,
+        "losses": 1,
+        "win_rate": 0.6667,
+        "total_pnl": -0.0169,
+        "expectancy": -0.0056,
+        "profit_factor": 0.44,
+        "avg_win": 0.0066,
+        "avg_loss": 0.03,
+        "payoff_ratio": 0.22,
+        "max_win_streak": 2,
+        "max_loss_streak": 1,
+        "directions": {
+          "SELL": {
+            "trades": 3,
+            "wins": 2,
+            "pnl": -0.016899999999999693
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "SEI/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": -0.0368,
+        "expectancy": -0.0368,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0368,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.0368000000000017
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "UNI/USDT": {
+        "trades": 4,
+        "wins": 2,
+        "losses": 2,
+        "win_rate": 0.5,
+        "total_pnl": -0.0701,
+        "expectancy": -0.0175,
+        "profit_factor": 0.59,
+        "avg_win": 0.0507,
+        "avg_loss": 0.0858,
+        "payoff_ratio": 0.59,
+        "max_win_streak": 2,
+        "max_loss_streak": 2,
+        "directions": {
+          "SELL": {
+            "trades": 2,
+            "wins": 0,
+            "pnl": -0.17160000000000028
+          },
+          "BUY": {
+            "trades": 2,
+            "wins": 2,
+            "pnl": 0.10149999999999965
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "STX/USDT": {
+        "trades": 5,
+        "wins": 1,
+        "losses": 4,
+        "win_rate": 0.2,
+        "total_pnl": -0.0751,
+        "expectancy": -0.015,
+        "profit_factor": 0.23,
+        "avg_win": 0.022,
+        "avg_loss": 0.0243,
+        "payoff_ratio": 0.91,
+        "max_win_streak": 1,
+        "max_loss_streak": 2,
+        "directions": {
+          "BUY": {
+            "trades": 5,
+            "wins": 1,
+            "pnl": -0.07510000000000092
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "INJ/USDT": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "total_pnl": -0.0774,
+        "expectancy": -0.0387,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0387,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 2,
+        "directions": {
+          "SELL": {
+            "trades": 2,
+            "wins": 0,
+            "pnl": -0.07739999999999858
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "ORDI/USDT": {
+        "trades": 3,
+        "wins": 0,
+        "losses": 3,
+        "win_rate": 0.0,
+        "total_pnl": -0.1416,
+        "expectancy": -0.0472,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0472,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 3,
+        "directions": {
+          "SELL": {
+            "trades": 3,
+            "wins": 0,
+            "pnl": -0.14160000000000095
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "NEAR/USDT": {
+        "trades": 7,
+        "wins": 0,
+        "losses": 7,
+        "win_rate": 0.0,
+        "total_pnl": -0.1844,
+        "expectancy": -0.0263,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.0263,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 7,
+        "directions": {
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.02490000000000014
+          },
+          "SELL": {
+            "trades": 6,
+            "wins": 0,
+            "pnl": -0.1594999999999991
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "SUI/USDT": {
+        "trades": 16,
+        "wins": 7,
+        "losses": 9,
+        "win_rate": 0.4375,
+        "total_pnl": -0.3168,
+        "expectancy": -0.0198,
+        "profit_factor": 0.5,
+        "avg_win": 0.0452,
+        "avg_loss": 0.0703,
+        "payoff_ratio": 0.64,
+        "max_win_streak": 2,
+        "max_loss_streak": 3,
+        "directions": {
+          "BUY": {
+            "trades": 10,
+            "wins": 4,
+            "pnl": -0.39599999999999635
+          },
+          "SELL": {
+            "trades": 6,
+            "wins": 3,
+            "pnl": 0.07919999999999919
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "AVAX/USDT": {
+        "trades": 2,
+        "wins": 0,
+        "losses": 2,
+        "win_rate": 0.0,
+        "total_pnl": -0.3859,
+        "expectancy": -0.193,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 0.193,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 2,
+        "directions": {
+          "SELL": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.19041373056995073
+          },
+          "BUY": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -0.1955099999999987
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "ADA/USDT": {
+        "trades": 49,
+        "wins": 27,
+        "losses": 22,
+        "win_rate": 0.551,
+        "total_pnl": -0.3974,
+        "expectancy": -0.0081,
+        "profit_factor": 0.4,
+        "avg_win": 0.0098,
+        "avg_loss": 0.0301,
+        "payoff_ratio": 0.33,
+        "max_win_streak": 19,
+        "max_loss_streak": 15,
+        "directions": {
+          "SELL": {
+            "trades": 28,
+            "wins": 23,
+            "pnl": 0.018008681318681052
+          },
+          "BUY": {
+            "trades": 21,
+            "wins": 4,
+            "pnl": -0.4153951239669404
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "CRCLX/USDT": {
+        "trades": 2,
+        "wins": 1,
+        "losses": 1,
+        "win_rate": 0.5,
+        "total_pnl": -0.4716,
+        "expectancy": -0.2358,
+        "profit_factor": 0.05,
+        "avg_win": 0.0264,
+        "avg_loss": 0.498,
+        "payoff_ratio": 0.05,
+        "max_win_streak": 1,
+        "max_loss_streak": 1,
+        "directions": {
+          "BUY": {
+            "trades": 2,
+            "wins": 1,
+            "pnl": -0.4716000000000037
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "SOL/USDT": {
+        "trades": 187,
+        "wins": 68,
+        "losses": 119,
+        "win_rate": 0.3636,
+        "total_pnl": -0.9905,
+        "expectancy": -0.0053,
+        "profit_factor": 0.59,
+        "avg_win": 0.0207,
+        "avg_loss": 0.0201,
+        "payoff_ratio": 1.03,
+        "max_win_streak": 14,
+        "max_loss_streak": 25,
+        "directions": {
+          "BUY": {
+            "trades": 144,
+            "wins": 54,
+            "pnl": -0.22126622331668822
+          },
+          "SELL": {
+            "trades": 43,
+            "wins": 14,
+            "pnl": -0.7691918334582032
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "MSTRX/USDT": {
+        "trades": 1,
+        "wins": 0,
+        "losses": 1,
+        "win_rate": 0.0,
+        "total_pnl": -3.21,
+        "expectancy": -3.21,
+        "profit_factor": 0.0,
+        "avg_win": 0,
+        "avg_loss": 3.21,
+        "payoff_ratio": 0.0,
+        "max_win_streak": 0,
+        "max_loss_streak": 1,
+        "directions": {
+          "SELL": {
+            "trades": 1,
+            "wins": 0,
+            "pnl": -3.2099999999999937
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "XAUT/USDT": {
+        "trades": 83,
+        "wins": 37,
+        "losses": 46,
+        "win_rate": 0.4458,
+        "total_pnl": -210.0257,
+        "expectancy": -2.5304,
+        "profit_factor": 0.28,
+        "avg_win": 2.2502,
+        "avg_loss": 6.3757,
+        "payoff_ratio": 0.35,
+        "max_win_streak": 11,
+        "max_loss_streak": 21,
+        "directions": {
+          "BUY": {
+            "trades": 50,
+            "wins": 14,
+            "pnl": -292.8672776897542
+          },
+          "SELL": {
+            "trades": 33,
+            "wins": 23,
+            "pnl": 82.84160861111108
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "BTC/USDT": {
+        "trades": 126,
+        "wins": 46,
+        "losses": 80,
+        "win_rate": 0.3651,
+        "total_pnl": -221.9269,
+        "expectancy": -1.7613,
+        "profit_factor": 0.47,
+        "avg_win": 4.2116,
+        "avg_loss": 5.1958,
+        "payoff_ratio": 0.81,
+        "max_win_streak": 20,
+        "max_loss_streak": 25,
+        "directions": {
+          "BUY": {
+            "trades": 94,
+            "wins": 20,
+            "pnl": -415.46631776773205
+          },
+          "SELL": {
+            "trades": 32,
+            "wins": 26,
+            "pnl": 193.53945354166666
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "XMR/USDT": {
+        "trades": 19,
+        "wins": 6,
+        "losses": 13,
+        "win_rate": 0.3158,
+        "total_pnl": -362.9328,
+        "expectancy": -19.1017,
+        "profit_factor": 0.1,
+        "avg_win": 6.8282,
+        "avg_loss": 31.0694,
+        "payoff_ratio": 0.22,
+        "max_win_streak": 4,
+        "max_loss_streak": 10,
+        "directions": {
+          "SELL": {
+            "trades": 19,
+            "wins": 6,
+            "pnl": -362.93280555555555
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      },
+      "PAXG/USDT": {
+        "trades": 56,
+        "wins": 10,
+        "losses": 46,
+        "win_rate": 0.1786,
+        "total_pnl": -559.4308,
+        "expectancy": -9.9898,
+        "profit_factor": 0.06,
+        "avg_win": 3.6287,
+        "avg_loss": 12.9504,
+        "payoff_ratio": 0.28,
+        "max_win_streak": 8,
+        "max_loss_streak": 45,
+        "directions": {
+          "BUY": {
+            "trades": 46,
+            "wins": 0,
+            "pnl": -595.7178851471322
+          },
+          "SELL": {
+            "trades": 10,
+            "wins": 10,
+            "pnl": 36.287040000000005
+          }
+        },
+        "avg_mfe": 0.0,
+        "avg_mae": 0.0,
+        "edge_ratio": 0
+      }
+    },
+    "time_patterns": {
+      "hourly": {
+        "0": {
+          "trades": 24,
+          "wins": 8,
+          "pnl": -2.511,
+          "win_rate": 0.333
+        },
+        "1": {
+          "trades": 30,
+          "wins": 9,
+          "pnl": 3.195,
+          "win_rate": 0.3
+        },
+        "2": {
+          "trades": 14,
+          "wins": 5,
+          "pnl": 0.0208,
+          "win_rate": 0.357
+        },
+        "3": {
+          "trades": 6,
+          "wins": 4,
+          "pnl": 0.0266,
+          "win_rate": 0.667
+        },
+        "5": {
+          "trades": 24,
+          "wins": 13,
+          "pnl": -76.2047,
+          "win_rate": 0.542
+        },
+        "6": {
+          "trades": 18,
+          "wins": 8,
+          "pnl": 0.2706,
+          "win_rate": 0.444
+        },
+        "7": {
+          "trades": 20,
+          "wins": 9,
+          "pnl": -14.1128,
+          "win_rate": 0.45
+        },
+        "8": {
+          "trades": 44,
+          "wins": 23,
+          "pnl": 159.5833,
+          "win_rate": 0.523
+        },
+        "9": {
+          "trades": 124,
+          "wins": 52,
+          "pnl": -252.4188,
+          "win_rate": 0.419
+        },
+        "10": {
+          "trades": 28,
+          "wins": 8,
+          "pnl": -209.9569,
+          "win_rate": 0.286
+        },
+        "11": {
+          "trades": 26,
+          "wins": 16,
+          "pnl": 39.0101,
+          "win_rate": 0.615
+        },
+        "12": {
+          "trades": 35,
+          "wins": 16,
+          "pnl": 13.0197,
+          "win_rate": 0.457
+        },
+        "13": {
+          "trades": 24,
+          "wins": 13,
+          "pnl": 203.6132,
+          "win_rate": 0.542
+        },
+        "14": {
+          "trades": 32,
+          "wins": 14,
+          "pnl": -120.6133,
+          "win_rate": 0.438
+        },
+        "15": {
+          "trades": 40,
+          "wins": 19,
+          "pnl": 249.2159,
+          "win_rate": 0.475
+        },
+        "16": {
+          "trades": 37,
+          "wins": 11,
+          "pnl": -306.9642,
+          "win_rate": 0.297
+        },
+        "17": {
+          "trades": 35,
+          "wins": 13,
+          "pnl": -13.8664,
+          "win_rate": 0.371
+        },
+        "18": {
+          "trades": 71,
+          "wins": 35,
+          "pnl": 293.8139,
+          "win_rate": 0.493
+        },
+        "19": {
+          "trades": 53,
+          "wins": 31,
+          "pnl": 244.6405,
+          "win_rate": 0.585
+        },
+        "20": {
+          "trades": 76,
+          "wins": 22,
+          "pnl": 58.6977,
+          "win_rate": 0.289
+        },
+        "21": {
+          "trades": 65,
+          "wins": 34,
+          "pnl": 67.1595,
+          "win_rate": 0.523
+        },
+        "22": {
+          "trades": 75,
+          "wins": 56,
+          "pnl": 113.4365,
+          "win_rate": 0.747
+        },
+        "23": {
+          "trades": 48,
+          "wins": 19,
+          "pnl": -28.5491,
+          "win_rate": 0.396
+        }
+      },
+      "daily": {
+        "Saturday": {
+          "trades": 128,
+          "wins": 59,
+          "pnl": 338.0467,
+          "win_rate": 0.461
+        },
+        "Sunday": {
+          "trades": 211,
+          "wins": 65,
+          "pnl": -792.6539,
+          "win_rate": 0.308
+        },
+        "Monday": {
+          "trades": 121,
+          "wins": 66,
+          "pnl": 297.0475,
+          "win_rate": 0.545
+        },
+        "Tuesday": {
+          "trades": 212,
+          "wins": 119,
+          "pnl": 537.9938,
+          "win_rate": 0.561
+        },
+        "Wednesday": {
+          "trades": 115,
+          "wins": 37,
+          "pnl": 40.1573,
+          "win_rate": 0.322
+        },
+        "Thursday": {
+          "trades": 50,
+          "wins": 13,
+          "pnl": -0.8487,
+          "win_rate": 0.26
+        },
+        "Friday": {
+          "trades": 112,
+          "wins": 79,
+          "pnl": 0.7633,
+          "win_rate": 0.705
+        }
+      }
+    },
+    "metadata_patterns": {
+      "metadata_trades_populated": 1,
+      "by_exit_reason": {
+        "COMPLIANCE_REDUCE": {
+          "trades": 1,
+          "wins": 0,
+          "pnl": -0.0858,
+          "win_rate": 0.0,
+          "expectancy": -0.0858
+        }
+      },
+      "by_strategy": {
+        "RECOVERED": {
+          "trades": 1,
+          "wins": 0,
+          "pnl": -0.0858,
+          "win_rate": 0.0,
+          "expectancy": -0.0858
+        }
+      },
+      "by_regime": {},
+      "by_entropy_bucket": {},
+      "by_conviction_bucket": {}
+    }
+  },
+  "feature_drift": {
+    "drift_detected": false,
+    "details": "Not implemented"
+  },
+  "prediction_error": {
+    "train_rich_mse": 0.0004478913609487141,
+    "train_rich_n_train": 104,
+    "train_rich_n_test": 27,
+    "train_quick_mse": 0.00044777418995972987,
+    "train_quick_n_train": 104,
+    "train_quick_n_test": 27
+  },
+  "retrain_recommended": true,
+  "retrain_reasons": [
+    "Low expectancy in backtest"
+  ]
+}

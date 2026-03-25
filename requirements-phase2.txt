@@ -1,0 +1,8 @@
+# Phase 2: Intelligence & Adaptation Dependencies
+# Install with: pip install -r requirements-phase2.txt
+
+pyzmq>=25.0.0          # ZeroMQ for WFO IPC
+onnx>=1.15.0           # ONNX model format
+onnxruntime>=1.16.0    # ONNX inference (CPU)
+# tf2onnx>=1.16.0      # TensorFlow to ONNX export (optional, for training)
+# tensorflow>=2.15.0   # For model training (optional, CPU-only)

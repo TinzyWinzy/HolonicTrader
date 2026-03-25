@@ -1,0 +1,6 @@
+{
+  "max_position_age_hours": 24,
+  "force_liquidate_stale": true,
+  "max_funding_cost_pct": 0.001,
+  "liquidation_reason": "STALE_POSITION_RECOVERY"
+}

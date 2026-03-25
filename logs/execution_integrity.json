@@ -1,0 +1,4060 @@
+{
+  "entries": [
+    {
+      "sequence_num": 0,
+      "timestamp": "2026-03-15T09:02:34.004026+00:00",
+      "timestamp_ns": 1773565354004023040,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "26e495da19c6ae29c2128bef6406d72bfe4a1d68f70acbdbc8982c639ec00c2a",
+      "entry_hash": "8ea304edb63fa22544cf8508fabbc95e901bdd4fee126e1860fb17a95a9f5ce0"
+    },
+    {
+      "sequence_num": 1,
+      "timestamp": "2026-03-15T09:02:34.012283+00:00",
+      "timestamp_ns": 1773565354012280320,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8ea304edb63fa22544cf8508fabbc95e901bdd4fee126e1860fb17a95a9f5ce0",
+      "entry_hash": "94ced7201b25b3254c4898cf3dbb84e8dc3602dc4f2158e2dbd3414eb50b0c50"
+    },
+    {
+      "sequence_num": 2,
+      "timestamp": "2026-03-15T09:18:16.337650+00:00",
+      "timestamp_ns": 1773566296337647104,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "94ced7201b25b3254c4898cf3dbb84e8dc3602dc4f2158e2dbd3414eb50b0c50",
+      "entry_hash": "8b2297f86276d7c023ce71ec4ed234883cbea496bb4e5b1db60b412a4c7722cc"
+    },
+    {
+      "sequence_num": 3,
+      "timestamp": "2026-03-15T09:18:16.343667+00:00",
+      "timestamp_ns": 1773566296343664640,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8b2297f86276d7c023ce71ec4ed234883cbea496bb4e5b1db60b412a4c7722cc",
+      "entry_hash": "36607ff2f0e2dd990b929cc02cb46bc2171939a32b20a56f85a4035eab892870"
+    },
+    {
+      "sequence_num": 4,
+      "timestamp": "2026-03-15T10:17:06.333774+00:00",
+      "timestamp_ns": 1773569826333772544,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "36607ff2f0e2dd990b929cc02cb46bc2171939a32b20a56f85a4035eab892870",
+      "entry_hash": "04a07cd9019b9991849a7346e07c3810958c722fcb8a58b1c2b29edcbc73c854"
+    },
+    {
+      "sequence_num": 5,
+      "timestamp": "2026-03-15T10:17:06.340179+00:00",
+      "timestamp_ns": 1773569826340176384,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "04a07cd9019b9991849a7346e07c3810958c722fcb8a58b1c2b29edcbc73c854",
+      "entry_hash": "272330355e2e1f5415086bc6e0fad85be18ea64f4b3c95992f7314f88be30f5e"
+    },
+    {
+      "sequence_num": 6,
+      "timestamp": "2026-03-15T10:52:10.240442+00:00",
+      "timestamp_ns": 1773571930240439040,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "272330355e2e1f5415086bc6e0fad85be18ea64f4b3c95992f7314f88be30f5e",
+      "entry_hash": "bc1f79e4d903260fff98748258ea5d1cf4f78aeefecbb48af82e8643613d91b5"
+    },
+    {
+      "sequence_num": 7,
+      "timestamp": "2026-03-15T10:52:10.248006+00:00",
+      "timestamp_ns": 1773571930248002304,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "bc1f79e4d903260fff98748258ea5d1cf4f78aeefecbb48af82e8643613d91b5",
+      "entry_hash": "410e93591535be3f5fe31bfc021fb1814d19a60cf933761a8225a92cb2f62105"
+    },
+    {
+      "sequence_num": 8,
+      "timestamp": "2026-03-15T11:19:42.846052+00:00",
+      "timestamp_ns": 1773573582846049792,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "410e93591535be3f5fe31bfc021fb1814d19a60cf933761a8225a92cb2f62105",
+      "entry_hash": "11bf90896e221c85c8593497f8974f96c358933934e95effabf92332308af938"
+    },
+    {
+      "sequence_num": 9,
+      "timestamp": "2026-03-15T11:19:42.853577+00:00",
+      "timestamp_ns": 1773573582853573888,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "11bf90896e221c85c8593497f8974f96c358933934e95effabf92332308af938",
+      "entry_hash": "2addeb0f4a36f5e4da2d12cce24476c66f6ec8c2e70c73f44788398c00d2cc16"
+    },
+    {
+      "sequence_num": 10,
+      "timestamp": "2026-03-15T11:32:17.042364+00:00",
+      "timestamp_ns": 1773574337042361344,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "2addeb0f4a36f5e4da2d12cce24476c66f6ec8c2e70c73f44788398c00d2cc16",
+      "entry_hash": "4040796297ad94f36ad18a4308d4871066be273208a48ee05da960db184e91ef"
+    },
+    {
+      "sequence_num": 11,
+      "timestamp": "2026-03-15T11:32:17.048592+00:00",
+      "timestamp_ns": 1773574337048589056,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "4040796297ad94f36ad18a4308d4871066be273208a48ee05da960db184e91ef",
+      "entry_hash": "b20bf5de534e1f36a9c54020322712e04564badb47fb47461f61c57e7d8aa26c"
+    },
+    {
+      "sequence_num": 12,
+      "timestamp": "2026-03-15T12:57:16.531776+00:00",
+      "timestamp_ns": 1773579436531773952,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b20bf5de534e1f36a9c54020322712e04564badb47fb47461f61c57e7d8aa26c",
+      "entry_hash": "949c50d1c09e5b3a1a2df6d26ceef4743a7e380a27cdba11331c555a42606660"
+    },
+    {
+      "sequence_num": 13,
+      "timestamp": "2026-03-15T12:57:16.538576+00:00",
+      "timestamp_ns": 1773579436538573568,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "949c50d1c09e5b3a1a2df6d26ceef4743a7e380a27cdba11331c555a42606660",
+      "entry_hash": "448a21f515cbe7034ad1dd25a31350ebb2fb3e984a6a32fb836e24bbd6d7bc7a"
+    },
+    {
+      "sequence_num": 14,
+      "timestamp": "2026-03-15T19:07:14.887320+00:00",
+      "timestamp_ns": 1773601634887317760,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "448a21f515cbe7034ad1dd25a31350ebb2fb3e984a6a32fb836e24bbd6d7bc7a",
+      "entry_hash": "9298ff24ea2fc3f7875258c6efb8b6a3586bef17620bea9e04badcb2f6f59636"
+    },
+    {
+      "sequence_num": 15,
+      "timestamp": "2026-03-15T19:07:14.896151+00:00",
+      "timestamp_ns": 1773601634896148224,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "9298ff24ea2fc3f7875258c6efb8b6a3586bef17620bea9e04badcb2f6f59636",
+      "entry_hash": "fc5259a51a2ff5bf84980e75becdb4719ea6d0119d6299a559dede8f4869b939"
+    },
+    {
+      "sequence_num": 16,
+      "timestamp": "2026-03-15T21:25:26.133410+00:00",
+      "timestamp_ns": 1773609926133408000,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "fc5259a51a2ff5bf84980e75becdb4719ea6d0119d6299a559dede8f4869b939",
+      "entry_hash": "77226be1ca0a05b3c6ce2ed19563a9aee99c933c37e456071a94922f0a371b90"
+    },
+    {
+      "sequence_num": 17,
+      "timestamp": "2026-03-15T21:25:26.140081+00:00",
+      "timestamp_ns": 1773609926140078336,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "77226be1ca0a05b3c6ce2ed19563a9aee99c933c37e456071a94922f0a371b90",
+      "entry_hash": "c029f9d717af235db3206c7d258e43e62b59189aa0f73398b4df11a6db40c9b9"
+    },
+    {
+      "sequence_num": 18,
+      "timestamp": "2026-03-15T21:48:30.882303+00:00",
+      "timestamp_ns": 1773611310882301440,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c029f9d717af235db3206c7d258e43e62b59189aa0f73398b4df11a6db40c9b9",
+      "entry_hash": "ae8267865ca73141ba07781f7015b1a022209d6418e52ec9b6cd12f670b4848b"
+    },
+    {
+      "sequence_num": 19,
+      "timestamp": "2026-03-15T21:48:30.890143+00:00",
+      "timestamp_ns": 1773611310890138624,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ae8267865ca73141ba07781f7015b1a022209d6418e52ec9b6cd12f670b4848b",
+      "entry_hash": "7e7c489013592d8631d4d05dac5669ce4d5053e0809ac7f348bda0f657d0982a"
+    },
+    {
+      "sequence_num": 20,
+      "timestamp": "2026-03-16T06:36:37.868576+00:00",
+      "timestamp_ns": 1773642997868572416,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "7e7c489013592d8631d4d05dac5669ce4d5053e0809ac7f348bda0f657d0982a",
+      "entry_hash": "775fccaa13b7928f9f7e90324d1116876ffa4b59f31205021f91f34465c162f9"
+    },
+    {
+      "sequence_num": 21,
+      "timestamp": "2026-03-16T06:36:37.875868+00:00",
+      "timestamp_ns": 1773642997875862784,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "775fccaa13b7928f9f7e90324d1116876ffa4b59f31205021f91f34465c162f9",
+      "entry_hash": "fdeed382fb45b3a373da93fa227c1b399ea9f0f6b49c4d0b45390a3485f5af23"
+    },
+    {
+      "sequence_num": 22,
+      "timestamp": "2026-03-16T06:54:39.030624+00:00",
+      "timestamp_ns": 1773644079030621184,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "fdeed382fb45b3a373da93fa227c1b399ea9f0f6b49c4d0b45390a3485f5af23",
+      "entry_hash": "ef53ad43fb449c85d611ee3cdf8c19c14b6e8acafd986434bc4b511d632396cf"
+    },
+    {
+      "sequence_num": 23,
+      "timestamp": "2026-03-16T06:54:39.037844+00:00",
+      "timestamp_ns": 1773644079037840384,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ef53ad43fb449c85d611ee3cdf8c19c14b6e8acafd986434bc4b511d632396cf",
+      "entry_hash": "0f7b1cf3f99f00193656aa4ed59df52f87987c1a70fa25616e4e56c32dea894f"
+    },
+    {
+      "sequence_num": 24,
+      "timestamp": "2026-03-16T07:08:08.194293+00:00",
+      "timestamp_ns": 1773644888194290432,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "0f7b1cf3f99f00193656aa4ed59df52f87987c1a70fa25616e4e56c32dea894f",
+      "entry_hash": "73c3dcf701ef942b49905ee901b3e9fabe3d1195781f2a3e912f1a0055bb3105"
+    },
+    {
+      "sequence_num": 25,
+      "timestamp": "2026-03-16T07:08:08.201922+00:00",
+      "timestamp_ns": 1773644888201919232,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "73c3dcf701ef942b49905ee901b3e9fabe3d1195781f2a3e912f1a0055bb3105",
+      "entry_hash": "0fa234bbebab77cff6e8e4e499dfd490a8a45bbeb17b7faf87b047fd267bde5e"
+    },
+    {
+      "sequence_num": 26,
+      "timestamp": "2026-03-16T08:00:39.237214+00:00",
+      "timestamp_ns": 1773648039237212416,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "0fa234bbebab77cff6e8e4e499dfd490a8a45bbeb17b7faf87b047fd267bde5e",
+      "entry_hash": "2ebe85fe0b3464d8b45435f9c76205523c3a85feb2f7ce829df35be7e43e6012"
+    },
+    {
+      "sequence_num": 27,
+      "timestamp": "2026-03-16T08:00:39.245560+00:00",
+      "timestamp_ns": 1773648039245556736,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "2ebe85fe0b3464d8b45435f9c76205523c3a85feb2f7ce829df35be7e43e6012",
+      "entry_hash": "c60214b6bbda7846cec58ce134e4ce9f4ef5a5efb5f6e6b40bb8cd9a639bf0cd"
+    },
+    {
+      "sequence_num": 28,
+      "timestamp": "2026-03-16T16:42:44.271332+00:00",
+      "timestamp_ns": 1773679364271329792,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c60214b6bbda7846cec58ce134e4ce9f4ef5a5efb5f6e6b40bb8cd9a639bf0cd",
+      "entry_hash": "229da80027c087dbeec779ba3dafd296e7860bec0f3ec6ff8d99919b70efe2d6"
+    },
+    {
+      "sequence_num": 29,
+      "timestamp": "2026-03-16T16:42:44.279147+00:00",
+      "timestamp_ns": 1773679364279143424,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "229da80027c087dbeec779ba3dafd296e7860bec0f3ec6ff8d99919b70efe2d6",
+      "entry_hash": "aa960b66d6cb446e6ce739f6196794fd13b8f1f0b32af12b0426d8452b4603b8"
+    },
+    {
+      "sequence_num": 30,
+      "timestamp": "2026-03-16T16:54:14.131944+00:00",
+      "timestamp_ns": 1773680054131941632,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "aa960b66d6cb446e6ce739f6196794fd13b8f1f0b32af12b0426d8452b4603b8",
+      "entry_hash": "cd193341a747097055fb8b1111439c91a9e267e64c51a6029b507ca4c383e7cb"
+    },
+    {
+      "sequence_num": 31,
+      "timestamp": "2026-03-16T16:54:14.140623+00:00",
+      "timestamp_ns": 1773680054140620288,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "cd193341a747097055fb8b1111439c91a9e267e64c51a6029b507ca4c383e7cb",
+      "entry_hash": "93775cbb7339cfcfb7902195238bd9facc3d5073f5bf4181b12379b08c3a79b8"
+    },
+    {
+      "sequence_num": 32,
+      "timestamp": "2026-03-16T17:28:55.143064+00:00",
+      "timestamp_ns": 1773682135143061504,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "93775cbb7339cfcfb7902195238bd9facc3d5073f5bf4181b12379b08c3a79b8",
+      "entry_hash": "9388ab186b8fb1551a8817f93cdb0b3fb09834279afaa380af211172fa57120c"
+    },
+    {
+      "sequence_num": 33,
+      "timestamp": "2026-03-16T17:28:55.150965+00:00",
+      "timestamp_ns": 1773682135150962176,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "9388ab186b8fb1551a8817f93cdb0b3fb09834279afaa380af211172fa57120c",
+      "entry_hash": "3cb6583d22c36cea5a06f5574bd101faa59afd3a893a79eb8abd87442a1052e7"
+    },
+    {
+      "sequence_num": 34,
+      "timestamp": "2026-03-16T18:53:43.148385+00:00",
+      "timestamp_ns": 1773687223148383488,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "3cb6583d22c36cea5a06f5574bd101faa59afd3a893a79eb8abd87442a1052e7",
+      "entry_hash": "ae3a0107b94609b048fb6d583fd81dc1e0392e1f073ce525c5457fad50dcbac3"
+    },
+    {
+      "sequence_num": 35,
+      "timestamp": "2026-03-16T18:53:43.156086+00:00",
+      "timestamp_ns": 1773687223156081920,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ae3a0107b94609b048fb6d583fd81dc1e0392e1f073ce525c5457fad50dcbac3",
+      "entry_hash": "9c4dbb74a4c893c0d812b2096ed23261551044777462920f1a800f45a08f2c4f"
+    },
+    {
+      "sequence_num": 36,
+      "timestamp": "2026-03-17T06:13:35.162717+00:00",
+      "timestamp_ns": 1773728015162715648,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "9c4dbb74a4c893c0d812b2096ed23261551044777462920f1a800f45a08f2c4f",
+      "entry_hash": "b1c393120ac40e4a938d7e03e36401eea02fca8c8c158539f0d4cbba72de6606"
+    },
+    {
+      "sequence_num": 37,
+      "timestamp": "2026-03-17T06:13:35.171217+00:00",
+      "timestamp_ns": 1773728015171212800,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "b1c393120ac40e4a938d7e03e36401eea02fca8c8c158539f0d4cbba72de6606",
+      "entry_hash": "c9baa382c6afa9a0ce3d4046c8a2d96c48fa12a03ce79ad0e9f7dde20de86d88"
+    },
+    {
+      "sequence_num": 38,
+      "timestamp": "2026-03-17T12:22:17.243480+00:00",
+      "timestamp_ns": 1773750137243478272,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c9baa382c6afa9a0ce3d4046c8a2d96c48fa12a03ce79ad0e9f7dde20de86d88",
+      "entry_hash": "2f2e723ea1582e1ad98893c055844a108116cd70d448a5b6f25a6167bf85145e"
+    },
+    {
+      "sequence_num": 39,
+      "timestamp": "2026-03-17T12:22:17.251543+00:00",
+      "timestamp_ns": 1773750137251539968,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "2f2e723ea1582e1ad98893c055844a108116cd70d448a5b6f25a6167bf85145e",
+      "entry_hash": "046730860f31b3086748606b51e058cf14197bbc524b316c3160acb0a0c9e866"
+    },
+    {
+      "sequence_num": 40,
+      "timestamp": "2026-03-17T12:48:32.663868+00:00",
+      "timestamp_ns": 1773751712663866624,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "046730860f31b3086748606b51e058cf14197bbc524b316c3160acb0a0c9e866",
+      "entry_hash": "f8b6fc753a75bf0b07f8026fa2ac81b3b2639c8aa4b3be71d0487482c5af4850"
+    },
+    {
+      "sequence_num": 41,
+      "timestamp": "2026-03-17T12:48:32.672394+00:00",
+      "timestamp_ns": 1773751712672389888,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "f8b6fc753a75bf0b07f8026fa2ac81b3b2639c8aa4b3be71d0487482c5af4850",
+      "entry_hash": "b89f28474037077cd502e360c82081248db28cedf710cd0e5e7ef510e8e41d86"
+    },
+    {
+      "sequence_num": 42,
+      "timestamp": "2026-03-17T12:53:47.286392+00:00",
+      "timestamp_ns": 1773752027286391552,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b89f28474037077cd502e360c82081248db28cedf710cd0e5e7ef510e8e41d86",
+      "entry_hash": "9e095faa2eff715ed0ed7b3af7bcf9ce025339b1423bda23024a8ae2e8c9e491"
+    },
+    {
+      "sequence_num": 43,
+      "timestamp": "2026-03-17T12:53:47.290762+00:00",
+      "timestamp_ns": 1773752027290760960,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "9e095faa2eff715ed0ed7b3af7bcf9ce025339b1423bda23024a8ae2e8c9e491",
+      "entry_hash": "cf0953accffb17eb5d826410cf706546d6b43dd6a63a3d9400db4442c27ffaf7"
+    },
+    {
+      "sequence_num": 44,
+      "timestamp": "2026-03-17T12:56:21.916767+00:00",
+      "timestamp_ns": 1773752181916764672,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "cf0953accffb17eb5d826410cf706546d6b43dd6a63a3d9400db4442c27ffaf7",
+      "entry_hash": "a8722a5312019b092e3e9958fa1fbe9faac969cec5aee5a10b4c7ee2aeb7dd91"
+    },
+    {
+      "sequence_num": 45,
+      "timestamp": "2026-03-17T12:56:21.924743+00:00",
+      "timestamp_ns": 1773752181924738560,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a8722a5312019b092e3e9958fa1fbe9faac969cec5aee5a10b4c7ee2aeb7dd91",
+      "entry_hash": "09bab13ca99a125fefa1a79e1e64ff7c5560d4460d375678f83e802e273b5753"
+    },
+    {
+      "sequence_num": 46,
+      "timestamp": "2026-03-17T13:01:38.252356+00:00",
+      "timestamp_ns": 1773752498252353792,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "09bab13ca99a125fefa1a79e1e64ff7c5560d4460d375678f83e802e273b5753",
+      "entry_hash": "e582cd2f9317d0ee7c42161e29e67c5f4ac1c34b53bad05298df8f5ea37396e8"
+    },
+    {
+      "sequence_num": 47,
+      "timestamp": "2026-03-17T13:01:38.259033+00:00",
+      "timestamp_ns": 1773752498259030016,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "e582cd2f9317d0ee7c42161e29e67c5f4ac1c34b53bad05298df8f5ea37396e8",
+      "entry_hash": "7ea6b0432ec66517401b3156f63149e900da3feadd011b391b742d42a9e047da"
+    },
+    {
+      "sequence_num": 48,
+      "timestamp": "2026-03-17T13:27:14.778074+00:00",
+      "timestamp_ns": 1773754034778071296,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "7ea6b0432ec66517401b3156f63149e900da3feadd011b391b742d42a9e047da",
+      "entry_hash": "5ebf79c19a3f4db1b70557f8e3f67dbed33e406c99dd133d7b777bd852504933"
+    },
+    {
+      "sequence_num": 49,
+      "timestamp": "2026-03-17T13:27:14.786684+00:00",
+      "timestamp_ns": 1773754034786664192,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "5ebf79c19a3f4db1b70557f8e3f67dbed33e406c99dd133d7b777bd852504933",
+      "entry_hash": "a5b7c9d81f0d64f38570657f434c8f23e0057359ecb1ea8d268a5a9f17c26a00"
+    },
+    {
+      "sequence_num": 50,
+      "timestamp": "2026-03-17T16:09:54.075720+00:00",
+      "timestamp_ns": 1773763794075718400,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "a5b7c9d81f0d64f38570657f434c8f23e0057359ecb1ea8d268a5a9f17c26a00",
+      "entry_hash": "f6943af825c1fbb326d05138f9ef5234d67ea51a663a43b000319f06015f3b39"
+    },
+    {
+      "sequence_num": 51,
+      "timestamp": "2026-03-17T16:09:54.083164+00:00",
+      "timestamp_ns": 1773763794083160320,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "f6943af825c1fbb326d05138f9ef5234d67ea51a663a43b000319f06015f3b39",
+      "entry_hash": "1c9aebc739119584431b103c90c157743c70e32ef31d7235813ad5acdf3c94cb"
+    },
+    {
+      "sequence_num": 52,
+      "timestamp": "2026-03-17T17:00:56.861106+00:00",
+      "timestamp_ns": 1773766856861103616,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "1c9aebc739119584431b103c90c157743c70e32ef31d7235813ad5acdf3c94cb",
+      "entry_hash": "8a9d0628f84064a6d3a1671f12d1fd6f91c0232e011fcb26681e870c8aad9038"
+    },
+    {
+      "sequence_num": 53,
+      "timestamp": "2026-03-17T17:00:56.868772+00:00",
+      "timestamp_ns": 1773766856868769024,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8a9d0628f84064a6d3a1671f12d1fd6f91c0232e011fcb26681e870c8aad9038",
+      "entry_hash": "1c5c5165591bc2a39b3885be0468cca0ae1ea52b51724cb181ac6b7dbb240910"
+    },
+    {
+      "sequence_num": 54,
+      "timestamp": "2026-03-17T19:28:29.050147+00:00",
+      "timestamp_ns": 1773775709050143744,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "1c5c5165591bc2a39b3885be0468cca0ae1ea52b51724cb181ac6b7dbb240910",
+      "entry_hash": "84a49209641295263b2c46e56abd23ec0d36eb28480830f1a223c75f4ce34bab"
+    },
+    {
+      "sequence_num": 55,
+      "timestamp": "2026-03-17T19:28:29.059081+00:00",
+      "timestamp_ns": 1773775709059078656,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "84a49209641295263b2c46e56abd23ec0d36eb28480830f1a223c75f4ce34bab",
+      "entry_hash": "453c435c83db5fe20bfd82af8c73abec4455853a65f3a31ff54124c7a78efbbb"
+    },
+    {
+      "sequence_num": 56,
+      "timestamp": "2026-03-17T21:39:38.358387+00:00",
+      "timestamp_ns": 1773783578358384384,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "453c435c83db5fe20bfd82af8c73abec4455853a65f3a31ff54124c7a78efbbb",
+      "entry_hash": "33b0968343f573612daa4e049487200d039d5c0bd370bba088c04c04b29997da"
+    },
+    {
+      "sequence_num": 57,
+      "timestamp": "2026-03-17T21:39:38.370123+00:00",
+      "timestamp_ns": 1773783578370120448,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "33b0968343f573612daa4e049487200d039d5c0bd370bba088c04c04b29997da",
+      "entry_hash": "5827ede7011155e7dd223b52c645ed9a91ed0c7a792662a76d88d997a6f34ac3"
+    },
+    {
+      "sequence_num": 58,
+      "timestamp": "2026-03-17T21:51:37.936017+00:00",
+      "timestamp_ns": 1773784297936014592,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "5827ede7011155e7dd223b52c645ed9a91ed0c7a792662a76d88d997a6f34ac3",
+      "entry_hash": "bc5c18d8725d52497eefafc2eb46cc217177f7fef310f58b6c965fad3eb58658"
+    },
+    {
+      "sequence_num": 59,
+      "timestamp": "2026-03-17T21:51:37.947854+00:00",
+      "timestamp_ns": 1773784297947850240,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "bc5c18d8725d52497eefafc2eb46cc217177f7fef310f58b6c965fad3eb58658",
+      "entry_hash": "bdf43f51c2babac9fc8e2c2f286065498cde4016a89eaf036f76f8938935ae05"
+    },
+    {
+      "sequence_num": 60,
+      "timestamp": "2026-03-17T22:02:36.071995+00:00",
+      "timestamp_ns": 1773784956071992064,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "bdf43f51c2babac9fc8e2c2f286065498cde4016a89eaf036f76f8938935ae05",
+      "entry_hash": "ab98627a031058dd33dbdf8dba49ed73ce9ab536815e7a94f63a85bb316e9b6a"
+    },
+    {
+      "sequence_num": 61,
+      "timestamp": "2026-03-17T22:02:36.082463+00:00",
+      "timestamp_ns": 1773784956082461440,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ab98627a031058dd33dbdf8dba49ed73ce9ab536815e7a94f63a85bb316e9b6a",
+      "entry_hash": "de0cc87ebf7a2083d601e3a49d1bdf79a5834f0d53894e3276ccabf91575c41f"
+    },
+    {
+      "sequence_num": 62,
+      "timestamp": "2026-03-18T07:57:05.489592+00:00",
+      "timestamp_ns": 1773820625489588992,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "de0cc87ebf7a2083d601e3a49d1bdf79a5834f0d53894e3276ccabf91575c41f",
+      "entry_hash": "349f6eeb96088408ab11d92406609b0f8f93f97dc897a7226329d8c07c318c66"
+    },
+    {
+      "sequence_num": 63,
+      "timestamp": "2026-03-18T07:57:05.503586+00:00",
+      "timestamp_ns": 1773820625503581184,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "349f6eeb96088408ab11d92406609b0f8f93f97dc897a7226329d8c07c318c66",
+      "entry_hash": "095d326948a6cc62017f9c6be486239730ccac43d80c1ee225733ba7fa5175a9"
+    },
+    {
+      "sequence_num": 64,
+      "timestamp": "2026-03-18T08:22:48.114420+00:00",
+      "timestamp_ns": 1773822168114417920,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "095d326948a6cc62017f9c6be486239730ccac43d80c1ee225733ba7fa5175a9",
+      "entry_hash": "837ab8d530982e761273742ab221b5feebd6b626998ad23e3a0903167a568e38"
+    },
+    {
+      "sequence_num": 65,
+      "timestamp": "2026-03-18T08:22:48.127159+00:00",
+      "timestamp_ns": 1773822168127156480,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "837ab8d530982e761273742ab221b5feebd6b626998ad23e3a0903167a568e38",
+      "entry_hash": "e2f14c8c61ee790e54ac87c20c6244191898d3c6c6c5f9bd7f3ccd37b26a3c56"
+    },
+    {
+      "sequence_num": 66,
+      "timestamp": "2026-03-18T08:52:44.020474+00:00",
+      "timestamp_ns": 1773823964020470272,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e2f14c8c61ee790e54ac87c20c6244191898d3c6c6c5f9bd7f3ccd37b26a3c56",
+      "entry_hash": "84a4baff303754e5315b24ca27260ad2357c74da99b845a594942e7686a1979d"
+    },
+    {
+      "sequence_num": 67,
+      "timestamp": "2026-03-18T08:52:44.033629+00:00",
+      "timestamp_ns": 1773823964033626368,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "84a4baff303754e5315b24ca27260ad2357c74da99b845a594942e7686a1979d",
+      "entry_hash": "eef61b28382a04e2cc75bd590756ceb6557952fd1b1bc72c669306356573b112"
+    },
+    {
+      "sequence_num": 68,
+      "timestamp": "2026-03-18T09:12:26.757970+00:00",
+      "timestamp_ns": 1773825146757966848,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "eef61b28382a04e2cc75bd590756ceb6557952fd1b1bc72c669306356573b112",
+      "entry_hash": "061f7d00daf6026c10c0f8f84082e833b53da63f1e8bdb1fffb538f59fd1a18b"
+    },
+    {
+      "sequence_num": 69,
+      "timestamp": "2026-03-18T09:12:26.771281+00:00",
+      "timestamp_ns": 1773825146771278592,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "061f7d00daf6026c10c0f8f84082e833b53da63f1e8bdb1fffb538f59fd1a18b",
+      "entry_hash": "ce6af98743f61605b878faad5b32ba635e2afdd534c178ba72d9eacdac10b2af"
+    },
+    {
+      "sequence_num": 70,
+      "timestamp": "2026-03-18T09:56:46.675246+00:00",
+      "timestamp_ns": 1773827806675243264,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "ce6af98743f61605b878faad5b32ba635e2afdd534c178ba72d9eacdac10b2af",
+      "entry_hash": "7ddee9445db931a09ead8034050d43d4d0a5d7c69578dc7822fb8153b3ec239e"
+    },
+    {
+      "sequence_num": 71,
+      "timestamp": "2026-03-18T09:56:46.685644+00:00",
+      "timestamp_ns": 1773827806685641472,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "7ddee9445db931a09ead8034050d43d4d0a5d7c69578dc7822fb8153b3ec239e",
+      "entry_hash": "b828075e49fd8d786516982ba1da87245fdbb561ba23ecc7bd5ba9612da976a0"
+    },
+    {
+      "sequence_num": 72,
+      "timestamp": "2026-03-18T10:02:35.645493+00:00",
+      "timestamp_ns": 1773828155645490176,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b828075e49fd8d786516982ba1da87245fdbb561ba23ecc7bd5ba9612da976a0",
+      "entry_hash": "0c07cc86ebace818c88066628a33865e3ea50e07105b6236130789751d6a5864"
+    },
+    {
+      "sequence_num": 73,
+      "timestamp": "2026-03-18T10:02:35.659136+00:00",
+      "timestamp_ns": 1773828155659131648,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "0c07cc86ebace818c88066628a33865e3ea50e07105b6236130789751d6a5864",
+      "entry_hash": "e9dce537381f8b6dc4b2e16d48b2433bbcea9f63396dc0baed62a1549fcd9d71"
+    },
+    {
+      "sequence_num": 74,
+      "timestamp": "2026-03-18T10:28:11.198260+00:00",
+      "timestamp_ns": 1773829691198257152,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e9dce537381f8b6dc4b2e16d48b2433bbcea9f63396dc0baed62a1549fcd9d71",
+      "entry_hash": "e0432804c9c7717b874f62704b91972c475a321e547b1f06eedf2074f21dab9a"
+    },
+    {
+      "sequence_num": 75,
+      "timestamp": "2026-03-18T10:28:11.210325+00:00",
+      "timestamp_ns": 1773829691210321920,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "e0432804c9c7717b874f62704b91972c475a321e547b1f06eedf2074f21dab9a",
+      "entry_hash": "e9886483653df83999c52a629ba423e1fcded5249377dbdbf0de6752282cd75e"
+    },
+    {
+      "sequence_num": 76,
+      "timestamp": "2026-03-18T11:39:43.319957+00:00",
+      "timestamp_ns": 1773833983319951616,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e9886483653df83999c52a629ba423e1fcded5249377dbdbf0de6752282cd75e",
+      "entry_hash": "449ce751401f09fe0f8bb8ada38af33e1226257496118e69fe4d7833e3d3ce2f"
+    },
+    {
+      "sequence_num": 77,
+      "timestamp": "2026-03-18T11:39:43.339864+00:00",
+      "timestamp_ns": 1773833983339860992,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "449ce751401f09fe0f8bb8ada38af33e1226257496118e69fe4d7833e3d3ce2f",
+      "entry_hash": "b0faceab536c1da4fb16e263c95a044192e5c214d0785c548d92aa5b8acc1d28"
+    },
+    {
+      "sequence_num": 78,
+      "timestamp": "2026-03-18T15:21:14.634939+00:00",
+      "timestamp_ns": 1773847274634937088,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b0faceab536c1da4fb16e263c95a044192e5c214d0785c548d92aa5b8acc1d28",
+      "entry_hash": "b5f71b41d1ae272ffdcdc61749dd9d1d6a5b27b99de69dddd1f73f98c65264a7"
+    },
+    {
+      "sequence_num": 79,
+      "timestamp": "2026-03-18T15:21:14.647383+00:00",
+      "timestamp_ns": 1773847274647379200,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "b5f71b41d1ae272ffdcdc61749dd9d1d6a5b27b99de69dddd1f73f98c65264a7",
+      "entry_hash": "0cb2d0a91458f2c78a26d85461e9a24f99820f2ee6a5a77bb21850552c233871"
+    },
+    {
+      "sequence_num": 80,
+      "timestamp": "2026-03-18T15:38:40.973284+00:00",
+      "timestamp_ns": 1773848320973281792,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "0cb2d0a91458f2c78a26d85461e9a24f99820f2ee6a5a77bb21850552c233871",
+      "entry_hash": "103c4b77b86f14385fedf8d10e20e1924c8aae9e8f01c1ca668b7bb3cdb9500f"
+    },
+    {
+      "sequence_num": 81,
+      "timestamp": "2026-03-18T15:38:40.984131+00:00",
+      "timestamp_ns": 1773848320984127744,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "103c4b77b86f14385fedf8d10e20e1924c8aae9e8f01c1ca668b7bb3cdb9500f",
+      "entry_hash": "f22d1937216d972d77cf7c223d259833ac92627f70c70de17e600b1918f603f6"
+    },
+    {
+      "sequence_num": 82,
+      "timestamp": "2026-03-18T15:50:49.197312+00:00",
+      "timestamp_ns": 1773849049197309184,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "f22d1937216d972d77cf7c223d259833ac92627f70c70de17e600b1918f603f6",
+      "entry_hash": "560335b7aaf6de7ffa1108f92995702f6917e7e214326e5e4df37549e22a5f1a"
+    },
+    {
+      "sequence_num": 83,
+      "timestamp": "2026-03-18T15:50:49.210213+00:00",
+      "timestamp_ns": 1773849049210209024,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "560335b7aaf6de7ffa1108f92995702f6917e7e214326e5e4df37549e22a5f1a",
+      "entry_hash": "8857e08344b61d4af7de2d4af815470720f333de8ee433d5143368bf50cbb294"
+    },
+    {
+      "sequence_num": 84,
+      "timestamp": "2026-03-18T17:33:34.660351+00:00",
+      "timestamp_ns": 1773855214660348928,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "8857e08344b61d4af7de2d4af815470720f333de8ee433d5143368bf50cbb294",
+      "entry_hash": "01f4419d07644ee7c3fa1ba7990bc537e3b42ebbeacb51c9629cfc7d1e726219"
+    },
+    {
+      "sequence_num": 85,
+      "timestamp": "2026-03-18T17:33:34.671644+00:00",
+      "timestamp_ns": 1773855214671640064,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "01f4419d07644ee7c3fa1ba7990bc537e3b42ebbeacb51c9629cfc7d1e726219",
+      "entry_hash": "af9528572331ab5383069cc66e1c929fe7f33045c3b4b8ff1d238bf6cdd5ac01"
+    },
+    {
+      "sequence_num": 86,
+      "timestamp": "2026-03-18T20:28:56.863746+00:00",
+      "timestamp_ns": 1773865736863743232,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "af9528572331ab5383069cc66e1c929fe7f33045c3b4b8ff1d238bf6cdd5ac01",
+      "entry_hash": "78908515aa049184bc05b97c1a9400143a9620c479bff5d2f3a7006b94797d57"
+    },
+    {
+      "sequence_num": 87,
+      "timestamp": "2026-03-18T20:28:56.884918+00:00",
+      "timestamp_ns": 1773865736884913408,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "78908515aa049184bc05b97c1a9400143a9620c479bff5d2f3a7006b94797d57",
+      "entry_hash": "aa04b269942f7ff226b010fff5ff8c12e76cb00e5d775319229a3effd4f84b18"
+    },
+    {
+      "sequence_num": 88,
+      "timestamp": "2026-03-18T21:26:42.391950+00:00",
+      "timestamp_ns": 1773869202391947776,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "aa04b269942f7ff226b010fff5ff8c12e76cb00e5d775319229a3effd4f84b18",
+      "entry_hash": "0ee87589cdecacd4d4d2f62f32c55575321e4581bc4c66e461095eb5fb101dcb"
+    },
+    {
+      "sequence_num": 89,
+      "timestamp": "2026-03-18T21:26:42.403170+00:00",
+      "timestamp_ns": 1773869202403165952,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "0ee87589cdecacd4d4d2f62f32c55575321e4581bc4c66e461095eb5fb101dcb",
+      "entry_hash": "6c065ccb6a84d8f7b068d334a6f8225af26cd6a47bb5acde6f2b2bd618071b99"
+    },
+    {
+      "sequence_num": 90,
+      "timestamp": "2026-03-18T21:29:27.469028+00:00",
+      "timestamp_ns": 1773869367469025536,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "6c065ccb6a84d8f7b068d334a6f8225af26cd6a47bb5acde6f2b2bd618071b99",
+      "entry_hash": "69145d6ec6032dccb89505565d3f33612b03a05021c6a9f099c3825bf9e19f87"
+    },
+    {
+      "sequence_num": 91,
+      "timestamp": "2026-03-18T21:29:27.482476+00:00",
+      "timestamp_ns": 1773869367482472704,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "69145d6ec6032dccb89505565d3f33612b03a05021c6a9f099c3825bf9e19f87",
+      "entry_hash": "4b1261e027281e5eea3d21edbc74584930f2bd16e2be769946bb34d24126ed38"
+    },
+    {
+      "sequence_num": 92,
+      "timestamp": "2026-03-18T21:50:51.935819+00:00",
+      "timestamp_ns": 1773870651935816448,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "4b1261e027281e5eea3d21edbc74584930f2bd16e2be769946bb34d24126ed38",
+      "entry_hash": "ef5e6972a03d6996b8ac8827b5ab520ccfcbc98fdca0be2baa83f68ffaa70f26"
+    },
+    {
+      "sequence_num": 93,
+      "timestamp": "2026-03-18T21:50:51.949951+00:00",
+      "timestamp_ns": 1773870651949949184,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ef5e6972a03d6996b8ac8827b5ab520ccfcbc98fdca0be2baa83f68ffaa70f26",
+      "entry_hash": "aad6901476a7ba2e89c89f102d626d373afdaff005d1385f9814d70b09de00a9"
+    },
+    {
+      "sequence_num": 94,
+      "timestamp": "2026-03-18T21:53:11.128238+00:00",
+      "timestamp_ns": 1773870791128230400,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "aad6901476a7ba2e89c89f102d626d373afdaff005d1385f9814d70b09de00a9",
+      "entry_hash": "6706b3acd4d0f86adef135b65c4c0c18342d6c4b45eb9789630d502a1e6ddc93"
+    },
+    {
+      "sequence_num": 95,
+      "timestamp": "2026-03-18T21:53:11.140858+00:00",
+      "timestamp_ns": 1773870791140856320,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "6706b3acd4d0f86adef135b65c4c0c18342d6c4b45eb9789630d502a1e6ddc93",
+      "entry_hash": "77a2886c034be304afaa3f52a4d956a2d330363f40ea6a21cf3a3f27e1c6cc6a"
+    },
+    {
+      "sequence_num": 96,
+      "timestamp": "2026-03-19T06:19:40.087543+00:00",
+      "timestamp_ns": 1773901180087540736,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "77a2886c034be304afaa3f52a4d956a2d330363f40ea6a21cf3a3f27e1c6cc6a",
+      "entry_hash": "a02e7fa402d4d9d17ae19d63b4000c38ebade960d028926adcd139d27ad7c32f"
+    },
+    {
+      "sequence_num": 97,
+      "timestamp": "2026-03-19T06:19:40.099492+00:00",
+      "timestamp_ns": 1773901180099486976,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a02e7fa402d4d9d17ae19d63b4000c38ebade960d028926adcd139d27ad7c32f",
+      "entry_hash": "c6193cf897fbdc9247e0803abe10a2dfa3ef870e1c1c1fd073f9030a4cc92a4b"
+    },
+    {
+      "sequence_num": 98,
+      "timestamp": "2026-03-19T06:43:56.589090+00:00",
+      "timestamp_ns": 1773902636589084928,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c6193cf897fbdc9247e0803abe10a2dfa3ef870e1c1c1fd073f9030a4cc92a4b",
+      "entry_hash": "19e247a24dac4499795852f8264a1a35bbcf6f8bd68fdd7a01000425dd8aed43"
+    },
+    {
+      "sequence_num": 99,
+      "timestamp": "2026-03-19T06:43:56.602393+00:00",
+      "timestamp_ns": 1773902636602388224,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "19e247a24dac4499795852f8264a1a35bbcf6f8bd68fdd7a01000425dd8aed43",
+      "entry_hash": "c89a6039207b172907cbf0500ad94464cdd330d68c47b19116bc9e5f081703ce"
+    },
+    {
+      "sequence_num": 100,
+      "timestamp": "2026-03-19T07:20:08.422374+00:00",
+      "timestamp_ns": 1773904808422370816,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c89a6039207b172907cbf0500ad94464cdd330d68c47b19116bc9e5f081703ce",
+      "entry_hash": "57c08d7af399fa6daa9b3e218fdfe38acf20e492ceaf6c36d84c09243e3b6b38"
+    },
+    {
+      "sequence_num": 101,
+      "timestamp": "2026-03-19T07:20:08.436504+00:00",
+      "timestamp_ns": 1773904808436497920,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "57c08d7af399fa6daa9b3e218fdfe38acf20e492ceaf6c36d84c09243e3b6b38",
+      "entry_hash": "b2b75e4c5155256ad9f06020e259cf01f75da389dc84a574f7f78b3fb4a42721"
+    },
+    {
+      "sequence_num": 102,
+      "timestamp": "2026-03-19T07:34:38.740627+00:00",
+      "timestamp_ns": 1773905678740622080,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b2b75e4c5155256ad9f06020e259cf01f75da389dc84a574f7f78b3fb4a42721",
+      "entry_hash": "1b3bbc76730518d7d0cc5e6b404c6a46dff3b06ae278a6e6a4b013349d7a569f"
+    },
+    {
+      "sequence_num": 103,
+      "timestamp": "2026-03-19T07:34:38.753231+00:00",
+      "timestamp_ns": 1773905678753226496,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "1b3bbc76730518d7d0cc5e6b404c6a46dff3b06ae278a6e6a4b013349d7a569f",
+      "entry_hash": "1c48d637a7f39cad2e1fb26dede10e786c495beebfca2330e671f86d8c5e2a2b"
+    },
+    {
+      "sequence_num": 104,
+      "timestamp": "2026-03-19T07:48:01.246375+00:00",
+      "timestamp_ns": 1773906481246372096,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "1c48d637a7f39cad2e1fb26dede10e786c495beebfca2330e671f86d8c5e2a2b",
+      "entry_hash": "c0afad4081e2a5606b41d01649fa7481dfead9cd41da8bd22a1415cc1ded5f2b"
+    },
+    {
+      "sequence_num": 105,
+      "timestamp": "2026-03-19T07:48:01.261899+00:00",
+      "timestamp_ns": 1773906481261894400,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c0afad4081e2a5606b41d01649fa7481dfead9cd41da8bd22a1415cc1ded5f2b",
+      "entry_hash": "b143f146b2d10ad3093abccdf3654025f5cf555395e72f94c6f7a975d5e16a2f"
+    },
+    {
+      "sequence_num": 106,
+      "timestamp": "2026-03-19T08:38:46.668798+00:00",
+      "timestamp_ns": 1773909526668795648,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b143f146b2d10ad3093abccdf3654025f5cf555395e72f94c6f7a975d5e16a2f",
+      "entry_hash": "8a3deadbd843539eece80f3bcfd9e1d6e41f6e18826fb9eedf9cea35b7709157"
+    },
+    {
+      "sequence_num": 107,
+      "timestamp": "2026-03-19T08:38:46.681014+00:00",
+      "timestamp_ns": 1773909526681010176,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8a3deadbd843539eece80f3bcfd9e1d6e41f6e18826fb9eedf9cea35b7709157",
+      "entry_hash": "00aaa68ed389b5861df8f916970461db92bf71d0f8f6487415aac8f357c1ac0b"
+    },
+    {
+      "sequence_num": 108,
+      "timestamp": "2026-03-19T09:10:36.167893+00:00",
+      "timestamp_ns": 1773911436167890688,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "00aaa68ed389b5861df8f916970461db92bf71d0f8f6487415aac8f357c1ac0b",
+      "entry_hash": "fe45419b466c3c2af318d9fbfee0febe836284c0930db9e2b2edde7af2a8830a"
+    },
+    {
+      "sequence_num": 109,
+      "timestamp": "2026-03-19T09:10:36.180530+00:00",
+      "timestamp_ns": 1773911436180526848,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "fe45419b466c3c2af318d9fbfee0febe836284c0930db9e2b2edde7af2a8830a",
+      "entry_hash": "40d72581a8b221c43b2fb16e48a295270c5baba792faaea434ea06567a5c7c4a"
+    },
+    {
+      "sequence_num": 110,
+      "timestamp": "2026-03-19T10:28:21.821520+00:00",
+      "timestamp_ns": 1773916101821518848,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "40d72581a8b221c43b2fb16e48a295270c5baba792faaea434ea06567a5c7c4a",
+      "entry_hash": "0ddd33236aa1a1a4226b8c204adb4af915deb083ea65d33e3f1d08f3829651e0"
+    },
+    {
+      "sequence_num": 111,
+      "timestamp": "2026-03-19T10:28:21.836666+00:00",
+      "timestamp_ns": 1773916101836662016,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "0ddd33236aa1a1a4226b8c204adb4af915deb083ea65d33e3f1d08f3829651e0",
+      "entry_hash": "3ae10d7c1aabc1e4cee6bb822b8645f84a2beabdceb245299468b052cc579719"
+    },
+    {
+      "sequence_num": 112,
+      "timestamp": "2026-03-19T11:19:43.870048+00:00",
+      "timestamp_ns": 1773919183870042880,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "3ae10d7c1aabc1e4cee6bb822b8645f84a2beabdceb245299468b052cc579719",
+      "entry_hash": "8e6693bb15dad96327272fe5a9ec0bc174123006082792c1041df9c7b9a3918c"
+    },
+    {
+      "sequence_num": 113,
+      "timestamp": "2026-03-19T11:19:43.883116+00:00",
+      "timestamp_ns": 1773919183883111680,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8e6693bb15dad96327272fe5a9ec0bc174123006082792c1041df9c7b9a3918c",
+      "entry_hash": "11424982151bd1b7598a0809bc9eb788f69d8bc5717329748444e2988e7b03fa"
+    },
+    {
+      "sequence_num": 114,
+      "timestamp": "2026-03-19T11:53:41.903856+00:00",
+      "timestamp_ns": 1773921221903811840,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "11424982151bd1b7598a0809bc9eb788f69d8bc5717329748444e2988e7b03fa",
+      "entry_hash": "f4b6b4549b8f3865ff4ef2fff5fc8c2b469d7b2315fa5d3c41925db620ef0a2a"
+    },
+    {
+      "sequence_num": 115,
+      "timestamp": "2026-03-19T11:53:41.918505+00:00",
+      "timestamp_ns": 1773921221918502400,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "f4b6b4549b8f3865ff4ef2fff5fc8c2b469d7b2315fa5d3c41925db620ef0a2a",
+      "entry_hash": "11ab0acfe3815e2cec8a230d0600f76a24d8843109a70adfc9b3cf3f6b8690fe"
+    },
+    {
+      "sequence_num": 116,
+      "timestamp": "2026-03-19T12:48:29.105458+00:00",
+      "timestamp_ns": 1773924509105455104,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "11ab0acfe3815e2cec8a230d0600f76a24d8843109a70adfc9b3cf3f6b8690fe",
+      "entry_hash": "512c76deaf25f8ea61060870f8765ac34036434b49f9a9e2c54e5f6fe82700c9"
+    },
+    {
+      "sequence_num": 117,
+      "timestamp": "2026-03-19T12:48:29.119006+00:00",
+      "timestamp_ns": 1773924509119002624,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "512c76deaf25f8ea61060870f8765ac34036434b49f9a9e2c54e5f6fe82700c9",
+      "entry_hash": "cb51b36b60630dcf444cf2dd069c4124dfd33a019d0fa79c7261d5ec62af65e7"
+    },
+    {
+      "sequence_num": 118,
+      "timestamp": "2026-03-19T13:11:33.079323+00:00",
+      "timestamp_ns": 1773925893079318784,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "cb51b36b60630dcf444cf2dd069c4124dfd33a019d0fa79c7261d5ec62af65e7",
+      "entry_hash": "c9f11c2e3586c24fbd3e4c3dd9b1ba242bd503f9fb4cee388df2e01af5cf9ed5"
+    },
+    {
+      "sequence_num": 119,
+      "timestamp": "2026-03-19T13:11:33.094618+00:00",
+      "timestamp_ns": 1773925893094613504,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c9f11c2e3586c24fbd3e4c3dd9b1ba242bd503f9fb4cee388df2e01af5cf9ed5",
+      "entry_hash": "30fc3ef80cb2541f747a840846d4330523507c49682dab4b602b9d39a256f073"
+    },
+    {
+      "sequence_num": 120,
+      "timestamp": "2026-03-19T14:22:19.474136+00:00",
+      "timestamp_ns": 1773930139474134528,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "30fc3ef80cb2541f747a840846d4330523507c49682dab4b602b9d39a256f073",
+      "entry_hash": "1f6d0e4e41b77f8fa00619acaa98bd5472b1c70a79de039f2bf202a87d686628"
+    },
+    {
+      "sequence_num": 121,
+      "timestamp": "2026-03-19T14:22:19.488067+00:00",
+      "timestamp_ns": 1773930139488064512,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "1f6d0e4e41b77f8fa00619acaa98bd5472b1c70a79de039f2bf202a87d686628",
+      "entry_hash": "e38ed4afef207fdb392cdb7c07996ed91767248d41751fc5d0add36f498efb73"
+    },
+    {
+      "sequence_num": 122,
+      "timestamp": "2026-03-19T14:51:41.580621+00:00",
+      "timestamp_ns": 1773931901580618240,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e38ed4afef207fdb392cdb7c07996ed91767248d41751fc5d0add36f498efb73",
+      "entry_hash": "bba0b23c7d541aa376580988e4a0e3cbc7b5bd8387593eeb3ca467b6289d0ef7"
+    },
+    {
+      "sequence_num": 123,
+      "timestamp": "2026-03-19T14:51:41.596619+00:00",
+      "timestamp_ns": 1773931901596614912,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "bba0b23c7d541aa376580988e4a0e3cbc7b5bd8387593eeb3ca467b6289d0ef7",
+      "entry_hash": "490cef38bc312a51666093dd2933044076bf16649a27bbb489a9a9c00d0b7086"
+    },
+    {
+      "sequence_num": 124,
+      "timestamp": "2026-03-19T17:44:30.028115+00:00",
+      "timestamp_ns": 1773942270028109568,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "490cef38bc312a51666093dd2933044076bf16649a27bbb489a9a9c00d0b7086",
+      "entry_hash": "7e9a89caf9ea8ec79f78058f8b4ddb6d4c6882c12442ad0094ff0ae9fa2ad506"
+    },
+    {
+      "sequence_num": 125,
+      "timestamp": "2026-03-19T17:44:30.051303+00:00",
+      "timestamp_ns": 1773942270051299328,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "7e9a89caf9ea8ec79f78058f8b4ddb6d4c6882c12442ad0094ff0ae9fa2ad506",
+      "entry_hash": "6e40d5d160d5805488a194dd9ad0dcf8ccd6f05471b522cd9c223d7ab01ccb53"
+    },
+    {
+      "sequence_num": 126,
+      "timestamp": "2026-03-19T18:14:16.381524+00:00",
+      "timestamp_ns": 1773944056381508864,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "6e40d5d160d5805488a194dd9ad0dcf8ccd6f05471b522cd9c223d7ab01ccb53",
+      "entry_hash": "e62a3075b40a4057f466fce8bee1f3ce4d92f7151355a00b0536a6511fc406fc"
+    },
+    {
+      "sequence_num": 127,
+      "timestamp": "2026-03-19T18:14:16.397235+00:00",
+      "timestamp_ns": 1773944056397232128,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "e62a3075b40a4057f466fce8bee1f3ce4d92f7151355a00b0536a6511fc406fc",
+      "entry_hash": "0f52922c7831ff3cc85478fe73cd8daf56a3f848c0ea993eea93da0c7eafa859"
+    },
+    {
+      "sequence_num": 128,
+      "timestamp": "2026-03-19T19:34:55.047926+00:00",
+      "timestamp_ns": 1773948895047924224,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "0f52922c7831ff3cc85478fe73cd8daf56a3f848c0ea993eea93da0c7eafa859",
+      "entry_hash": "1af7615831c7949dea87c2aa411283bc7bff35eeca3445162e50c32595b67fee"
+    },
+    {
+      "sequence_num": 129,
+      "timestamp": "2026-03-19T19:34:55.061007+00:00",
+      "timestamp_ns": 1773948895061003008,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "1af7615831c7949dea87c2aa411283bc7bff35eeca3445162e50c32595b67fee",
+      "entry_hash": "cce4c8202e91aa1902640c5bf7330bb1d10c82a5e7e2c6fdbb07672225891a19"
+    },
+    {
+      "sequence_num": 130,
+      "timestamp": "2026-03-19T19:48:48.018010+00:00",
+      "timestamp_ns": 1773949728018007808,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "cce4c8202e91aa1902640c5bf7330bb1d10c82a5e7e2c6fdbb07672225891a19",
+      "entry_hash": "63b1689ec91dca86d5b36f10121f629c1e7702375feabe4d795414242b3c60ed"
+    },
+    {
+      "sequence_num": 131,
+      "timestamp": "2026-03-19T19:48:48.033621+00:00",
+      "timestamp_ns": 1773949728033617152,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "63b1689ec91dca86d5b36f10121f629c1e7702375feabe4d795414242b3c60ed",
+      "entry_hash": "e32e1233c79e681bfc34f771322487b49f35b60c1c81c70da85031d177e8e9e8"
+    },
+    {
+      "sequence_num": 132,
+      "timestamp": "2026-03-20T09:27:19.628786+00:00",
+      "timestamp_ns": 1773998839628784896,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e32e1233c79e681bfc34f771322487b49f35b60c1c81c70da85031d177e8e9e8",
+      "entry_hash": "d14e02ee423c7fabd02feedca88a6479f9901e485afc096966bdb8a1f65f9173"
+    },
+    {
+      "sequence_num": 133,
+      "timestamp": "2026-03-20T09:27:19.642099+00:00",
+      "timestamp_ns": 1773998839642096384,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "d14e02ee423c7fabd02feedca88a6479f9901e485afc096966bdb8a1f65f9173",
+      "entry_hash": "f53ba01e6f0d8d8da1ca6ea64ea11d694cf102edfb244f5f918f58ccd075a6e1"
+    },
+    {
+      "sequence_num": 134,
+      "timestamp": "2026-03-20T10:04:16.515909+00:00",
+      "timestamp_ns": 1774001056515906304,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "f53ba01e6f0d8d8da1ca6ea64ea11d694cf102edfb244f5f918f58ccd075a6e1",
+      "entry_hash": "7de4e2c1d382b57894098bb1903dabca41826fac1fc585c88bfca13a71d34ea5"
+    },
+    {
+      "sequence_num": 135,
+      "timestamp": "2026-03-20T10:04:16.528190+00:00",
+      "timestamp_ns": 1774001056528186368,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "7de4e2c1d382b57894098bb1903dabca41826fac1fc585c88bfca13a71d34ea5",
+      "entry_hash": "9edef82c9fd5cfe2f286e3083e526374d4b8bea3d02bfce55e252db7814e8de9"
+    },
+    {
+      "sequence_num": 136,
+      "timestamp": "2026-03-20T10:36:46.699896+00:00",
+      "timestamp_ns": 1774003006699894528,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "9edef82c9fd5cfe2f286e3083e526374d4b8bea3d02bfce55e252db7814e8de9",
+      "entry_hash": "ae7924460f1579fe89ae1967359b49c9cc342196fa2e3f73a1cd9eeae6ecfb8d"
+    },
+    {
+      "sequence_num": 137,
+      "timestamp": "2026-03-20T10:36:46.713611+00:00",
+      "timestamp_ns": 1774003006713607936,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "ae7924460f1579fe89ae1967359b49c9cc342196fa2e3f73a1cd9eeae6ecfb8d",
+      "entry_hash": "9a9d5960d48d5533eee70e4c7e432005424056e6746858e2922784fc73a2ee09"
+    },
+    {
+      "sequence_num": 138,
+      "timestamp": "2026-03-20T14:20:33.973927+00:00",
+      "timestamp_ns": 1774016433973925120,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "9a9d5960d48d5533eee70e4c7e432005424056e6746858e2922784fc73a2ee09",
+      "entry_hash": "c916f869596432fc5ace3dae627018820ae14f78deab6fbb253a5a9df3cbc681"
+    },
+    {
+      "sequence_num": 139,
+      "timestamp": "2026-03-20T14:20:33.993807+00:00",
+      "timestamp_ns": 1774016433993803520,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c916f869596432fc5ace3dae627018820ae14f78deab6fbb253a5a9df3cbc681",
+      "entry_hash": "b99e5bee22158e16e930940099ebfbc2d3762ac1068e528ffaf969b81aa11462"
+    },
+    {
+      "sequence_num": 140,
+      "timestamp": "2026-03-20T15:17:48.800043+00:00",
+      "timestamp_ns": 1774019868800041216,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b99e5bee22158e16e930940099ebfbc2d3762ac1068e528ffaf969b81aa11462",
+      "entry_hash": "c461efc5c81ffe963c15e2a7718cdc3a2b2090eae493f8a625a53140f9cc79f6"
+    },
+    {
+      "sequence_num": 141,
+      "timestamp": "2026-03-20T15:17:48.813132+00:00",
+      "timestamp_ns": 1774019868813129472,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c461efc5c81ffe963c15e2a7718cdc3a2b2090eae493f8a625a53140f9cc79f6",
+      "entry_hash": "924457409115931c801df24a3b90ef820c8d79ae2df23f832785a6afbe6ae743"
+    },
+    {
+      "sequence_num": 142,
+      "timestamp": "2026-03-20T16:29:14.742220+00:00",
+      "timestamp_ns": 1774024154742216448,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "924457409115931c801df24a3b90ef820c8d79ae2df23f832785a6afbe6ae743",
+      "entry_hash": "cbab1c98c745cef75b900b51fb6cacf4d98ea6c6b6118676448615599487562d"
+    },
+    {
+      "sequence_num": 143,
+      "timestamp": "2026-03-20T16:29:14.755310+00:00",
+      "timestamp_ns": 1774024154755307520,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "cbab1c98c745cef75b900b51fb6cacf4d98ea6c6b6118676448615599487562d",
+      "entry_hash": "b2859b531ead5092b07be7c59ea67e54ea58c5a7e93f32141f5759b335bcfac7"
+    },
+    {
+      "sequence_num": 144,
+      "timestamp": "2026-03-20T19:17:05.360396+00:00",
+      "timestamp_ns": 1774034225360393472,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b2859b531ead5092b07be7c59ea67e54ea58c5a7e93f32141f5759b335bcfac7",
+      "entry_hash": "a37dcf68cce553c49c04d59b039e077000b036adfd2359c4b20037affd90167c"
+    },
+    {
+      "sequence_num": 145,
+      "timestamp": "2026-03-20T19:17:05.372513+00:00",
+      "timestamp_ns": 1774034225372494848,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a37dcf68cce553c49c04d59b039e077000b036adfd2359c4b20037affd90167c",
+      "entry_hash": "ca250d86199fc526000b8c401039e6a792ca930cd47b9bbac466694e27bd8626"
+    },
+    {
+      "sequence_num": 146,
+      "timestamp": "2026-03-20T21:10:45.910976+00:00",
+      "timestamp_ns": 1774041045910973696,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "ca250d86199fc526000b8c401039e6a792ca930cd47b9bbac466694e27bd8626",
+      "entry_hash": "38b501ce325987c095bf0f94f15a627ca8a8e5e7a684716ddcc00a2c52269dbe"
+    },
+    {
+      "sequence_num": 147,
+      "timestamp": "2026-03-20T21:10:45.923922+00:00",
+      "timestamp_ns": 1774041045923920384,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "38b501ce325987c095bf0f94f15a627ca8a8e5e7a684716ddcc00a2c52269dbe",
+      "entry_hash": "d3b14cd13c8080de9011ad56632b8c20a6056209ae5b1722c57144624e19980b"
+    },
+    {
+      "sequence_num": 148,
+      "timestamp": "2026-03-20T21:36:12.256447+00:00",
+      "timestamp_ns": 1774042572256444416,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "d3b14cd13c8080de9011ad56632b8c20a6056209ae5b1722c57144624e19980b",
+      "entry_hash": "7e9ebddac76a35b99240560334acef71cd33b881d78550ac7a28bacfeef10350"
+    },
+    {
+      "sequence_num": 149,
+      "timestamp": "2026-03-20T21:36:12.272074+00:00",
+      "timestamp_ns": 1774042572272071168,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "7e9ebddac76a35b99240560334acef71cd33b881d78550ac7a28bacfeef10350",
+      "entry_hash": "922f3ecd387746689b038b447c9237f9493dd5a618f8956882022c7fe132cc28"
+    },
+    {
+      "sequence_num": 150,
+      "timestamp": "2026-03-20T23:26:15.288009+00:00",
+      "timestamp_ns": 1774049175288004608,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "922f3ecd387746689b038b447c9237f9493dd5a618f8956882022c7fe132cc28",
+      "entry_hash": "c3ae4f9f93e0142811c9d7e1814c5720d9a0506672024b3c932407f4881623a7"
+    },
+    {
+      "sequence_num": 151,
+      "timestamp": "2026-03-20T23:26:15.307739+00:00",
+      "timestamp_ns": 1774049175307733760,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c3ae4f9f93e0142811c9d7e1814c5720d9a0506672024b3c932407f4881623a7",
+      "entry_hash": "ae2d84f43aef4accfbc2438bf248daddb3bb7651184ddf880907248f7a256c17"
+    },
+    {
+      "sequence_num": 152,
+      "timestamp": "2026-03-20T23:58:42.347242+00:00",
+      "timestamp_ns": 1774051122347237376,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "ae2d84f43aef4accfbc2438bf248daddb3bb7651184ddf880907248f7a256c17",
+      "entry_hash": "30b2f3aec41bf2bbec297a239172a21f7365112b197467cdf065a06799cf7dc8"
+    },
+    {
+      "sequence_num": 153,
+      "timestamp": "2026-03-20T23:58:42.369982+00:00",
+      "timestamp_ns": 1774051122369979136,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "30b2f3aec41bf2bbec297a239172a21f7365112b197467cdf065a06799cf7dc8",
+      "entry_hash": "c8ea7afd2ade2fd2ca162392f7714e61277241506bc2f77a30d2e591435dfbf2"
+    },
+    {
+      "sequence_num": 154,
+      "timestamp": "2026-03-21T00:25:58.556973+00:00",
+      "timestamp_ns": 1774052758556969472,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "c8ea7afd2ade2fd2ca162392f7714e61277241506bc2f77a30d2e591435dfbf2",
+      "entry_hash": "62fd41a466073ea9d84c6b23fcec594452db60e1c885eee85944e4c8e5075ba9"
+    },
+    {
+      "sequence_num": 155,
+      "timestamp": "2026-03-21T00:25:58.574821+00:00",
+      "timestamp_ns": 1774052758574816512,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "62fd41a466073ea9d84c6b23fcec594452db60e1c885eee85944e4c8e5075ba9",
+      "entry_hash": "5178e4a6040f303dc73de9aaeb15bfe274c987a0765506d5b675d08205c0c5c6"
+    },
+    {
+      "sequence_num": 156,
+      "timestamp": "2026-03-21T08:06:10.416455+00:00",
+      "timestamp_ns": 1774080370416448000,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "5178e4a6040f303dc73de9aaeb15bfe274c987a0765506d5b675d08205c0c5c6",
+      "entry_hash": "c536020435cd3e177d855c740b384d9f0c1c22868aa341b39caa95835ff278f9"
+    },
+    {
+      "sequence_num": 157,
+      "timestamp": "2026-03-21T08:06:10.438439+00:00",
+      "timestamp_ns": 1774080370438432768,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c536020435cd3e177d855c740b384d9f0c1c22868aa341b39caa95835ff278f9",
+      "entry_hash": "e64483fcf3d90c95cc9f7144bbc7a881d46565a6e35473d42c311f636eb6ce9c"
+    },
+    {
+      "sequence_num": 158,
+      "timestamp": "2026-03-21T20:18:22.759034+00:00",
+      "timestamp_ns": 1774124302759028992,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e64483fcf3d90c95cc9f7144bbc7a881d46565a6e35473d42c311f636eb6ce9c",
+      "entry_hash": "a78bc5b2e253d81acc720c2854007dff3541ee820cd3be89f20ffbf5a7db17b9"
+    },
+    {
+      "sequence_num": 159,
+      "timestamp": "2026-03-21T20:18:22.786752+00:00",
+      "timestamp_ns": 1774124302786748928,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a78bc5b2e253d81acc720c2854007dff3541ee820cd3be89f20ffbf5a7db17b9",
+      "entry_hash": "05045396a68fd84642e8eff7c76996b229da6b7db484587790d110918869b430"
+    },
+    {
+      "sequence_num": 160,
+      "timestamp": "2026-03-21T22:04:29.108295+00:00",
+      "timestamp_ns": 1774130669108292864,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "05045396a68fd84642e8eff7c76996b229da6b7db484587790d110918869b430",
+      "entry_hash": "857e728920d296d0ac51c926c42af8a245bcc88e2e79fe9a44d624e3b3dbf302"
+    },
+    {
+      "sequence_num": 161,
+      "timestamp": "2026-03-21T22:04:29.274188+00:00",
+      "timestamp_ns": 1774130669274183936,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "857e728920d296d0ac51c926c42af8a245bcc88e2e79fe9a44d624e3b3dbf302",
+      "entry_hash": "e1ccaefef76d1662d4a3b3fb38e27cd80a90595edff47f0104fdd25a2e43bd85"
+    },
+    {
+      "sequence_num": 162,
+      "timestamp": "2026-03-21T22:43:37.100797+00:00",
+      "timestamp_ns": 1774133017100792832,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "e1ccaefef76d1662d4a3b3fb38e27cd80a90595edff47f0104fdd25a2e43bd85",
+      "entry_hash": "41756e48cc1dc90b1b32baaa5b3f23cadda070884dce1f53804bb95ddc9d70dd"
+    },
+    {
+      "sequence_num": 163,
+      "timestamp": "2026-03-21T22:43:37.238266+00:00",
+      "timestamp_ns": 1774133017238262272,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "41756e48cc1dc90b1b32baaa5b3f23cadda070884dce1f53804bb95ddc9d70dd",
+      "entry_hash": "ccb4f1c1775e62ab089fb77dd337682a1f788e5096a771435e939a88abf77dc9"
+    },
+    {
+      "sequence_num": 164,
+      "timestamp": "2026-03-21T22:54:42.284230+00:00",
+      "timestamp_ns": 1774133682284226048,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "ccb4f1c1775e62ab089fb77dd337682a1f788e5096a771435e939a88abf77dc9",
+      "entry_hash": "c0d4ee8674a0a8791405587ddc7847fb59b05a2d78de64a5071f4a8da757bc28"
+    },
+    {
+      "sequence_num": 165,
+      "timestamp": "2026-03-21T22:54:42.453128+00:00",
+      "timestamp_ns": 1774133682453122816,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c0d4ee8674a0a8791405587ddc7847fb59b05a2d78de64a5071f4a8da757bc28",
+      "entry_hash": "5b7478d48414638dc0ebcafa2745961caae4252c2e801e115b5bc43e64505488"
+    },
+    {
+      "sequence_num": 166,
+      "timestamp": "2026-03-21T22:59:40.927091+00:00",
+      "timestamp_ns": 1774133980927086592,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "5b7478d48414638dc0ebcafa2745961caae4252c2e801e115b5bc43e64505488",
+      "entry_hash": "b853cef89cfdd69789b68c6615d5afedadcd2d8ec14bec4fb6bfac3e0ce4ce92"
+    },
+    {
+      "sequence_num": 167,
+      "timestamp": "2026-03-21T22:59:41.071407+00:00",
+      "timestamp_ns": 1774133981071401984,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "b853cef89cfdd69789b68c6615d5afedadcd2d8ec14bec4fb6bfac3e0ce4ce92",
+      "entry_hash": "1f6ef79342b9dc12d28ce955f7744b93501fbc24273267d3392c0a41a0451e74"
+    },
+    {
+      "sequence_num": 168,
+      "timestamp": "2026-03-21T23:04:56.473536+00:00",
+      "timestamp_ns": 1774134296473529856,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "1f6ef79342b9dc12d28ce955f7744b93501fbc24273267d3392c0a41a0451e74",
+      "entry_hash": "a6e33af7b5842afe96d7a596916293bce716d5af8056e968ca64d5af4398fd70"
+    },
+    {
+      "sequence_num": 169,
+      "timestamp": "2026-03-21T23:04:56.651082+00:00",
+      "timestamp_ns": 1774134296651076864,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a6e33af7b5842afe96d7a596916293bce716d5af8056e968ca64d5af4398fd70",
+      "entry_hash": "0a744a705b384ff756c5bed969537a5b86cc6010b428b525605d383836ddb07a"
+    },
+    {
+      "sequence_num": 170,
+      "timestamp": "2026-03-22T00:33:46.917262+00:00",
+      "timestamp_ns": 1774139626917257984,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "0a744a705b384ff756c5bed969537a5b86cc6010b428b525605d383836ddb07a",
+      "entry_hash": "3c2c6808e2a27c80504a6e90469789f8498f00542e20d7b8369be97b3b5bf045"
+    },
+    {
+      "sequence_num": 171,
+      "timestamp": "2026-03-22T00:33:47.005386+00:00",
+      "timestamp_ns": 1774139627005383424,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "3c2c6808e2a27c80504a6e90469789f8498f00542e20d7b8369be97b3b5bf045",
+      "entry_hash": "99062a08ff22a5be11c483933093ab1c153476bb8ab819bffe6a5078b6f2e118"
+    },
+    {
+      "sequence_num": 172,
+      "timestamp": "2026-03-22T01:09:02.984003+00:00",
+      "timestamp_ns": 1774141742984000256,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "99062a08ff22a5be11c483933093ab1c153476bb8ab819bffe6a5078b6f2e118",
+      "entry_hash": "7e7d84870dc8d2ec3779b68c18b309d1abd59bc04140a47f5be43a0fa4d1420e"
+    },
+    {
+      "sequence_num": 173,
+      "timestamp": "2026-03-22T01:09:03.075266+00:00",
+      "timestamp_ns": 1774141743075262976,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "7e7d84870dc8d2ec3779b68c18b309d1abd59bc04140a47f5be43a0fa4d1420e",
+      "entry_hash": "98e33d6749d31430890280ff5be1cec0151f8816b827609bac739968e19b6704"
+    },
+    {
+      "sequence_num": 174,
+      "timestamp": "2026-03-22T09:36:46.627105+00:00",
+      "timestamp_ns": 1774172206627102720,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "98e33d6749d31430890280ff5be1cec0151f8816b827609bac739968e19b6704",
+      "entry_hash": "282cec262d02cb38068c374d47091ec40e87a4fe95056ab36d0ebcbfe4ef79ac"
+    },
+    {
+      "sequence_num": 175,
+      "timestamp": "2026-03-22T09:36:46.761817+00:00",
+      "timestamp_ns": 1774172206761813760,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "282cec262d02cb38068c374d47091ec40e87a4fe95056ab36d0ebcbfe4ef79ac",
+      "entry_hash": "363bf8c28e49fd86e8f954efa22b7846fbf8bb113d6b93f76b29d8f672d945ff"
+    },
+    {
+      "sequence_num": 176,
+      "timestamp": "2026-03-22T09:43:24.858821+00:00",
+      "timestamp_ns": 1774172604858819328,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "363bf8c28e49fd86e8f954efa22b7846fbf8bb113d6b93f76b29d8f672d945ff",
+      "entry_hash": "c7fac3112a69720af7103819e21347c7cdc5155c2051f67ef85b74a37b8269fe"
+    },
+    {
+      "sequence_num": 177,
+      "timestamp": "2026-03-22T09:43:24.999359+00:00",
+      "timestamp_ns": 1774172604999354624,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "c7fac3112a69720af7103819e21347c7cdc5155c2051f67ef85b74a37b8269fe",
+      "entry_hash": "67dcab9c84c9763836dfbc21b48c408201bfdef5672c7d6b6a5b3fad523a024e"
+    },
+    {
+      "sequence_num": 178,
+      "timestamp": "2026-03-22T10:31:34.264046+00:00",
+      "timestamp_ns": 1774175494264044032,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "67dcab9c84c9763836dfbc21b48c408201bfdef5672c7d6b6a5b3fad523a024e",
+      "entry_hash": "24a44251ef0524722c0bbbedff2a82b4201e2d05403e2a99c0455e53613dfa1e"
+    },
+    {
+      "sequence_num": 179,
+      "timestamp": "2026-03-22T10:31:34.399356+00:00",
+      "timestamp_ns": 1774175494399353600,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "24a44251ef0524722c0bbbedff2a82b4201e2d05403e2a99c0455e53613dfa1e",
+      "entry_hash": "80bc2c2d2bb68ac25231308f1d50ebaabae67bdc03a60c08dd2152583e2735c3"
+    },
+    {
+      "sequence_num": 180,
+      "timestamp": "2026-03-23T03:13:06.528682+00:00",
+      "timestamp_ns": 1774235586528680192,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "80bc2c2d2bb68ac25231308f1d50ebaabae67bdc03a60c08dd2152583e2735c3",
+      "entry_hash": "fb2c5e549b6d74ebce24b708674dd133558f065f7edcc8d9448733f434d70ed4"
+    },
+    {
+      "sequence_num": 181,
+      "timestamp": "2026-03-23T03:13:06.670473+00:00",
+      "timestamp_ns": 1774235586670469120,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "fb2c5e549b6d74ebce24b708674dd133558f065f7edcc8d9448733f434d70ed4",
+      "entry_hash": "a3bee81885acd4059f40ac2434ca2447470a1a59980604a92d7a83f5d1bf63fe"
+    },
+    {
+      "sequence_num": 182,
+      "timestamp": "2026-03-23T09:46:36.169120+00:00",
+      "timestamp_ns": 1774259196169116928,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "a3bee81885acd4059f40ac2434ca2447470a1a59980604a92d7a83f5d1bf63fe",
+      "entry_hash": "9fa5b304fdfbb58567e0293a985009299aa7effb5967b37ea5bb13fd9606db87"
+    },
+    {
+      "sequence_num": 183,
+      "timestamp": "2026-03-23T09:46:36.460805+00:00",
+      "timestamp_ns": 1774259196460797696,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "9fa5b304fdfbb58567e0293a985009299aa7effb5967b37ea5bb13fd9606db87",
+      "entry_hash": "09421605108b5990e7a2e547c40474158468c965d67e0826fa56390db24cb899"
+    },
+    {
+      "sequence_num": 184,
+      "timestamp": "2026-03-23T10:13:42.277757+00:00",
+      "timestamp_ns": 1774260822277755392,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "09421605108b5990e7a2e547c40474158468c965d67e0826fa56390db24cb899",
+      "entry_hash": "23c8f3482b1395ebd0c696855c85e10115ceaae9f1e49923daf492b79bc0b531"
+    },
+    {
+      "sequence_num": 185,
+      "timestamp": "2026-03-23T10:13:42.496630+00:00",
+      "timestamp_ns": 1774260822496625920,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "23c8f3482b1395ebd0c696855c85e10115ceaae9f1e49923daf492b79bc0b531",
+      "entry_hash": "de62543e3ad14e8d9432d71e26c83df4f2588b9e99b9a07897e6a05f14eaa3dc"
+    },
+    {
+      "sequence_num": 186,
+      "timestamp": "2026-03-23T15:56:08.183127+00:00",
+      "timestamp_ns": 1774281368183123968,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "de62543e3ad14e8d9432d71e26c83df4f2588b9e99b9a07897e6a05f14eaa3dc",
+      "entry_hash": "d452a8885d972eff561812edbba0d7cdcf0a6ffa48a838a868917a31e0a77673"
+    },
+    {
+      "sequence_num": 187,
+      "timestamp": "2026-03-23T15:56:08.408919+00:00",
+      "timestamp_ns": 1774281368408915200,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "d452a8885d972eff561812edbba0d7cdcf0a6ffa48a838a868917a31e0a77673",
+      "entry_hash": "d093c2ea3dcb5b28cc418976c2bc9d6eaa18e5ab92c3f860eba81c912e671d70"
+    },
+    {
+      "sequence_num": 188,
+      "timestamp": "2026-03-23T20:08:52.909345+00:00",
+      "timestamp_ns": 1774296532909340416,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "d093c2ea3dcb5b28cc418976c2bc9d6eaa18e5ab92c3f860eba81c912e671d70",
+      "entry_hash": "2aa7cfd0a4b14fa80b4a2f12c21f7f964d6534894928c4eb25599c554ccc8eca"
+    },
+    {
+      "sequence_num": 189,
+      "timestamp": "2026-03-23T20:08:53.046784+00:00",
+      "timestamp_ns": 1774296533046779904,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "2aa7cfd0a4b14fa80b4a2f12c21f7f964d6534894928c4eb25599c554ccc8eca",
+      "entry_hash": "25d200102c1d62f66c6b9f6ccc2eb0f678a298d116878858407a115d77a8e9b0"
+    },
+    {
+      "sequence_num": 190,
+      "timestamp": "2026-03-23T21:05:46.170163+00:00",
+      "timestamp_ns": 1774299946170158336,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "25d200102c1d62f66c6b9f6ccc2eb0f678a298d116878858407a115d77a8e9b0",
+      "entry_hash": "1a25fbf8a5ffff60a31f2b124ca40c653522635bb1d9c017d6871bd1a64d9d93"
+    },
+    {
+      "sequence_num": 191,
+      "timestamp": "2026-03-23T21:05:46.320506+00:00",
+      "timestamp_ns": 1774299946320501504,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "1a25fbf8a5ffff60a31f2b124ca40c653522635bb1d9c017d6871bd1a64d9d93",
+      "entry_hash": "5e0fcdc3dd58dd7f131decbca9f9d9d8463536be8c2c6341d5a2a5b17f134200"
+    },
+    {
+      "sequence_num": 192,
+      "timestamp": "2026-03-24T05:34:33.537408+00:00",
+      "timestamp_ns": 1774330473537404160,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "5e0fcdc3dd58dd7f131decbca9f9d9d8463536be8c2c6341d5a2a5b17f134200",
+      "entry_hash": "395ce1bf49630f0529fe75b3b17ceeea08ef2c224ad132dbe223a073f95b7fe8"
+    },
+    {
+      "sequence_num": 193,
+      "timestamp": "2026-03-24T05:34:33.634200+00:00",
+      "timestamp_ns": 1774330473634194688,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "395ce1bf49630f0529fe75b3b17ceeea08ef2c224ad132dbe223a073f95b7fe8",
+      "entry_hash": "799c74da316a36f0bedc0a4b3b730895a321630bebe1110dd1f2c3993f281e84"
+    },
+    {
+      "sequence_num": 194,
+      "timestamp": "2026-03-24T07:06:24.885221+00:00",
+      "timestamp_ns": 1774335984885218048,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "799c74da316a36f0bedc0a4b3b730895a321630bebe1110dd1f2c3993f281e84",
+      "entry_hash": "8ca1f21ed52fc87ff296ffc885b69811f52902f45139b621051065d302be7dec"
+    },
+    {
+      "sequence_num": 195,
+      "timestamp": "2026-03-24T07:06:25.480248+00:00",
+      "timestamp_ns": 1774335985480245248,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "8ca1f21ed52fc87ff296ffc885b69811f52902f45139b621051065d302be7dec",
+      "entry_hash": "b3d5c1bc160ff22dc4a7a9ca868a3002ef315b3f8e4b083096ce188766140739"
+    },
+    {
+      "sequence_num": 196,
+      "timestamp": "2026-03-24T10:23:52.769463+00:00",
+      "timestamp_ns": 1774347832769460992,
+      "event_type": "SYSTEM_START",
+      "symbol": "SYSTEM",
+      "data": {
+        "components": [
+          "log_integrity",
+          "reconciliation",
+          "timestamp_oracle",
+          "rl_security"
+        ],
+        "version": "1.0"
+      },
+      "prev_hash": "b3d5c1bc160ff22dc4a7a9ca868a3002ef315b3f8e4b083096ce188766140739",
+      "entry_hash": "a45b3b8d149ce9e6413d68ebb3634831d37869afa808d24d765c98035e8d1346"
+    },
+    {
+      "sequence_num": 197,
+      "timestamp": "2026-03-24T10:23:53.136871+00:00",
+      "timestamp_ns": 1774347833136866816,
+      "event_type": "AEGIS_INIT",
+      "symbol": "SYSTEM",
+      "data": {
+        "phase1": true,
+        "phase2": true,
+        "phase3": true,
+        "phase4": true,
+        "telegram_alerts": false
+      },
+      "prev_hash": "a45b3b8d149ce9e6413d68ebb3634831d37869afa808d24d765c98035e8d1346",
+      "entry_hash": "3d9c826c2b676f30cd1062e2ed6374d1a8fb53ab572e8538f3039c80639a0cce"
+    }
+  ],
+  "sequence_counter": 198,
+  "last_anchor_seq": 196,
+  "anchor_history": [
+    {
+      "anchor_timestamp": "2026-03-15T10:14:12.398537+00:00",
+      "log_sequence_num": 3,
+      "log_tail_hash": "36607ff2f0e2dd990b929cc02cb46bc2171939a32b20a56f85a4035eab892870",
+      "merkle_root": "59b46b27cf4bb3f8d17bcd0fda54b4b344188cd2f40d2f8bcc84167d7c91d8af",
+      "external_txid": "cf50b31daffc990beb10c481a3365909521ade247812850409e34b3f4125af85",
+      "external_chain": "SIMULATED",
+      "block_height": 972616
+    },
+    {
+      "anchor_timestamp": "2026-03-15T11:04:37.020260+00:00",
+      "log_sequence_num": 7,
+      "log_tail_hash": "410e93591535be3f5fe31bfc021fb1814d19a60cf933761a8225a92cb2f62105",
+      "merkle_root": "28ebc63cf437df02f67ca41d90f17b9791132b1ea81f7c7708be988a59782b4d",
+      "external_txid": "cdc74452f836b7fe4a8cb54bc189340d3004a615f2598fce3ac32949e13be198",
+      "external_chain": "SIMULATED",
+      "block_height": 972621
+    },
+    {
+      "anchor_timestamp": "2026-03-15T11:25:43.676418+00:00",
+      "log_sequence_num": 9,
+      "log_tail_hash": "2addeb0f4a36f5e4da2d12cce24476c66f6ec8c2e70c73f44788398c00d2cc16",
+      "merkle_root": "9c67fe5f7e262bf7e6c63c29119065977363fa9b50ed82aadfef4be50120640b",
+      "external_txid": "634244f1ab559e2e157759a6526a01e55d17f189db5b1c0de2ef105f4c08588a",
+      "external_chain": "SIMULATED",
+      "block_height": 972623
+    },
+    {
+      "anchor_timestamp": "2026-03-15T18:39:48.280672+00:00",
+      "log_sequence_num": 13,
+      "log_tail_hash": "448a21f515cbe7034ad1dd25a31350ebb2fb3e984a6a32fb836e24bbd6d7bc7a",
+      "merkle_root": "0a03d351c36cd7e86a92ec17a5fc07caf6beefaf935553cb31b3d9595ef6f23c",
+      "external_txid": "e77b058d6d3cd8d2eacdb79137558f1299cef6a02a3bb054b4a9107c61a81135",
+      "external_chain": "SIMULATED",
+      "block_height": 972666
+    },
+    {
+      "anchor_timestamp": "2026-03-15T21:48:08.773589+00:00",
+      "log_sequence_num": 17,
+      "log_tail_hash": "c029f9d717af235db3206c7d258e43e62b59189aa0f73398b4df11a6db40c9b9",
+      "merkle_root": "b17dbc4f162b639dcddfecf2dba3dd449a2b8db3cc5370fcdee2f00613aebd2c",
+      "external_txid": "a4ecf981c4c7333d45dae69b384a57e16e579dd328b58cf78f566b1c8059c8be",
+      "external_chain": "SIMULATED",
+      "block_height": 972685
+    },
+    {
+      "anchor_timestamp": "2026-03-16T06:09:30.390214+00:00",
+      "log_sequence_num": 19,
+      "log_tail_hash": "7e7c489013592d8631d4d05dac5669ce4d5053e0809ac7f348bda0f657d0982a",
+      "merkle_root": "548b98e9303dd5eab26f75399f79f6b6112f3fe603c589f95fa0b62bbcd221ac",
+      "external_txid": "dc9c4ba55b2a422333dbd5cc16956169e2196ae7c1319e67fa69aad970949c29",
+      "external_chain": "SIMULATED",
+      "block_height": 972735
+    },
+    {
+      "anchor_timestamp": "2026-03-16T07:07:12.459956+00:00",
+      "log_sequence_num": 23,
+      "log_tail_hash": "0f7b1cf3f99f00193656aa4ed59df52f87987c1a70fa25616e4e56c32dea894f",
+      "merkle_root": "e71c5cc280b71c50d084dbd56ba94fc1ab1fdcc27f18dc6860bfdd5bd080c101",
+      "external_txid": "24f107c6b493f00dbf47840054ebdbaaedc4a294feb55b62f68f7169e631b1ff",
+      "external_chain": "SIMULATED",
+      "block_height": 972741
+    },
+    {
+      "anchor_timestamp": "2026-03-16T07:51:21.934784+00:00",
+      "log_sequence_num": 25,
+      "log_tail_hash": "0fa234bbebab77cff6e8e4e499dfd490a8a45bbeb17b7faf87b047fd267bde5e",
+      "merkle_root": "59bac577d2a648588ac4153a1d46c85bab90c283ac01907ee3d6cdce1d410864",
+      "external_txid": "db221d10a9e78f72b1d59494fb2f7da18c4b838e8dc310333415b433b97b67cf",
+      "external_chain": "SIMULATED",
+      "block_height": 972745
+    },
+    {
+      "anchor_timestamp": "2026-03-16T16:29:56.122982+00:00",
+      "log_sequence_num": 27,
+      "log_tail_hash": "c60214b6bbda7846cec58ce134e4ce9f4ef5a5efb5f6e6b40bb8cd9a639bf0cd",
+      "merkle_root": "70001253eb0de94293d1efe4bb9a47a19b7256ea6de3a690d14678caf0bb2b8b",
+      "external_txid": "aa7cb5a6ce3e9a2cb40f6764ae5cf213f5b20c5a0a01dad54e3e556ca2ce1d0b",
+      "external_chain": "SIMULATED",
+      "block_height": 972797
+    },
+    {
+      "anchor_timestamp": "2026-03-16T17:14:07.845136+00:00",
+      "log_sequence_num": 31,
+      "log_tail_hash": "93775cbb7339cfcfb7902195238bd9facc3d5073f5bf4181b12379b08c3a79b8",
+      "merkle_root": "c4b41cbc87c733c2a64f3db3e58c5b1eab57265d391289e21a683d6adf2eb2d8",
+      "external_txid": "883fa5c1f445d398175231cf975c69a87d534e7ebdf54af91aac7a1a2ef155e9",
+      "external_chain": "SIMULATED",
+      "block_height": 972802
+    },
+    {
+      "anchor_timestamp": "2026-03-16T18:52:26.875521+00:00",
+      "log_sequence_num": 33,
+      "log_tail_hash": "3cb6583d22c36cea5a06f5574bd101faa59afd3a893a79eb8abd87442a1052e7",
+      "merkle_root": "9f6bb2965176dc28feb39e39682074d295d44efc3714dbe07218881723da09cf",
+      "external_txid": "edb5380dab56f6c820fc5494b8ebabc61354c53da25aa606ac2814dc09f0036b",
+      "external_chain": "SIMULATED",
+      "block_height": 972811
+    },
+    {
+      "anchor_timestamp": "2026-03-17T12:46:04.218085+00:00",
+      "log_sequence_num": 39,
+      "log_tail_hash": "046730860f31b3086748606b51e058cf14197bbc524b316c3160acb0a0c9e866",
+      "merkle_root": "2dc65f7829fb3ec7fce916548b7289649234eeb054ce961482c77c5a5d642c2b",
+      "external_txid": "7945770f6093c11afc5f98922d5209f14d6c6e5b5d110175c1a985093f9068d4",
+      "external_chain": "SIMULATED",
+      "block_height": 972919
+    },
+    {
+      "anchor_timestamp": "2026-03-17T12:52:28.053096+00:00",
+      "log_sequence_num": 41,
+      "log_tail_hash": "b89f28474037077cd502e360c82081248db28cedf710cd0e5e7ef510e8e41d86",
+      "merkle_root": "7780555310902d61119320017dc044ed3e406012f68a210d4e7efd2fc824bfda",
+      "external_txid": "a8563dafbcb482f2aadee629e35d6f679b5432c926898b4ccbd6f181657a2be8",
+      "external_chain": "SIMULATED",
+      "block_height": 972919
+    },
+    {
+      "anchor_timestamp": "2026-03-17T13:03:48.276231+00:00",
+      "log_sequence_num": 47,
+      "log_tail_hash": "7ea6b0432ec66517401b3156f63149e900da3feadd011b391b742d42a9e047da",
+      "merkle_root": "169af44bb84400082be550427e89f8d3c1d4b235e5ffcae932e5fa4c9d8fbdb6",
+      "external_txid": "285675abe1492d97e1bfb6e3f5b88ecfc7c874d092627495c00f45dbc5886dd9",
+      "external_chain": "SIMULATED",
+      "block_height": 972921
+    },
+    {
+      "anchor_timestamp": "2026-03-17T16:57:37.578400+00:00",
+      "log_sequence_num": 51,
+      "log_tail_hash": "1c9aebc739119584431b103c90c157743c70e32ef31d7235813ad5acdf3c94cb",
+      "merkle_root": "7c5758fba4fc54ff7129c48ff11317f68649e868994637ceca2fba1c69e3d101",
+      "external_txid": "9a38ebfbcd9dea569840b90f60dc7fa9d86fa45d27923d86669bda1ca1b1b397",
+      "external_chain": "SIMULATED",
+      "block_height": 972944
+    },
+    {
+      "anchor_timestamp": "2026-03-17T20:33:46.968966+00:00",
+      "log_sequence_num": 55,
+      "log_tail_hash": "453c435c83db5fe20bfd82af8c73abec4455853a65f3a31ff54124c7a78efbbb",
+      "merkle_root": "7d0f48eda39922fc8d5910fd481d5f2727995509f42da5ce875b80b64120c492",
+      "external_txid": "d6e049c79dab65e652c63d08b5bc88ec32719105e495ac73ed16ef46aa4fe2ae",
+      "external_chain": "SIMULATED",
+      "block_height": 972966
+    },
+    {
+      "anchor_timestamp": "2026-03-17T21:39:46.895997+00:00",
+      "log_sequence_num": 57,
+      "log_tail_hash": "5827ede7011155e7dd223b52c645ed9a91ed0c7a792662a76d88d997a6f34ac3",
+      "merkle_root": "f182cf392fa78e9393e621abef0c4eede7a7a659fa5ce26eb347a3309f5fc617",
+      "external_txid": "7db0cf82ee0f4638af3ffb0602bfcc7b1370695f706a83b26ac0a2ac4297a2b6",
+      "external_chain": "SIMULATED",
+      "block_height": 972972
+    },
+    {
+      "anchor_timestamp": "2026-03-17T22:02:12.629659+00:00",
+      "log_sequence_num": 59,
+      "log_tail_hash": "bdf43f51c2babac9fc8e2c2f286065498cde4016a89eaf036f76f8938935ae05",
+      "merkle_root": "9976599b8b8352f00b64efa09f092bc12cc1db663adfae345cda7eddb047b945",
+      "external_txid": "10641d22dedeadea9612772ba5dc92f8fb34ff2adc36534cf57880f0ba9a77a5",
+      "external_chain": "SIMULATED",
+      "block_height": 972974
+    },
+    {
+      "anchor_timestamp": "2026-03-18T06:57:16.081450+00:00",
+      "log_sequence_num": 61,
+      "log_tail_hash": "de0cc87ebf7a2083d601e3a49d1bdf79a5834f0d53894e3276ccabf91575c41f",
+      "merkle_root": "76998a4192275c8b18c767b4b3a1c9b4aba8c823675eb53aa7705d711955b3ba",
+      "external_txid": "0e0d498808cc6b1d387419cfa430f9c8598b22849e1877019bac84124795687a",
+      "external_chain": "SIMULATED",
+      "block_height": 973028
+    },
+    {
+      "anchor_timestamp": "2026-03-18T08:21:24.290992+00:00",
+      "log_sequence_num": 63,
+      "log_tail_hash": "095d326948a6cc62017f9c6be486239730ccac43d80c1ee225733ba7fa5175a9",
+      "merkle_root": "212b497ed667b0695ab154d4c38662bca96d84b7ecaf03f2d0ef3eab58b5140d",
+      "external_txid": "cec58b113c70c55b639b36d488a9699f4ca75ff786ddf10b2c443e16a8b1f957",
+      "external_chain": "SIMULATED",
+      "block_height": 973036
+    },
+    {
+      "anchor_timestamp": "2026-03-18T08:32:34.622405+00:00",
+      "log_sequence_num": 65,
+      "log_tail_hash": "e2f14c8c61ee790e54ac87c20c6244191898d3c6c6c5f9bd7f3ccd37b26a3c56",
+      "merkle_root": "128f687a8be95348fef2b130daa2aa83ec208c436556e1af38373fc690957637",
+      "external_txid": "86ac57558feaaedb626c5092187e20743638f2557f87fe7596d72650d6e2e2bd",
+      "external_chain": "SIMULATED",
+      "block_height": 973037
+    },
+    {
+      "anchor_timestamp": "2026-03-18T08:55:11.623611+00:00",
+      "log_sequence_num": 67,
+      "log_tail_hash": "eef61b28382a04e2cc75bd590756ceb6557952fd1b1bc72c669306356573b112",
+      "merkle_root": "151381a91d10a44a430651a6828466018faa76b109a08e27b9525f95de32e61d",
+      "external_txid": "dac2ae7e292de6832266c8c87a5fdb61b67881167434a9427a01e3567a437c4f",
+      "external_chain": "SIMULATED",
+      "block_height": 973040
+    },
+    {
+      "anchor_timestamp": "2026-03-18T10:01:36.964737+00:00",
+      "log_sequence_num": 71,
+      "log_tail_hash": "b828075e49fd8d786516982ba1da87245fdbb561ba23ecc7bd5ba9612da976a0",
+      "merkle_root": "be5dbd76c8ce39fcc04034006e0a54b0476d1e13ddcce7b0a6038fbe36df225b",
+      "external_txid": "34b785202acd35bf6d233113a0074eabf379a29d2dc898c67b70ac6e16ef59d2",
+      "external_chain": "SIMULATED",
+      "block_height": 973046
+    },
+    {
+      "anchor_timestamp": "2026-03-18T10:27:39.029942+00:00",
+      "log_sequence_num": 73,
+      "log_tail_hash": "e9dce537381f8b6dc4b2e16d48b2433bbcea9f63396dc0baed62a1549fcd9d71",
+      "merkle_root": "381eede945ffd292d2940f5822fe62c38a0e1bc8dd3abda344a142143feab0ea",
+      "external_txid": "b56aa16534c3a5dc2674246c674657b043d0c3c9d9ffc793547051aae905ef45",
+      "external_chain": "SIMULATED",
+      "block_height": 973049
+    },
+    {
+      "anchor_timestamp": "2026-03-18T11:20:43.689105+00:00",
+      "log_sequence_num": 75,
+      "log_tail_hash": "e9886483653df83999c52a629ba423e1fcded5249377dbdbf0de6752282cd75e",
+      "merkle_root": "a278b9db348e1c4f33f97cc4c304778edbc91063d80c9403b609ab429aa81634",
+      "external_txid": "008777e3269a9a8c0253b48ae8bf1c41c16a795c7d23f028319be70c50bb0bd7",
+      "external_chain": "SIMULATED",
+      "block_height": 973054
+    },
+    {
+      "anchor_timestamp": "2026-03-18T12:48:52.047470+00:00",
+      "log_sequence_num": 77,
+      "log_tail_hash": "b0faceab536c1da4fb16e263c95a044192e5c214d0785c548d92aa5b8acc1d28",
+      "merkle_root": "8ecc7fc4835d1eae57c0de0140f7772c4be20e40ba2c51f16eee212c2807640e",
+      "external_txid": "279c2e65463452f6df0b06087cab37dba5a46e0f67dc5d71f957f614a9dbea6c",
+      "external_chain": "SIMULATED",
+      "block_height": 973063
+    },
+    {
+      "anchor_timestamp": "2026-03-18T15:50:11.834991+00:00",
+      "log_sequence_num": 81,
+      "log_tail_hash": "f22d1937216d972d77cf7c223d259833ac92627f70c70de17e600b1918f603f6",
+      "merkle_root": "fccd3a186fc5e3e301d126facb715d9a694422c648dcd29e8b8c1592a7aeea70",
+      "external_txid": "6cd601051f515e7f5fe524ba75ee27364ba0cbcac4b0164808499d3643aed1f7",
+      "external_chain": "SIMULATED",
+      "block_height": 973081
+    },
+    {
+      "anchor_timestamp": "2026-03-18T17:32:17.715021+00:00",
+      "log_sequence_num": 83,
+      "log_tail_hash": "8857e08344b61d4af7de2d4af815470720f333de8ee433d5143368bf50cbb294",
+      "merkle_root": "81646f921e206faf888584ba63924ce313c371d3e6363a0e3cbf0b7a823e5c29",
+      "external_txid": "efdb00e27af9252ff876e66623d1c1663feddfc0a32b0126113807afc3d51d94",
+      "external_chain": "SIMULATED",
+      "block_height": 973091
+    },
+    {
+      "anchor_timestamp": "2026-03-18T19:09:20.247565+00:00",
+      "log_sequence_num": 85,
+      "log_tail_hash": "af9528572331ab5383069cc66e1c929fe7f33045c3b4b8ff1d238bf6cdd5ac01",
+      "merkle_root": "d8e0439e6b54d3856a25000002f14b4c405416eed945f469ccdf5db21f7486dc",
+      "external_txid": "4344bc1ab6b7e60d77377c8d3dbcc6fb738f869c1f97555f9958f216ecc1f804",
+      "external_chain": "SIMULATED",
+      "block_height": 973101
+    },
+    {
+      "anchor_timestamp": "2026-03-18T21:51:43.918534+00:00",
+      "log_sequence_num": 93,
+      "log_tail_hash": "aad6901476a7ba2e89c89f102d626d373afdaff005d1385f9814d70b09de00a9",
+      "merkle_root": "6a7524f79e92a1502226eff71bd3277aa455a8f7a599e42c692cfed6484e934a",
+      "external_txid": "95276e4ae9cad6c30c6b59d52dde09fd3ba3a7066e6f29c1191c8bd2843d0475",
+      "external_chain": "SIMULATED",
+      "block_height": 973117
+    },
+    {
+      "anchor_timestamp": "2026-03-19T05:56:04.928582+00:00",
+      "log_sequence_num": 95,
+      "log_tail_hash": "77a2886c034be304afaa3f52a4d956a2d330363f40ea6a21cf3a3f27e1c6cc6a",
+      "merkle_root": "2d95d65cc3cd409d0ee35f8c27b493d78155ad309bde9711bcf88bdbe750a350",
+      "external_txid": "d33bf7a4a648ccae1e6a5bd25df371d11e64f0828a4bc76b617a9ceee2961882",
+      "external_chain": "SIMULATED",
+      "block_height": 973166
+    },
+    {
+      "anchor_timestamp": "2026-03-19T06:39:15.778638+00:00",
+      "log_sequence_num": 97,
+      "log_tail_hash": "c6193cf897fbdc9247e0803abe10a2dfa3ef870e1c1c1fd073f9030a4cc92a4b",
+      "merkle_root": "59b3db76e85a86d8ce82624894417b149e6f2ebe55e13bbaa262a67d83271c0d",
+      "external_txid": "0f79b12bf2a0892255ba4bd37f0ac35f257f13ba607f87d444506d15be51a43c",
+      "external_chain": "SIMULATED",
+      "block_height": 973170
+    },
+    {
+      "anchor_timestamp": "2026-03-19T07:18:11.480414+00:00",
+      "log_sequence_num": 99,
+      "log_tail_hash": "c89a6039207b172907cbf0500ad94464cdd330d68c47b19116bc9e5f081703ce",
+      "merkle_root": "4b023e90e4fd20d9427db9d0cc583c8afe0993ce6685856c32c645c50ffad3a9",
+      "external_txid": "2921dba9bf954c58458a9f47b2e20c65b58ae42c2e7aaa1728556133250ca422",
+      "external_chain": "SIMULATED",
+      "block_height": 973174
+    },
+    {
+      "anchor_timestamp": "2026-03-19T07:22:32.199493+00:00",
+      "log_sequence_num": 101,
+      "log_tail_hash": "b2b75e4c5155256ad9f06020e259cf01f75da389dc84a574f7f78b3fb4a42721",
+      "merkle_root": "39516741edc9093de6eaa525d1f6494d782e7e11a185eed76f567342c4e459ae",
+      "external_txid": "54d6f0136f17c8d6dbfde4ad62ca11409c05285875164439a6c3b6bbc4bbcccb",
+      "external_chain": "SIMULATED",
+      "block_height": 973174
+    },
+    {
+      "anchor_timestamp": "2026-03-19T07:37:25.018252+00:00",
+      "log_sequence_num": 103,
+      "log_tail_hash": "1c48d637a7f39cad2e1fb26dede10e786c495beebfca2330e671f86d8c5e2a2b",
+      "merkle_root": "29b4ccaf332aec9b35a175703f477d12d8805cb8e3c527062aa988515dced627",
+      "external_txid": "155a8ef9370ce274fd7ee71d26208fc1c01cf6057111dec36e59c515f72c77c5",
+      "external_chain": "SIMULATED",
+      "block_height": 973176
+    },
+    {
+      "anchor_timestamp": "2026-03-19T07:55:41.026436+00:00",
+      "log_sequence_num": 105,
+      "log_tail_hash": "b143f146b2d10ad3093abccdf3654025f5cf555395e72f94c6f7a975d5e16a2f",
+      "merkle_root": "a00d5ee84a496b0181793090c8fa1d12c4b01c89050cb1d0f34c13de412ae7f7",
+      "external_txid": "a3549b359765cc4608bcf2d8c654b8cb2230bbbf3c4258632e4a38a81044dd5e",
+      "external_chain": "SIMULATED",
+      "block_height": 973178
+    },
+    {
+      "anchor_timestamp": "2026-03-19T09:09:08.394091+00:00",
+      "log_sequence_num": 107,
+      "log_tail_hash": "00aaa68ed389b5861df8f916970461db92bf71d0f8f6487415aac8f357c1ac0b",
+      "merkle_root": "f68d51d1368f9287c6d5210ea3e20a29b9fc8b0d05ee747cb41519a90b821e95",
+      "external_txid": "b39f050b6bfc021ed0f6da469d11b6ce42f2d53ce054d9ab444a26997492f038",
+      "external_chain": "SIMULATED",
+      "block_height": 973185
+    },
+    {
+      "anchor_timestamp": "2026-03-19T10:13:57.854607+00:00",
+      "log_sequence_num": 109,
+      "log_tail_hash": "40d72581a8b221c43b2fb16e48a295270c5baba792faaea434ea06567a5c7c4a",
+      "merkle_root": "84c4b19978f76741d1a27510fdbacd5f279da43070c2cbccbde4a0aacca5d85e",
+      "external_txid": "b9da3f89deda2d2b629974e486bf90e3b282f3173007e3b41262b37f8d5c11a2",
+      "external_chain": "SIMULATED",
+      "block_height": 973192
+    },
+    {
+      "anchor_timestamp": "2026-03-19T10:59:10.131140+00:00",
+      "log_sequence_num": 111,
+      "log_tail_hash": "3ae10d7c1aabc1e4cee6bb822b8645f84a2beabdceb245299468b052cc579719",
+      "merkle_root": "93facd58128e993effe4b4e9a8172aaddcf95a32b1ecfb37f6531ecfde375d4a",
+      "external_txid": "a8a2cdbea307611dbe83f40a2567b1eec786f7957adc93a5ac4d7a26665f2658",
+      "external_chain": "SIMULATED",
+      "block_height": 973196
+    },
+    {
+      "anchor_timestamp": "2026-03-19T11:42:41.059183+00:00",
+      "log_sequence_num": 113,
+      "log_tail_hash": "11424982151bd1b7598a0809bc9eb788f69d8bc5717329748444e2988e7b03fa",
+      "merkle_root": "87c49f2d817ff8ef29188bcc2a46b12dcea3a0cd17e3f992a959cedc86039b86",
+      "external_txid": "4393b8461e743e042f5db45c9c15800edd3c594555af6d1a95c8e513cea4ae08",
+      "external_chain": "SIMULATED",
+      "block_height": 973200
+    },
+    {
+      "anchor_timestamp": "2026-03-19T12:47:19.759663+00:00",
+      "log_sequence_num": 115,
+      "log_tail_hash": "11ab0acfe3815e2cec8a230d0600f76a24d8843109a70adfc9b3cf3f6b8690fe",
+      "merkle_root": "f712720bfe930a2f3460a150fc984e1715229f118be10e844b381f2e5e4b49ef",
+      "external_txid": "dce962f3e8c07fcaa196d67f59c17a37aac3f6d32b60efbf01c913735397b8b6",
+      "external_chain": "SIMULATED",
+      "block_height": 973207
+    },
+    {
+      "anchor_timestamp": "2026-03-19T14:19:37.611008+00:00",
+      "log_sequence_num": 119,
+      "log_tail_hash": "30fc3ef80cb2541f747a840846d4330523507c49682dab4b602b9d39a256f073",
+      "merkle_root": "0363e857f94c0f1aeea8fbb273f5a33db2bd06bcae984e9f4294209635636d38",
+      "external_txid": "a7b4e2c8f62197992503a3a8646d8bad986d4d1d122292fee97bfc51270ee833",
+      "external_chain": "SIMULATED",
+      "block_height": 973216
+    },
+    {
+      "anchor_timestamp": "2026-03-19T14:50:59.519144+00:00",
+      "log_sequence_num": 121,
+      "log_tail_hash": "e38ed4afef207fdb392cdb7c07996ed91767248d41751fc5d0add36f498efb73",
+      "merkle_root": "073a9a647fdb62803519a1673db6032ed33be7acc5860d03f16abc595d1dcd8f",
+      "external_txid": "95824bf4f57b61ad0d9f6f87b9a94349c96cb77b023d82d47b919d3258467b1a",
+      "external_chain": "SIMULATED",
+      "block_height": 973219
+    },
+    {
+      "anchor_timestamp": "2026-03-19T18:08:51.521107+00:00",
+      "log_sequence_num": 125,
+      "log_tail_hash": "6e40d5d160d5805488a194dd9ad0dcf8ccd6f05471b522cd9c223d7ab01ccb53",
+      "merkle_root": "434a089a19bee2691afc22f13dbafffb36d5c5ffd393df84bf5c0d15a7a83085",
+      "external_txid": "c3dec5d2e342908cd390e8008867b9d9386d3d6d56ddddeb7b0311da911c087c",
+      "external_chain": "SIMULATED",
+      "block_height": 973239
+    },
+    {
+      "anchor_timestamp": "2026-03-19T19:33:36.497014+00:00",
+      "log_sequence_num": 127,
+      "log_tail_hash": "0f52922c7831ff3cc85478fe73cd8daf56a3f848c0ea993eea93da0c7eafa859",
+      "merkle_root": "ece559e5b597dea42dd849de2fe3b96c1ab9f6e7ea9d94d2c175568541e8814f",
+      "external_txid": "a453ab70fc21ea693473028dabe01f37b7c17738f44815a2ed5368d3e319cd14",
+      "external_chain": "SIMULATED",
+      "block_height": 973248
+    },
+    {
+      "anchor_timestamp": "2026-03-19T19:48:09.765725+00:00",
+      "log_sequence_num": 129,
+      "log_tail_hash": "cce4c8202e91aa1902640c5bf7330bb1d10c82a5e7e2c6fdbb07672225891a19",
+      "merkle_root": "6715cc16d761dfbf219895bcb744fa73ee33bc165fda053c829a51bf417dfb7e",
+      "external_txid": "1a44b04dc435d5b646418efa9bf3fbd6f1b94eb20f1b41a133e90d158a3f2a31",
+      "external_chain": "SIMULATED",
+      "block_height": 973249
+    },
+    {
+      "anchor_timestamp": "2026-03-20T09:13:17.972662+00:00",
+      "log_sequence_num": 131,
+      "log_tail_hash": "e32e1233c79e681bfc34f771322487b49f35b60c1c81c70da85031d177e8e9e8",
+      "merkle_root": "6c07f0f8197df4e7522a24d554781ff0d5a7f531a6f74efe78cce8228bcd5fff",
+      "external_txid": "6221c03ddedab1b62519d4f06954e44c318960a76cd27a332c8d08a97398c7b4",
+      "external_chain": "SIMULATED",
+      "block_height": 973329
+    },
+    {
+      "anchor_timestamp": "2026-03-20T10:03:14.344017+00:00",
+      "log_sequence_num": 133,
+      "log_tail_hash": "f53ba01e6f0d8d8da1ca6ea64ea11d694cf102edfb244f5f918f58ccd075a6e1",
+      "merkle_root": "4352d5b7b934ee19ea6609dc91730023e600105102d66d8b33c9aaff0375c9cb",
+      "external_txid": "a0a4a9f6a02dc8075ceb01af77042d217adf75e9e51f756943bae2a7fe0ade61",
+      "external_chain": "SIMULATED",
+      "block_height": 973334
+    },
+    {
+      "anchor_timestamp": "2026-03-20T10:36:00.217525+00:00",
+      "log_sequence_num": 135,
+      "log_tail_hash": "9edef82c9fd5cfe2f286e3083e526374d4b8bea3d02bfce55e252db7814e8de9",
+      "merkle_root": "26671b65936d5d55e7e1c2f2f588839dc6b0d8a7f7afb1d1ecd670739b0c2688",
+      "external_txid": "6b8480d70f8b109aa5db4385116c8c06e42b17ba165cc3e85cc41123b625bb37",
+      "external_chain": "SIMULATED",
+      "block_height": 973338
+    },
+    {
+      "anchor_timestamp": "2026-03-20T14:07:21.815050+00:00",
+      "log_sequence_num": 137,
+      "log_tail_hash": "9a9d5960d48d5533eee70e4c7e432005424056e6746858e2922784fc73a2ee09",
+      "merkle_root": "8b7f845dde8e0abe0a39e76a8fe1de66fc9ad61bb0f417be8056073144dcb78a",
+      "external_txid": "9f0722d22d015d860688e0a17c350a5345fb4dc5d253ef37317e8ff668a0b31e",
+      "external_chain": "SIMULATED",
+      "block_height": 973359
+    },
+    {
+      "anchor_timestamp": "2026-03-20T15:17:26.816868+00:00",
+      "log_sequence_num": 139,
+      "log_tail_hash": "b99e5bee22158e16e930940099ebfbc2d3762ac1068e528ffaf969b81aa11462",
+      "merkle_root": "48b19a31807b458b05a0e3e827729e76943bf342ffad55da7224adf553daee4e",
+      "external_txid": "c08e2a6df273b7a081c32220fe22559d98733af1f8fede4a3ced55b5d509d081",
+      "external_chain": "SIMULATED",
+      "block_height": 973366
+    },
+    {
+      "anchor_timestamp": "2026-03-20T16:14:15.148254+00:00",
+      "log_sequence_num": 141,
+      "log_tail_hash": "924457409115931c801df24a3b90ef820c8d79ae2df23f832785a6afbe6ae743",
+      "merkle_root": "8136aed2c86a22edcaf646744386fb0154a5da966f184e84483f06b3a4091abc",
+      "external_txid": "438e5fb7708b493d35c30837d20058bd3b7760702028a00e25085a69da8ee954",
+      "external_chain": "SIMULATED",
+      "block_height": 973372
+    },
+    {
+      "anchor_timestamp": "2026-03-20T19:14:21.610271+00:00",
+      "log_sequence_num": 143,
+      "log_tail_hash": "b2859b531ead5092b07be7c59ea67e54ea58c5a7e93f32141f5759b335bcfac7",
+      "merkle_root": "cb95026cf9361153e0bcdbb70a041a0037931269c91f014d9d9a077526e9725b",
+      "external_txid": "0a9d335152834d4dc0e17b570ae0bc94ba1ad20c1394fbb8a6dde3a144a31c63",
+      "external_chain": "SIMULATED",
+      "block_height": 973390
+    },
+    {
+      "anchor_timestamp": "2026-03-20T20:52:16.650260+00:00",
+      "log_sequence_num": 145,
+      "log_tail_hash": "ca250d86199fc526000b8c401039e6a792ca930cd47b9bbac466694e27bd8626",
+      "merkle_root": "1d1eb782027bc2d8b407ef73c5dcca4bc994c8de7b2f1d7733a57c4948da61f4",
+      "external_txid": "c070201c592085e6d41dd3c86366e575e6c315aeefd74b9fe9643bff308da4c2",
+      "external_chain": "SIMULATED",
+      "block_height": 973399
+    },
+    {
+      "anchor_timestamp": "2026-03-20T21:34:54.177322+00:00",
+      "log_sequence_num": 147,
+      "log_tail_hash": "d3b14cd13c8080de9011ad56632b8c20a6056209ae5b1722c57144624e19980b",
+      "merkle_root": "e436cb06520b8a91c0ac6cd14940d19be50534a6bcb29b13f2d6575ac9973f63",
+      "external_txid": "d3904bdb819c6f2078adb8ef254ea05955b387daea6a005acd1a8345c5c7c277",
+      "external_chain": "SIMULATED",
+      "block_height": 973404
+    },
+    {
+      "anchor_timestamp": "2026-03-20T23:25:45.063617+00:00",
+      "log_sequence_num": 149,
+      "log_tail_hash": "922f3ecd387746689b038b447c9237f9493dd5a618f8956882022c7fe132cc28",
+      "merkle_root": "66ad49c91d24a2033eeeeea2b64e21e16624234922c18d9a463960ab5dcd851c",
+      "external_txid": "6432033850f1b72cd7cd93514fd83d762379940eeb076bf0bd97ab2fcc1f9c8c",
+      "external_chain": "SIMULATED",
+      "block_height": 973415
+    },
+    {
+      "anchor_timestamp": "2026-03-20T23:55:24.839081+00:00",
+      "log_sequence_num": 151,
+      "log_tail_hash": "ae2d84f43aef4accfbc2438bf248daddb3bb7651184ddf880907248f7a256c17",
+      "merkle_root": "b9c72a0f92ceea9bbd0e22df49a07d7e14d8b9bd581b580604484745ebede941",
+      "external_txid": "5bc666dfce5e6a5f4530b5e1c2d5795c22d906bc1b90425a0fdc94cdc2750f97",
+      "external_chain": "SIMULATED",
+      "block_height": 973418
+    },
+    {
+      "anchor_timestamp": "2026-03-21T00:25:24.390763+00:00",
+      "log_sequence_num": 153,
+      "log_tail_hash": "c8ea7afd2ade2fd2ca162392f7714e61277241506bc2f77a30d2e591435dfbf2",
+      "merkle_root": "7da5a62bfb55f63c6baaad4003ace149da8777f153fe1d1d70ea516f854e7737",
+      "external_txid": "4475f852359ca87b585be980469a3eea42ef9e66092102af8f2d19f93e05058b",
+      "external_chain": "SIMULATED",
+      "block_height": 973421
+    },
+    {
+      "anchor_timestamp": "2026-03-21T08:05:17.263678+00:00",
+      "log_sequence_num": 155,
+      "log_tail_hash": "5178e4a6040f303dc73de9aaeb15bfe274c987a0765506d5b675d08205c0c5c6",
+      "merkle_root": "100a8ce89fdfb844b371bf41dc81793cc860fc836b35fa4d46f8c723b2ee6c39",
+      "external_txid": "8c12a09b3072111bbd636766b593d5b86a1ea111497740489821a5cd7653de25",
+      "external_chain": "SIMULATED",
+      "block_height": 973467
+    },
+    {
+      "anchor_timestamp": "2026-03-21T19:39:33.684450+00:00",
+      "log_sequence_num": 157,
+      "log_tail_hash": "e64483fcf3d90c95cc9f7144bbc7a881d46565a6e35473d42c311f636eb6ce9c",
+      "merkle_root": "ddd3fec41725a02ddef67a7e459b59d0fc77a87d36f8a81b138101dbf7a02bc1",
+      "external_txid": "e96637376d1e457834a4adaa86f40a256959f64afe37e57e7319cd368f17ba94",
+      "external_chain": "SIMULATED",
+      "block_height": 973536
+    },
+    {
+      "anchor_timestamp": "2026-03-21T22:02:26.510857+00:00",
+      "log_sequence_num": 159,
+      "log_tail_hash": "05045396a68fd84642e8eff7c76996b229da6b7db484587790d110918869b430",
+      "merkle_root": "c2937f444c77e3c7b362c12bfe22f3e0b915bbfe81ff4471591a141650133737",
+      "external_txid": "cc7d3b2ad9e704eee2ff23a9349f86a97732e9b5035cb1e08cd766f558c6f25f",
+      "external_chain": "SIMULATED",
+      "block_height": 973550
+    },
+    {
+      "anchor_timestamp": "2026-03-21T22:25:32.194530+00:00",
+      "log_sequence_num": 161,
+      "log_tail_hash": "e1ccaefef76d1662d4a3b3fb38e27cd80a90595edff47f0104fdd25a2e43bd85",
+      "merkle_root": "5d287b69488bdf8c41fe8e910ebfe0a1a60ece6228822fe751e39093ca175749",
+      "external_txid": "285deec2f0295e2a718924cbaed2d65efa89e7ca38bbd44827bb902493e90dd4",
+      "external_chain": "SIMULATED",
+      "block_height": 973553
+    },
+    {
+      "anchor_timestamp": "2026-03-21T22:52:37.983761+00:00",
+      "log_sequence_num": 163,
+      "log_tail_hash": "ccb4f1c1775e62ab089fb77dd337682a1f788e5096a771435e939a88abf77dc9",
+      "merkle_root": "79d530e309ccf0353242f5172417e95d3cc007f86c8a9e2fe67934d1104f2838",
+      "external_txid": "636536294e75e10637dc2d86fc31e211ae60309ed807891cf49832b36a90e276",
+      "external_chain": "SIMULATED",
+      "block_height": 973555
+    },
+    {
+      "anchor_timestamp": "2026-03-21T22:59:04.026863+00:00",
+      "log_sequence_num": 165,
+      "log_tail_hash": "5b7478d48414638dc0ebcafa2745961caae4252c2e801e115b5bc43e64505488",
+      "merkle_root": "2a84c3b5ddd0494867cd58bb7cc2028f6afcb68a64ffc71e4ed40b81c23a1b4e",
+      "external_txid": "a1c1d800d4cc3f6c8865cae8435be48c0b283cbd989f6e341d814ccfa88e2719",
+      "external_chain": "SIMULATED",
+      "block_height": 973556
+    },
+    {
+      "anchor_timestamp": "2026-03-21T23:04:26.531869+00:00",
+      "log_sequence_num": 167,
+      "log_tail_hash": "1f6ef79342b9dc12d28ce955f7744b93501fbc24273267d3392c0a41a0451e74",
+      "merkle_root": "670bcb160025898f950797e4672bae383a49910eb9601868c32ccd2737e12d45",
+      "external_txid": "605a5c15427c5f01f7a62e2307e57336453b36f8c91ca2c5538b37d4b881f71f",
+      "external_chain": "SIMULATED",
+      "block_height": 973557
+    },
+    {
+      "anchor_timestamp": "2026-03-22T00:53:09.946610+00:00",
+      "log_sequence_num": 171,
+      "log_tail_hash": "99062a08ff22a5be11c483933093ab1c153476bb8ab819bffe6a5078b6f2e118",
+      "merkle_root": "3ec16a94930116d4b93bc80d4ca50c140b4618abb5f1da476d821894fdc90b4b",
+      "external_txid": "5517a7862264ecbd36bad80f528f3624c3b1426f7a1174e262fa1e7b6d9e203c",
+      "external_chain": "SIMULATED",
+      "block_height": 973567
+    },
+    {
+      "anchor_timestamp": "2026-03-22T09:35:09.591665+00:00",
+      "log_sequence_num": 173,
+      "log_tail_hash": "98e33d6749d31430890280ff5be1cec0151f8816b827609bac739968e19b6704",
+      "merkle_root": "5adf76d686935efc157387aa7827e71c7343c76d8a699083a248d30b34388f0a",
+      "external_txid": "d0d601014dbf5bc3e5794b760daeaec79b7580cacdbd03d6de385f92968e9f3c",
+      "external_chain": "SIMULATED",
+      "block_height": 973620
+    },
+    {
+      "anchor_timestamp": "2026-03-22T09:42:48.873108+00:00",
+      "log_sequence_num": 175,
+      "log_tail_hash": "363bf8c28e49fd86e8f954efa22b7846fbf8bb113d6b93f76b29d8f672d945ff",
+      "merkle_root": "b5d57b81258f23d9e784e259ef73dbc0a99e1d7f782be91da56748fe944c2138",
+      "external_txid": "78cbfe8094d2775396aa22434ef81723ea326e88806e12847504ada89b82be0c",
+      "external_chain": "SIMULATED",
+      "block_height": 973620
+    },
+    {
+      "anchor_timestamp": "2026-03-22T10:20:22.604447+00:00",
+      "log_sequence_num": 177,
+      "log_tail_hash": "67dcab9c84c9763836dfbc21b48c408201bfdef5672c7d6b6a5b3fad523a024e",
+      "merkle_root": "b29d948b3f9afd6fe969186ccfe9489963d8bdb098a3b08538156996ffe38922",
+      "external_txid": "5c96ee62186691861f430684645a40f5a5bbd52e48d1fbfb8ca6da369b6afd5e",
+      "external_chain": "SIMULATED",
+      "block_height": 973624
+    },
+    {
+      "anchor_timestamp": "2026-03-23T03:12:03.811662+00:00",
+      "log_sequence_num": 179,
+      "log_tail_hash": "80bc2c2d2bb68ac25231308f1d50ebaabae67bdc03a60c08dd2152583e2735c3",
+      "merkle_root": "d9f67751c9bb930265690061ac4d0106658b510d78215bca5b9efacb3582fefb",
+      "external_txid": "8e6d9f2e43f67f4c1982da1604740545488a454064b52f3d5164860d13978efb",
+      "external_chain": "SIMULATED",
+      "block_height": 973725
+    },
+    {
+      "anchor_timestamp": "2026-03-23T08:37:39.399791+00:00",
+      "log_sequence_num": 181,
+      "log_tail_hash": "a3bee81885acd4059f40ac2434ca2447470a1a59980604a92d7a83f5d1bf63fe",
+      "merkle_root": "c3f531aa5b85c14c5b18491367b66f32dd49dbd5210319f73754bed56331ac7d",
+      "external_txid": "82620de8c80be95118a64eb93f4bd9d7f1ca12af333216aee1037267c7484144",
+      "external_chain": "SIMULATED",
+      "block_height": 973758
+    },
+    {
+      "anchor_timestamp": "2026-03-23T20:08:11.934249+00:00",
+      "log_sequence_num": 187,
+      "log_tail_hash": "d093c2ea3dcb5b28cc418976c2bc9d6eaa18e5ab92c3f860eba81c912e671d70",
+      "merkle_root": "27659c9c1a7ec788e228729c61834bd4232d86aed50087130ce7de6d8e61249c",
+      "external_txid": "0e903c6f51195d0b77609a613751ae0f48eee7e7961f3f5d855ce179f874389f",
+      "external_chain": "SIMULATED",
+      "block_height": 973827
+    },
+    {
+      "anchor_timestamp": "2026-03-23T20:35:35.770392+00:00",
+      "log_sequence_num": 189,
+      "log_tail_hash": "25d200102c1d62f66c6b9f6ccc2eb0f678a298d116878858407a115d77a8e9b0",
+      "merkle_root": "d84cd81464d132d8798bf43afad41eed4de2db43bea9edc5a292e4263e361ab8",
+      "external_txid": "8f00a5756cd05e4e4b33ae81ba8c2a55b323bd63e8bfce32fb46852e7c70ea05",
+      "external_chain": "SIMULATED",
+      "block_height": 973830
+    },
+    {
+      "anchor_timestamp": "2026-03-24T05:25:09.071384+00:00",
+      "log_sequence_num": 191,
+      "log_tail_hash": "5e0fcdc3dd58dd7f131decbca9f9d9d8463536be8c2c6341d5a2a5b17f134200",
+      "merkle_root": "ba37b95b5d07db7716fb6134ae71593a02b1f8d5470d395aa579827e5663493d",
+      "external_txid": "c8d265208238498dc8506eea6725ff4b15714c325184ec09bf50cf0d62bb634d",
+      "external_chain": "SIMULATED",
+      "block_height": 973883
+    },
+    {
+      "anchor_timestamp": "2026-03-24T06:45:19.327436+00:00",
+      "log_sequence_num": 193,
+      "log_tail_hash": "799c74da316a36f0bedc0a4b3b730895a321630bebe1110dd1f2c3993f281e84",
+      "merkle_root": "dfb4f1679d15d447b0f5650d6356669ca245592e7d412c7e5750ee7ef5d0f3ab",
+      "external_txid": "81a1bf67fc6ed7496a35df8ffd8323f4713d12024d8cf1b7287be096b8566d78",
+      "external_chain": "SIMULATED",
+      "block_height": 973891
+    },
+    {
+      "anchor_timestamp": "2026-03-24T10:21:59.909102+00:00",
+      "log_sequence_num": 195,
+      "log_tail_hash": "b3d5c1bc160ff22dc4a7a9ca868a3002ef315b3f8e4b083096ce188766140739",
+      "merkle_root": "57fec4d0cac0e6c119eff8961b62482fe2526a437b1cb884b673b4b2d7f6c775",
+      "external_txid": "beebcaffa834b6d2eded8b572845729f3145c969ce37bb727fa2c3d10688caea",
+      "external_chain": "SIMULATED",
+      "block_height": 973912
+    }
+  ],
+  "genesis_hash": "26e495da19c6ae29c2128bef6406d72bfe4a1d68f70acbdbc8982c639ec00c2a",
+  "last_updated": "2026-03-24T10:23:53.137652+00:00"
+}

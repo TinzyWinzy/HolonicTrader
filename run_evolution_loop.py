@@ -8,6 +8,15 @@ from evolution_lab import EvolutionLab
 from HolonicTrader.validation_gate import LiveValidationGate
 from HolonicTrader.evolution_monitor import EvolutionMonitor
 
+# Force UTF-8 encoding at module level (Windows fix)
+import sys
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 # Config
 LOOP_INTERVAL = 60
 GENOME_FILE = 'live_genome.json'
@@ -35,7 +44,12 @@ bloomberg_theme = Theme({
     "repr.str": "white",                    # Strings are White
 })
 
-console = Console(theme=bloomberg_theme)
+# Force UTF-8 encoding for Windows console
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
+
+console = Console(theme=bloomberg_theme, force_terminal=False)
 
 # 1. File Handler (Text / CSV-like)
 file_handler = logging.FileHandler('evo_engine.log', encoding='utf-8')
@@ -91,13 +105,57 @@ class ArchipelagoEngine:
         self.lab = EvolutionLab(
             symbols=config.ALLOWED_ASSETS,
             initial_capital=config.INITIAL_CAPITAL,
-            leverage=20.0 # Base leverage, overridden by Island
+            leverage=20.0, # Base leverage, overridden by Island
+            history_limit=1500,
+            secondary_limit=6000
         )
-        self.lab.load_data(history_limit=1500, secondary_limit=6000)
         
         # 2. Gate & Monitor (Tasks 5 & 6)
         self.gate = LiveValidationGate(paper_period_hours=48)
         self.monitor = EvolutionMonitor()
+        
+        # 3. Dashboard Communication
+        self.status_file = 'evolution_status.json'
+        self.last_validation = {}  # Track last validation result
+        self.fitness_history = {island.name: [] for island in self.islands}
+        self.recent_alerts = []  # Last 20 alerts
+        
+    def _write_status_file(self):
+        """Write evolution status for dashboard to read."""
+        try:
+            # Get global champion from HOF
+            global_champ = None
+            if self.hall_of_fame:
+                global_champ = max(self.hall_of_fame, key=lambda x: x.get('fitness', 0))
+            
+            status = {
+                'last_update': time.time(),
+                'total_cycles': self.total_cycles,
+                'best_global_fitness': self.best_global_fitness,
+                'global_champion': {
+                    'fitness': global_champ.get('fitness', 0) if global_champ else 0,
+                    'genome': global_champ.get('genome', {}) if global_champ else {},
+                    'source_island': global_champ.get('source_island', 'N/A') if global_champ else 'N/A'
+                } if global_champ else None,
+                'islands': [
+                    {
+                        'name': island.name,
+                        'strategy_bias': island.strategy_bias,
+                        'fitness': island.champion.get('fitness', 0) if island.champion else 0,
+                        'stagnation': island.stagnation,
+                        'categories': island.allowed_categories,
+                        'history': self.fitness_history.get(island.name, [])[-20:]  # Last 20 points
+                    }
+                    for island in self.islands
+                ],
+                'validation_gate': self.last_validation,
+                'alerts': self.recent_alerts[-20:]  # Last 20 alerts
+            }
+            
+            with open(self.status_file, 'w') as f:
+                json.dump(status, f, indent=2)
+        except Exception as e:
+            logging.error(f"Status file write error: {e}")
         
     def load_seed(self):
         # ... logic to load seed ...
@@ -123,6 +181,15 @@ class ArchipelagoEngine:
         if self.best_global_fitness > 1000 and current_fit < self.best_global_fitness * 0.5:
             logging.warning(f"🛑 REJECTING APEX SAVE: Fitness Collapse Detected ({current_fit:.2f} < {self.best_global_fitness:.2f})")
             return
+
+        # --- BRAIN STABILITY GATE (Tuning Phase) ---
+        # Prevent rapid whipsaws by rejecting massive fitness jumps (Variance > 5.0) which indicate overfitting
+        if self.best_global_fitness > 0:
+            variance = abs(current_fit - self.best_global_fitness)
+            if variance > 5.0:
+                 logging.warning(f"🛑 STABILITY GATE: Rejecting unstable fitness jump (Var {variance:.2f} > 5.0). Fit: {current_fit:.2f}")
+                 return
+        # -------------------------------------------
 
         result['timestamp'] = time.time()
         result['source_island'] = source_island
@@ -168,9 +235,12 @@ class ArchipelagoEngine:
                     
                     try:
                         # B. Portfolio Baskets (Robustness Test)
-                        # FIX: Reduced from 4 -> 2 to prevent stagnation
-                        basket_size = 2
-                        
+                        # FIX #5 2026-03-02: INCREASED basket size 2 -> 4 to reduce stagnation
+                        # FIX 2026-03-20: Pin basket per island per cycle for consistent fitness comparison
+                        # Problem: Random basket each generation = noisy fitness comparison across genomes
+                        # Solution: Fix basket for entire island run, rotate across cycles
+                        basket_size = 4
+
                         # Ensure we pick valid symbols that match the ISLAND CATEGORY
                         island_syms = []
                         for s in self.lab.symbols:
@@ -187,11 +257,13 @@ class ArchipelagoEngine:
                         if not island_syms:
                             logging.warning(f"⚠️ {island.name} has NO valid symbols for categories {island.allowed_categories}. Skipping.")
                             continue
-                            
-                        if len(island_syms) > basket_size:
-                            basket = random.sample(island_syms, basket_size)
-                        else:
-                            basket = island_syms
+                        
+                        # Deterministic rotation: cycle through island_syms in fixed windows
+                        # Each cycle rotates by basket_size so all assets get tested over time
+                        island_syms.sort()  # Stable ordering
+                        rotation_offset = (self.total_cycles * basket_size) % max(len(island_syms), 1)
+                        rotated = island_syms[rotation_offset:] + island_syms[:rotation_offset]
+                        basket = rotated[:basket_size]
                         
                         # C. Evolve
                         winner = self.lab.evolve(
@@ -207,6 +279,10 @@ class ArchipelagoEngine:
                         alerts = self.monitor.check_health(island.name, winner)
                         for alert in alerts:
                             logging.warning(alert)
+                            self.recent_alerts.append({'time': time.time(), 'msg': alert})
+                        
+                        # Track fitness history
+                        self.fitness_history[island.name].append(current_fitness)
                         
                         if current_fitness > self.best_global_fitness:
                             # E. VALIDATION GATE (Task 5)
@@ -225,6 +301,15 @@ class ArchipelagoEngine:
                                     primary_df = primary_dataset.df.iloc[split_idx:]
                             
                             is_promoted, reason, result = self.gate.validate_genome(winner['genome'], primary_asset, external_df=primary_df)
+                            
+                            # Store validation result for dashboard
+                            self.last_validation = {
+                                'timestamp': time.time(),
+                                'symbol': primary_asset,
+                                'status': 'PROMOTED' if is_promoted else 'REJECTED',
+                                'reason': reason,
+                                'stats': result.get('stats', {}) if result else {}
+                            }
                             
                             if is_promoted:
                                 logging.info(f"🚀 {island.name} produced a NEW GLOBAL CHAMPION! (Fit {current_fitness:.2f}) - PROMOTED")
@@ -256,6 +341,9 @@ class ArchipelagoEngine:
                                  self.lab.population.append(elite['genome'])
                          logging.info(f"💉 Re-injected {len(hof_top)} Ancient Kings from Hall of Fame.")
 
+                # 3. Write status for dashboard
+                self._write_status_file()
+                
                 logging.info(f"Sleeping {LOOP_INTERVAL}s...")
                 time.sleep(LOOP_INTERVAL)
                 

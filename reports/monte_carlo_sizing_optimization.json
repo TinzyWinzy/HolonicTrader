@@ -1,0 +1,127 @@
+{
+  "analysis_timestamp": "2026-03-21T23:26:24.486529",
+  "n_trades": 9,
+  "pnl_statistics": {
+    "mean": -0.0033888888888888883,
+    "std": 0.0029135221144022763,
+    "min": -0.0086,
+    "max": -0.0006,
+    "win_rate": 0.0,
+    "avg_win": 0.0,
+    "avg_loss": -0.0033888888888888883
+  },
+  "kelly_criterion": {
+    "win_loss_ratio": 0.0,
+    "full_kelly": 0.0,
+    "half_kelly": 0.0
+  },
+  "optimal_sizing": {
+    "position_size_fraction": 0.05,
+    "kelly_fraction": 0.0,
+    "half_kelly": 0.0,
+    "max_drawdown_limit": 0.002140462162417842,
+    "cvar_95_limit": 0.0172,
+    "cvar_99_limit": 0.0129,
+    "sharpe_target": -20.85002465995031,
+    "volatility_target": 0.02,
+    "monte_carlo_paths": 1000,
+    "monte_carlo_horizon_hours": 24,
+    "stress_test_paths": 5000,
+    "stress_test_adverse_move": 0.03
+  },
+  "sizing_test_results": [
+    {
+      "final_equity_mean": 99.84733522885334,
+      "final_equity_std": 0.03978142787808209,
+      "final_equity_median": 99.84784514935289,
+      "max_drawdown_mean": 0.0008483362058884529,
+      "max_drawdown_95pct": 0.0017837184686815349,
+      "sharpe_mean": -21.652088314619668,
+      "sharpe_median": -20.85002465995031,
+      "profitable_paths": 0.0,
+      "fraction": 0.05
+    },
+    {
+      "final_equity_mean": 99.69487675304887,
+      "final_equity_std": 0.07945434274188759,
+      "final_equity_median": 99.69588046987344,
+      "max_drawdown_mean": 0.001695907495926279,
+      "max_drawdown_95pct": 0.0035648757437428385,
+      "sharpe_mean": -21.652088314620205,
+      "sharpe_median": -20.850024659953604,
+      "profitable_paths": 0.0,
+      "fraction": 0.1
+    },
+    {
+      "final_equity_mean": 99.54262432922476,
+      "final_equity_std": 0.11901894866157083,
+      "final_equity_median": 99.5441057703679,
+      "max_drawdown_mean": 0.0025427145449310436,
+      "max_drawdown_95pct": 0.005343474627108463,
+      "sharpe_mean": -21.652088314619608,
+      "sharpe_median": -20.850024659950563,
+      "profitable_paths": 0.0,
+      "fraction": 0.15
+    },
+    {
+      "final_equity_mean": 99.39057771426548,
+      "final_equity_std": 0.1584754494042984,
+      "final_equity_median": 99.39252085979338,
+      "max_drawdown_mean": 0.0033887580271771975,
+      "max_drawdown_95pct": 0.007119517918574707,
+      "sharpe_mean": -21.652088314619874,
+      "sharpe_median": -20.85002465995163,
+      "profitable_paths": 0.0,
+      "fraction": 0.2
+    },
+    {
+      "final_equity_mean": 99.23873666530156,
+      "final_equity_std": 0.1978240484346209,
+      "final_equity_median": 99.24112554725795,
+      "max_drawdown_mean": 0.0042340386163960235,
+      "max_drawdown_95pct": 0.0088930084158075,
+      "sharpe_mean": -21.652088314619796,
+      "sharpe_median": -20.85002465995119,
+      "profitable_paths": 0.0,
+      "fraction": 0.25
+    },
+    {
+      "final_equity_mean": 99.08710093970943,
+      "final_equity_std": 0.2370649489148222,
+      "final_equity_median": 99.08991964202056,
+      "max_drawdown_mean": 0.00507855698577631,
+      "max_drawdown_95pct": 0.010663948914344567,
+      "sharpe_mean": -21.65208831461999,
+      "sharpe_median": -20.850024659951686,
+      "profitable_paths": 0.0,
+      "fraction": 0.3
+    },
+    {
+      "final_equity_mean": 98.78444448937452,
+      "final_equity_std": 0.3152244653648884,
+      "final_equity_median": 98.78807529122884,
+      "max_drawdown_mean": 0.0067653097550657414,
+      "max_drawdown_95pct": 0.014198191086844801,
+      "sharpe_mean": -21.652088314619945,
+      "sharpe_median": -20.850024659951416,
+      "profitable_paths": 0.0,
+      "fraction": 0.4
+    },
+    {
+      "final_equity_mean": 98.48260642718206,
+      "final_equity_std": 0.3929556180213044,
+      "final_equity_median": 98.48698628450205,
+      "max_drawdown_mean": 0.008449021709718698,
+      "max_drawdown_95pct": 0.01772226675784369,
+      "sharpe_mean": -21.652088314619977,
+      "sharpe_median": -20.850024659951757,
+      "profitable_paths": 0.0,
+      "fraction": 0.5
+    }
+  ],
+  "cvar_analysis": {
+    "cvar_95": 0.0086,
+    "cvar_99": 0.0086,
+    "recommended_limit": 0.0172
+  }
+}

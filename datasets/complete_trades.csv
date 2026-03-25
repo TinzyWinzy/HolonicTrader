@@ -1,0 +1,4 @@
+entry_idx,exit_idx,symbol,entry_time,exit_time,entry_qty,entry_leverage,exit_pnl_percent,time_diff_sec,entry_session,exit_session,time_diff_minutes,pnl_direction
+2,1,DOT/USDT,2026-03-20 19:35:09,2026-03-20 19:35:14,9.9404,2.0,-0.07,5.0,live_trading_session_20260320_182857.log,live_trading_session_20260320_182857.log,0.08333333333333333,0
+7,6,DOT/USDT,2026-03-21 01:27:41,2026-03-21 01:59:39,9.9536,2.0,-0.46,1918.0,live_trading_session_20260321_012601.log,live_trading_session_20260321_015823.log,31.966666666666665,0
+8,7,TAO/USDT,2026-03-21 02:18:09,2026-03-21 02:27:01,0.055,1.0,-0.15,532.0,live_trading_session_20260321_015823.log,live_trading_session_20260321_022540.log,8.866666666666667,0

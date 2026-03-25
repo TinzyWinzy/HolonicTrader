@@ -29,7 +29,7 @@ class SDEEngine:
         if RUST_AVAILABLE and hasattr(holonic_speed, 'sde_estimate_ou'):
             # Convert to list for PyO3
             prices_list = prices.tolist() if isinstance(prices, np.ndarray) else list(prices)
-            params = holonic_speed.sde_estimate_ou(prices_list)
+            params = holonic_speed.sde_estimate_ou(prices_list, dt)
             
             # Add half-life (not in Rust yet for simplicity)
             lambda_val = params.get('lambda', 0.1)
@@ -69,7 +69,7 @@ class SDEEngine:
             
         if RUST_AVAILABLE and hasattr(holonic_speed, 'sde_estimate_gbm'):
             prices_list = prices.tolist() if isinstance(prices, np.ndarray) else list(prices)
-            return holonic_speed.sde_estimate_gbm(prices_list)
+            return holonic_speed.sde_estimate_gbm(prices_list, dt)
 
         # Python Fallback
         log_returns = np.diff(np.log(prices + 1e-12))
@@ -97,7 +97,8 @@ class SDEEngine:
                 params, 
                 float(start_price), 
                 int(horizon), 
-                int(paths)
+                int(paths),
+                float(dt)
             )
             return np.array(rust_paths)
 
@@ -111,12 +112,17 @@ class SDEEngine:
                 if process_type == 'GBM':
                     mu = params.get('mu', params.get('drift', 0.1))
                     sigma = params.get('sigma', params.get('diffusion', 0.2))
-                    curr_price *= np.exp((mu - 0.5 * sigma**2) * dt + sigma * dw)
+                    curr_price *= np.exp((mu - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * dw)
                 elif process_type == 'OU':
                     lam = params.get('lambda', 0.1)
                     mu = params.get('mu', 0.0)
                     sig = params.get('sigma', 0.1)
-                    curr_price += lam * (mu - curr_price) * dt + sig * dw
+                    # For Python, use discrete exact AR(1) or continuous if a/b not provided
+                    a = params.get('a')
+                    if a is not None:
+                        curr_price = a * curr_price + params.get('b', 0.0) + params.get('residual_sigma', 0.01) * dw
+                    else:
+                        curr_price += lam * (mu - curr_price) * dt + sig * np.sqrt(dt) * dw
                 results[p, t] = curr_price
         return results
 
@@ -131,7 +137,7 @@ class SDEEngine:
         if RUST_AVAILABLE and hasattr(holonic_speed, 'sde_calculate_ruin_probability'):
             return holonic_speed.sde_calculate_ruin_probability(
                 model, params, float(start_price), float(sl_price), float(tp_price), 
-                int(horizon), int(paths)
+                int(horizon), int(paths), float(1/35040)  # default dt if not passed
             )
             
         # Python Fallback
@@ -141,11 +147,71 @@ class SDEEngine:
         failures = 0
         for p in range(len(sim_paths)):
             path = sim_paths[p]
-            if is_buy:
-                if np.any(path <= sl_price):
-                    failures += 1
-            else:
-                if np.any(path >= sl_price):
-                    failures += 1
+            for step in path:
+                if is_buy:
+                    if step <= sl_price:
+                        failures += 1
+                        break
+                    if step >= tp_price:
+                        break
+                else:
+                    if step >= sl_price:
+                        failures += 1
+                        break
+                    if step <= tp_price:
+                        break
                     
         return failures / paths
+
+    @staticmethod
+    def calculate_hit_probability(model: str, params: Dict[str, float], start_price: float,
+                                    target_price: float, horizon: int = 100, 
+                                    paths: int = 1000, dt: float = 1/35040) -> float:
+        """
+        Calculates the probability of hitting Target Price within the horizon.
+        """
+        # Python Fallback (No Rust equivalent yet)
+        sim_paths = SDEEngine.simulate_paths(model, params, start_price, horizon, paths, dt)
+        is_upward = target_price > start_price
+        
+        hits = 0
+        for p in range(len(sim_paths)):
+            path = sim_paths[p]
+            if is_upward:
+                if np.any(path >= target_price):
+                    hits += 1
+            else:
+                if np.any(path <= target_price):
+                    hits += 1
+                    
+        return hits / paths
+
+    @staticmethod
+    def estimate_survival_horizon(model: str, params: Dict[str, float], start_price: float,
+                                    stop_price: float, max_horizon: int = 24*30, 
+                                    paths: int = 1000, dt: float = 1/24) -> float:
+        """
+        Calculates the median time (in steps/hours) until price hits the Stop Price.
+        Returns 'max_horizon' if median survival exceeds the simulation window.
+        """
+        sim_paths = SDEEngine.simulate_paths(model, params, start_price, max_horizon, paths, dt)
+        is_long = start_price > stop_price
+        
+        survival_times = []
+        
+        for p in range(len(sim_paths)):
+            path = sim_paths[p]
+            if is_long:
+                # Find first index where price <= stop_price
+                hit_indices = np.where(path <= stop_price)[0]
+            else:
+                # Short: Find first index where price >= stop_price
+                hit_indices = np.where(path >= stop_price)[0]
+                
+            if len(hit_indices) > 0:
+                survival_times.append(hit_indices[0])
+            else:
+                survival_times.append(max_horizon)
+                
+        # Return Median Survival Time
+        return float(np.median(survival_times))

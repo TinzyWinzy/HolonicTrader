@@ -1,6 +1,6 @@
 import pandas as pd
 import config
-from agent_observer import ObserverHolon
+from HolonicTrader.agent_observer import ObserverHolon
 
 def test_hybrid_data_loading():
     print("Testing Hybrid Data Engine (Local CSV + Live CCXT)...")

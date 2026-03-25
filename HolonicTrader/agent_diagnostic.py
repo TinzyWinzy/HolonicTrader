@@ -62,25 +62,31 @@ class DiagnosticHolon(Holon):
     def check_models(self):
         """Checks for the existence of required ML models."""
         print("   [Diagnostic] Checking ML Models...")
-        required_models = ['dqn_model.keras', 'lstm_model.keras', 'xgboost_model.json']
-        missing_models = []
-        
-        # Assume models are in the root directory relative to execution
-        # We can also check specific paths if they were defined in config
-        base_path = os.getcwd() 
-        
+        # Required: system degrades significantly without these
+        required_models = ['xgboost_model.json']
+        # Optional: system runs in heuristic/fallback mode without these
+        optional_models = ['dqn_model.keras', 'lstm_model.keras']
+
+        base_path = os.getcwd()
+        missing_required = []
+        missing_optional = []
+
         for model in required_models:
-            model_path = os.path.join(base_path, model)
-            if not os.path.exists(model_path):
-                missing_models.append(model)
-        
-        if missing_models:
-            print(f"      ⚠️  Missing Models: {', '.join(missing_models)} (Agents may initialize fresh)")
-            # This might not be a hard failure for some users who want to train from scratch
-            # returning True with warning
-            return True 
-        
-        print("      ✅ All Core Models Found")
+            if not os.path.exists(os.path.join(base_path, model)):
+                missing_required.append(model)
+
+        for model in optional_models:
+            if not os.path.exists(os.path.join(base_path, model)):
+                missing_optional.append(model)
+
+        if missing_required:
+            print(f"      ❌ Missing Required Models: {', '.join(missing_required)}")
+            return False
+
+        if missing_optional:
+            print(f"      ℹ️  Optional Models absent (heuristic fallback active): {', '.join(missing_optional)}")
+        else:
+            print("      ✅ All Core Models Found")
         return True
 
     def check_exchange(self, exchange_id=None):
